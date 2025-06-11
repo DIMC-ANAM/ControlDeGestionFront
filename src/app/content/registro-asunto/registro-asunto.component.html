@@ -1,0 +1,101 @@
+<div class="container-fluid">
+    <div class="row p-3">
+        <div class="col-12">
+            <h1 class="pt-2">Registro de Asunto</h1>
+        </div>
+    </div>
+    
+        <div class="row p-4">
+                <!-- Formulario de registro de asunto -->
+                <form [formGroup]="documentoForm" (ngSubmit)="onSubmit()" novalidate>
+  <div class="row">
+    <div class="col-md-4 mb-3">
+      <label for="noOficio" class="form-label">No. Oficio</label>
+      <input type="text" id="noOficio" class="form-control" [ngClass]="controlState('noOficio')" formControlName="noOficio" />
+      <div *ngIf="isInvalid('noOficio')" class="text-danger">Este campo es obligatorio.</div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="fechaDocumento" class="form-label">Fecha Documento</label>
+      <input type="date" id="fechaDocumento" class="form-control" [ngClass]="controlState('fechaDocumento')" formControlName="fechaDocumento" />
+      <div *ngIf="isInvalid('fechaDocumento')" class="text-danger">Fecha no puede ser mayor a hoy.</div>
+    </div>
+
+    <div class="col-md-4 mb-3">
+      <label for="fechaRecepcion" class="form-label">Fecha Recepción</label>
+      <input type="date" id="fechaRecepcion" class="form-control" [ngClass]="controlState('fechaRecepcion')" formControlName="fechaRecepcion" />
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-2 mb-3">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="esVolante" id="esVolante" />
+        <label class="form-check-label" for="esVolante">Es volante</label>
+      </div>
+    </div>
+    <div class="col-md-2 mb-3">
+      <div class="form-check mt-4">
+        <input class="form-check-input" type="checkbox" formControlName="esGuia" id="esGuia" />
+        <label class="form-check-label" for="esGuia">Es guía</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Remitente y Dirigido -->
+  <div class="row">
+    <div class="col-md-4 mb-3" *ngFor="let field of remitenteFields">
+      <label [for]="field.name" class="form-label">{{ field.label }}</label>
+      <input type="text" [id]="field.name" class="form-control" [ngClass]="controlState(field.name)" [formControlName]="field.name" />
+      <div *ngIf="isInvalid(field.name)" class="text-danger">Campo obligatorio (máx 255).</div>
+    </div>
+  </div>
+
+  <!-- Descripción -->
+  <div class="row">
+    <div class="col-12 mb-3">
+      <label for="descripcionAsunto" class="form-label">Descripción Asunto</label>
+      <textarea id="descripcionAsunto" rows="3" class="form-control" [ngClass]="controlState('descripcionAsunto')" formControlName="descripcionAsunto"></textarea>
+      <div *ngIf="isInvalid('descripcionAsunto')" class="text-danger">Campo obligatorio (máx 1000).</div>
+    </div>
+  </div>
+
+  <!-- Tema y Fecha Cumplimiento -->
+  <div class="row">
+    <div class="col-md-6 mb-3">
+      <label for="tema" class="form-label">Tema</label>
+      <select id="tema" class="form-control" [ngClass]="controlState('tema')" formControlName="tema">
+        <option value="">Seleccione</option>
+        <option *ngFor="let t of temas" [value]="t">{{ t }}</option>
+      </select>
+      <div *ngIf="isInvalid('tema')" class="text-danger">Campo obligatorio.</div>
+    </div>
+
+    <div class="col-md-6 mb-3">
+      <label for="fechaCumplimiento" class="form-label">Fecha Cumplimiento</label>
+      <input type="date" id="fechaCumplimiento" class="form-control" [ngClass]="controlState('fechaCumplimiento')" formControlName="fechaCumplimiento" />
+      <div *ngIf="isInvalid('fechaCumplimiento')" class="text-danger">No puede ser anterior a hoy.</div>
+    </div>
+  </div>
+
+  <!-- Selects con opciones (medio, recepción, prioridad) -->
+  <div class="row">
+    <div class="col-md-4 mb-3" *ngFor="let selectField of selectFields">
+      <label [for]="selectField" class="form-label">{{ selectField | titlecase }}</label>
+      <select [id]="selectField" class="form-control" [ngClass]="controlState(selectField)" [formControlName]="selectField">
+        <option value="">Seleccione</option>
+        <option *ngFor="let opt of opciones[selectField]" [value]="opt.id">{{ opt.nombre }}</option>
+      </select>
+      <div *ngIf="isInvalid(selectField)" class="text-danger">Campo obligatorio.</div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12 text-end">
+      <button type="submit" class="btn btn-primary">Enviar</button>
+    </div>
+  </div>
+</form>
+
+
+</div>

@@ -1,0 +1,35 @@
+/* styles.css - Clases reutilizables para inputs de formularios */
+
+.form-control.valid-state {
+  border-color: #28a745 !important;
+  box-shadow: 0 0 4px #28a74533;
+  padding-right: 2.5rem;
+  background-image: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/check.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.form-control.invalid-state {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 4px #dc354533;
+  padding-right: 2.5rem;
+  background-image: url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/svgs/solid/xmark.svg');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+}
+
+.form-control:focus {
+  outline: 0;
+  box-shadow: 0 0 4px #007bff80;
+  border-color: #007bff;
+}
+
+/* para todos los elementos inputs del form la altura debe ser fija de 30px */
+.form-control {
+  height: 45px;
+  line-height: 30px;
+  padding: 0.375rem 0.75rem;
+}
+

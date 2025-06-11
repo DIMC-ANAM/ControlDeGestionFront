@@ -1,0 +1,519 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
+/* ========================================
+           SISTEMA DE DISEÑO - HOJA DE ESTILO BASE
+           ======================================== */
+
+        /* ========================================
+           1. VARIABLES CSS (Custom Properties)
+           ======================================== */
+
+           /* Para la variante Regular de Patria */
+@font-face {
+  font-family: 'Patria';
+  /* Prueba con la ruta absoluta desde la raíz de tu servidor (o assets) */
+  src: url('/fonts/Patria_Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Y para la bold */
+@font-face {
+  font-family: 'Patria';
+  src: url('/fonts/Patria_Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+:root {
+    /* Colores principales */
+    --color-primary: #9F2241;
+    --color-secondary: #691C32;
+    --color-success: #007B5D;
+    --color-gold: #C9A977;
+    --color-error: #9F0D3D;
+    
+    /* Colores de apoyo */
+    --color-dark-gray: #6F7271;
+    --color-light-gray: #98989A;
+    --color-light-bg: #fffefc;
+    --color-deep-blue: #0D324D;
+    --color-purple: #A188A6;
+    --color-light-blue: #C9DAEA;
+    
+    /* Colores tipográficos específicos */
+    --color-title-primary: #424242;
+    --color-title-secondary: #757575;
+    --color-text-base: #212121;
+    
+    
+    /* Variables derivadas para consistencia */
+    --color-primary-hover: #7A1B34;
+    --color-primary-light: rgba(159, 34, 65, 0.1);
+    --color-secondary-hover: #4F1525;
+    --color-success-hover: #005A45;
+    --color-error-hover: #7A0A2F;
+    
+    /* Colores para botones */
+    --btn-primary-hover: var(--color-secondary);
+    --btn-secondary-hover: var(--color-light-bg);
+    --btn-disabled-bg: #E0E0E0;
+    --btn-disabled-text: #BDBDBD;
+    
+    /* Colores para inputs */
+    --input-border-default: #C4C4C4;
+    --input-border-focus: var(--color-success);
+    --input-border-error: var(--color-error);
+    
+    /* Colores de texto */
+    --text-primary: var(--color-text-base);
+    --text-secondary: var(--color-dark-gray);
+    --text-light: var(--color-light-gray);
+    --text-on-primary: #FFFFFF;
+    --text-on-dark: #FFFFFF;
+    --text-title-h1: var(--color-title-primary);
+    --text-title-h2: var(--color-title-secondary);
+    --text-auxiliary: var(--color-light-gray);
+    
+    /* Tipografía */
+    --font-family-titles: 'Patria', serif;
+    --font-family-text: 'Noto Sans', sans-serif;
+    
+    /* Tamaños de fuente */
+    --font-size-h1: 32px;
+    --font-size-h2: 24px;
+    --font-size-h3: 20px;
+    --font-size-base: 16px;
+    --font-size-button: 14px;
+    --font-size-auxiliary: 12px;
+    
+    /* Pesos de fuente */
+    --font-weight-bold: 700;
+    --font-weight-medium: 500;
+    --font-weight-regular: 400;
+    --font-weight-light: 300;
+    
+    /* Colores de fondo */
+    --bg-primary: var(--color-light-bg);
+    --bg-white: #FFFFFF;
+    --bg-overlay: rgba(13, 50, 77, 0.5);
+}
+
+/* ========================================
+    2. RESET Y CONFIGURACIÓN BASE
+    ======================================== */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    
+}
+
+html {
+    font-size: 16px;
+    line-height: 1.5;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+    
+}
+
+body {
+    font-family: var(--font-family-text);
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    /* line-height: 1.6; */
+    font-weight: var(--font-weight-regular);
+    font-size: var(--font-size-base);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+    3. CLASES UTILITARIAS DE COLOR
+    ======================================== */
+.text-primary { color: var(--color-primary) !important; }
+.text-secondary { color: var(--color-secondary) !important; }
+.text-success { color: var(--color-success) !important; }
+.text-error { color: var(--color-error) !important; }
+.text-gold { color: var(--color-gold) !important; }
+.text-dark-gray { color: var(--color-dark-gray) !important; }
+.text-light-gray { color: var(--color-light-gray) !important; }
+
+.bg-primary { background-color: var(--color-primary) !important; }
+.bg-secondary { background-color: var(--color-secondary) !important; }
+.bg-success { background-color: var(--color-success) !important; }
+.bg-error { background-color: var(--color-error) !important; }
+.bg-gold { background-color: var(--color-gold) !important; }
+.bg-light { background-color: var(--bg-primary) !important; }
+.bg-white { background-color: var(--bg-white) !important; }
+
+/* ========================================
+    4. TIPOGRAFÍA
+    ======================================== */
+/* Títulos */
+
+
+h1, .h1 {
+    font-family: var(--font-family-titles);
+    font-size: var(--font-size-h1);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-title-h1);
+    line-height: 1.2;
+    margin-bottom: 1rem;     
+    /* BORDE INFERIOR CON LINEA COLOR GOLD*/
+    padding-bottom: 0.5rem;
+    border-bottom: 3px solid var(--color-gold);
+}
+
+h2, .h2 {
+    font-family: var(--font-family-titles);
+    font-size: var(--font-size-h2);
+    font-weight: var(--font-weight-light);
+    color: var(--text-title-h2);
+    line-height: 1.3;
+    margin-bottom: 0.75rem;    
+}
+
+h3, .h3 {
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-h3);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+    line-height: 1.4;
+    margin-bottom: 0.5rem;
+}
+
+/* Texto base */
+p, .text-base {
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+}
+
+/* Texto de botones */
+.btn-text {
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-button);
+    font-weight: var(--font-weight-bold);
+    line-height: 1.4;
+}
+
+/* Texto auxiliar */
+.text-auxiliary, small {
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-auxiliary);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-auxiliary);
+    line-height: 1.5;
+}
+
+/* Clases utilitarias tipográficas */
+.font-bold { font-weight: var(--font-weight-bold) !important; }
+.font-medium { font-weight: var(--font-weight-medium) !important; }
+.font-regular { font-weight: var(--font-weight-regular) !important; }
+.font-light { font-weight: var(--font-weight-light) !important; }
+
+/* clases para los diferentes tamaños de fuentes */
+.text-size-large { 
+    font-size: 32px; /* Ajusta según sea necesario */
+}
+.text-size-medium { 
+    font-size: 30px; /* Ajusta según sea necesario */
+}
+.text-size-small { 
+    font-size: 24px; /* Ajusta según sea necesario */   
+}
+
+
+.text-h1 { 
+    font-size: var(--font-size-h1) !important;
+    font-family: var(--font-family-titles) !important;
+    
+}
+.text-h2 { 
+    font-size: var(--font-size-h2) !important;
+    font-family: var(--font-family-titles) !important;
+    border-bottom: 2px solid var(--color-gold);
+}
+.text-h3 { font-size: var(--font-size-h3) !important; }
+.text-base { font-size: var(--font-size-base) !important; }
+.text-button { font-size: var(--font-size-button) !important; }
+.text-small { font-size: var(--font-size-auxiliary) !important; }
+
+/* ========================================
+    5. BOTONES
+    ======================================== */
+/* Estilos base para todos los botones */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    padding: 5px;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-button);
+    font-weight: var(--font-weight-bold);
+    text-align: center;
+    text-decoration: none;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    min-height: 44px;
+    min-width: 80px;
+}
+
+.btn:focus {
+    box-shadow: 0 0 0 3px rgba(159, 34, 65, 0.3);
+}
+
+/* Botón Primario */
+.btn-primary {
+    background-color: var(--color-primary);
+    color: var(--text-on-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--btn-primary-hover);
+    border-color: var(--btn-primary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    
+
+}
+
+.btn-primary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Botón Secundario */
+.btn-secondary {
+    background-color: var(--bg-white);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+    background-color: var(--btn-secondary-hover);
+    color: var(--color-primary);
+    border-color: var(--color-primary);
+}
+
+.btn-secondary:active:not(:disabled) {
+    transform: translateY(0);
+}
+
+/* Botón Disabled */
+.btn:disabled,
+.btn-disabled {
+    background-color: var(--btn-disabled-bg) !important;
+    color: var(--btn-disabled-text) !important;
+    border-color: var(--btn-disabled-bg) !important;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
+/* Variantes de tamaño (opcional para flexibilidad futura) */
+.btn-sm {
+    padding: 3px 12px;
+    min-height: 32px;
+    min-width: 60px;
+    font-size: 12px;
+}
+
+.btn-lg {
+    padding: 8px 24px;
+    min-height: 52px;
+    min-width: 120px;
+    font-size: 16px;
+}
+
+/* ========================================
+    6. INPUTS Y FORMULARIOS
+    ======================================== */
+/* Estilos base para inputs */
+.form-input,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[type="search"],
+textarea,
+select {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--input-border-default);
+    border-radius: 10px;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    background-color: var(--bg-white);
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    box-sizing: border-box;
+}
+
+/* Estado Focus */
+.form-input:focus,
+input:focus,
+textarea:focus,
+select:focus,
+.form-input.ng-touched.ng-valid:focus,
+input.ng-touched.ng-valid:focus,
+textarea.ng-touched.ng-valid:focus,
+select.ng-touched.ng-valid:focus {
+    border-color: var(--input-border-focus);
+    box-shadow: 0 0 0 3px rgba(0, 123, 93, 0.1);
+}
+
+/* Estado Valid (cuando ha sido tocado y es válido) */
+.input-valid {
+    border-color: var(--input-border-focus);
+}
+
+/* Estado Invalid/Error - Cuando ha sido tocado y es inválido */
+.input-invalid {
+    border-color: var(--input-border-error);
+    color: var(--input-border-error);
+}
+
+/* Placeholder styling */
+.form-input::placeholder,
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-light);
+    font-weight: var(--font-weight-regular);
+    opacity: 0.7;
+}
+
+/* Estados de focus para inputs con error */
+.input-invalid:focus {
+    box-shadow: 0 0 0 3px rgba(159, 13, 61, 0.1);
+}
+
+/* Disabled state */
+.form-input:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+    background-color: #F5F5F5;
+    border-color: #E0E0E0;
+    color: var(--text-light);
+    cursor: not-allowed;
+}
+
+/* Textarea específico */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+/* Select específico */
+select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 16px;
+    padding-right: 40px;
+    appearance: none;
+}
+
+/* Mensajes de error */
+.error-message {
+    color: var(--input-border-error);
+    font-size: var(--font-size-auxiliary);
+    font-weight: var(--font-weight-regular);
+    margin-top: 4px;
+    display: block;
+}
+
+/* Labels */
+.form-label {
+    display: block;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+/* Contenedor de campo de formulario */
+.form-field {
+    margin-bottom: 20px;
+}
+
+
+.hover-line-center {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-line-center::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0;
+    height: 4px;
+    background-color: var(--color-gold);
+    transition: all 0.2s ease;
+    transform: translateX(-50%);
+}
+
+.hover-line-center:hover::after {
+    width: 100%;
+}
+
+/* Línea que aparece de izquierda a derecha */
+.hover-line-left {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-line-left::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--color-gold);
+    transition: width 0.3s ease;
+}
+
+.hover-line-left:hover::after {
+    width: 100%;
+}
+
+/* Línea que aparece de derecha a izquierda */
+.hover-line-right {
+    position: relative;
+    display: inline-block;
+}
+
+.hover-line-right::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 4px;
+    background-color: var(--color-gold);
+    transition: width 0.2s ease;
+}
+
+.hover-line-right:hover::after {
+    width: 100%;
+}

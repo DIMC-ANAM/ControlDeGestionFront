@@ -1,0 +1,33 @@
+/*-------------contenedor-principal-----------*/
+.contenedor-principal{
+    height: -moz-calc(100vh - (90px));
+    height: -webkit-calc(100vh - (90px));
+    height: calc(100vh - (90px));
+    margin-top: 10px;
+    transition: all 0.3s ease-out;
+}
+
+.sidebar{
+    width: 15%;
+    overflow: hidden;
+    transition: all 0.3s ease-out;
+    top:50px!important;
+}
+
+.sidebar.collapse_{
+    opacity: 0;
+    margin-left: -15%;
+    visibility: hidden;
+}
+
+
+.content-wrap{
+    min-width: 0;
+    width: 100%;
+    transition: all 0.3s ease-out;
+    border-radius: 2px;
+    max-height: 100vh;
+    overflow-y: auto;
+    position: relative;
+}
+
