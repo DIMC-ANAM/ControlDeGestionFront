@@ -56,7 +56,7 @@
 				</div>
 				<div class="col-md-3 mb-3">
 					<label for="fechaCumplimiento" class="form-label">Fecha y hora de cumplimiento *</label>
-					<input type="date" id="fechaCumplimiento" class="form-control"
+					<input type="datetime-local" id="fechaCumplimiento" class="form-control"
 					[ngClass]="controlState('fechaCumplimiento')" formControlName="fechaCumplimiento" />
 					<div *ngIf="isInvalid('fechaCumplimiento')" class="text-danger">No puede ser anterior a hoy.</div>
 				</div>
@@ -187,7 +187,7 @@
 				<div> <p class="text-auxiliary text-muted">* Campos obligatorios</p> </div>
 				<div class="col-12 text-center">
 					<button type="button" class="m-2 btn  btn-secondary">Previsualizar</button>
-					<button type="submit" class="m-2 btn  btn-primary">Enviar</button>
+					<button type="submit" class="m-2 btn  btn-primary">Guardar</button>
 				</div>
 			</div>
 		</form>
