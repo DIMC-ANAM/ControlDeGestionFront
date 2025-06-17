@@ -10,8 +10,32 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 export class RegistroAsuntoComponent {
   documentoForm!: FormGroup;
   temas = ['Tema A', 'Tema B', 'Tema C'];
+  tipoDocumentoDS = [
+      "Abuso de autoridad",
+      "Accidentes",
+      "Acoso",
+      "Acuerdo secretarial",
+      "Adeudo",
+      "Adscripción",
+      "Agradecimientos y Felicitación",
+      "Apertura",
+      "Asignación de Clave",
+      "Audiencia",
+      "Auditoría",
+      "Beca",
+      "Cambio  ",
+      "Comisiones y Licencias",
+      "Conclusión laboral",
+      "Derecho de Autor",
+      "Designaciones",
+      "Desistimiento",
+      "Devolución de gastos",
+      "Donación",
+      "Edición de Libros",
+      "Empleo",
+  ];
   
-  selectFields: any = ['medio', 'recepcion', 'prioridad'];
+  selectFields: any = ['medio', 'recepcion'];
 
 
   opciones:any [any] = {
@@ -31,25 +55,29 @@ export class RegistroAsuntoComponent {
 };
 
   remitenteFields = [
-    { name: 'remitenteNombre', label: 'Remitente Nombre' },
-    { name: 'remitenteCargo', label: 'Remitente Cargo' },
-    { name: 'remitenteDependencia', label: 'Remitente Dependencia' },
+    { name: 'remitenteNombre', label: 'Nombre del remitente' },
+    { name: 'remitenteCargo', label: 'Cargo del remitente' },
+    { name: 'remitenteDependencia', label: 'Dependencia del remitente' },
     { name: 'dirigidoA', label: 'Dirigido A' },
-    { name: 'dirigidoACargo', label: 'Dirigido A Cargo' },
-    { name: 'dirigidoADependencia', label: 'Dirigido A Dependencia' }
+    { name: 'dirigidoACargo', label: 'Cargo' },
+    { name: 'dirigidoADependencia', label: 'Dependencia' }
   ];
 
+   documento: File | null = null;
   constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     const today = new Date().toISOString().split('T')[0];
 
     this.documentoForm = this.fb.group({
+      idTipoDocumento: [null, Validators.required],
       noOficio: ['', Validators.required],
       esVolante: [false],
+      numeroVolante: ['',Validators.maxLength(255)],
       esGuia: [false],
+      numeroGuia: ['',Validators.maxLength(255)],
       fechaDocumento: ['', [Validators.required, this.fechaMaximaValidator()]],
-      fechaRecepcion: [today],
+      fechaRecepcion: [today, Validators.required ],
       remitenteNombre: ['', [Validators.required, Validators.maxLength(255)]],
       remitenteCargo: ['', [Validators.required, Validators.maxLength(255)]],
       remitenteDependencia: ['', [Validators.required, Validators.maxLength(255)]],
@@ -68,6 +96,10 @@ export class RegistroAsuntoComponent {
   isInvalid(field: string): boolean {
     const control = this.documentoForm.get(field);
     return !!(control && control.invalid && (control.dirty || control.touched));
+  }
+  isRequired(field: string): boolean {
+    const control = this.documentoForm.get(field);
+    return !!(control  && (control.dirty || control.touched));
   }
 
   controlState(field: string): string {
@@ -100,6 +132,40 @@ export class RegistroAsuntoComponent {
       console.log('Formulario enviado:', this.documentoForm.value);
     } else {
       this.documentoForm.markAllAsTouched();
+    }
+  }
+
+  toggleFieldWithCheckbox(checkboxName: string, fieldName: string): void {
+  const checkbox = this.documentoForm.get(checkboxName);
+  const field = this.documentoForm.get(fieldName);
+
+  checkbox?.valueChanges.subscribe((checked: boolean) => {
+    if (checked) {
+      field?.setValidators([Validators.required]);
+    } else {
+      field?.clearValidators();
+      field?.setValue('');
+    }
+    field?.updateValueAndValidity();
+  });
+}
+
+/* files  */
+  onDocumentoSeleccionado(event: Event): void {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.documento = input.files[0];
+    }
+	console.log(this.documento);
+	
+  }
+  borrarDocumento(): void {
+    this.documento = null;
+    // También puedes limpiar el input si lo necesitas
+    const input = document.getElementById('documento') as HTMLInputElement;
+    if (input) {
+      input.value = '';
     }
   }
 }

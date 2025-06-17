@@ -10,9 +10,10 @@ import { SharedModule } from './components/shared/shared.module';
 import { CuentaModule } from './content/cuenta/cuenta.module';
 import { LayoutsModule } from './layouts/layouts.module';
 import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asunto.component';
-import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
+import { ConsultarTurnadosComponent } from './content/consultar-turnados/consultar-turnados.component';
+import { UnitTestComponent } from './content/unit-test/unit-test.component';
 
 @NgModule({
   declarations: [
@@ -20,9 +21,11 @@ import { ReportesComponent } from './content/reportes/reportes.component';
     DashboardComponent,
     UxDesignComponent,
     RegistroAsuntoComponent,
-    ConsultarAsuntosComponent,
+    ConsultarTurnadosComponent,
     BusquedaAvanzadaComponent,
     ReportesComponent,
+    ConsultarTurnadosComponent,
+    UnitTestComponent,
     
   ],
   imports: [

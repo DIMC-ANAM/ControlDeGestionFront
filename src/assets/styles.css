@@ -167,7 +167,12 @@ h1, .h1 {
     padding-bottom: 0.5rem;
     border-bottom: 3px solid var(--color-gold);
 }
-
+.tituloBorderLeft{
+    border-left: solid 4px #BC955C;
+    padding-left: 10px;
+    font-weight: var(--font-weight-bold);
+    color: var(--color-dark-gray);
+}
 h2, .h2 {
     font-family: var(--font-family-titles);
     font-size: var(--font-size-h2);
@@ -348,7 +353,6 @@ input[type="number"],
 input[type="tel"],
 input[type="url"],
 input[type="search"],
-textarea,
 select {
     width: 100%;
     padding: 12px;
@@ -362,6 +366,26 @@ select {
     transition: all 0.2s ease-in-out;
     outline: none;
     box-sizing: border-box;
+}
+.form-input,
+textarea{
+    width: 100%;
+    padding: 12px;
+    border: 2px solid var(--input-border-default);
+    border-radius: 10px;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    background-color: var(--bg-white);
+    transition: all 0.2s ease-in-out;
+    outline: none;
+    box-sizing: border-box;  
+
+}
+
+textarea.forceHeightTxA{
+    height: 200px;
 }
 
 /* Estado Focus */
@@ -413,12 +437,6 @@ select:disabled {
     cursor: not-allowed;
 }
 
-/* Textarea específico */
-textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
 /* Select específico */
 select {
     cursor: pointer;
@@ -444,9 +462,10 @@ select {
     display: block;
     font-family: var(--font-family-text);
     font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
+    font-weight: var(--font-weight-bold);
     color: var(--text-primary);
     margin-bottom: 6px;
+    
 }
 
 /* Contenedor de campo de formulario */
@@ -516,4 +535,9 @@ select {
 
 .hover-line-right:hover::after {
     width: 100%;
+}
+
+
+.centrado{
+    justify-self: anchor-center;
 }

@@ -33,3 +33,67 @@
   padding: 0.375rem 0.75rem;
 }
 
+
+/* Ocultar el input real */
+.hidden-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}
+
+/* Zona de arrastre con icono */
+.drop-zone {
+    width: 90px;
+    height: 40px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.drop-zone:hover {
+    background: #f8f9fa;
+    border-color: #007bff;
+}
+
+.drop-zone i {
+    font-size: 18px;
+    color: #007bff;
+}
+
+.document-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    
+}
+
+.document-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: #f9f9f9;
+    font-size: 14px;
+}
+
+.document-item i {
+    color: #9bc4ef;
+    cursor: pointer;
+}
+
+.delete-icon {
+    color: #dc3545!important;
+}
+
+.delete-icon:hover {
+    color: #a71d2a!important;
+}
+

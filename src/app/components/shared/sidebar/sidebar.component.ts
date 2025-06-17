@@ -23,10 +23,10 @@ export class SidebarComponent {
       link: '/registro-asunto'
     },
     {
-      id: 'consultarAsuntos',
-      label: 'Consultar asuntos',
-      icon: 'fas fa-file-search',
-      link: '/consultar-asuntos'
+      id: 'consultarTurnados',
+      label: 'Consultar turnados',
+      icon: 'fas fa-file-import',
+      link: '/consultar-turnados'
     },
     {
       id: 'busquedaAvanzada',
