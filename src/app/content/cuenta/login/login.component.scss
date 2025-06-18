@@ -1,28 +1,67 @@
 :host {
-    background: linear-gradient(90deg, rgba(151, 149, 149, 0.7), rgba(232, 232, 232, 0.5)),
-                url('/img/aduanas.jpg') no-repeat center center;
-    background-size: cover;
-    min-height: 60vh;
-    display: block;
+  background: linear-gradient(90deg, rgba(151, 149, 149, 0.7), rgba(232, 232, 232, 0.5)),
+              url('/img/aduanas.jpg') no-repeat center center;
+  background-size: cover;
+  display: block;
+  min-height: 100vh;
+}
+.login-content{
+  width: 60%!important; 
+  border-radius: 1rem;
+  backdrop-filter: blur(5px);
+  background-color: rgba(255, 255, 255, 0.247);
+}
+.login-card {
+  background-color: transparent;
+  border-left: ridge 10px rgba(167, 165, 165, 0.247);;
+  width: 100%;
+}
 
+.optionsIcon {
+  position: absolute;
+  right: 20px;
+  top: 47px;
+  cursor: pointer;
+}
+
+.info-btn-login:hover {
+  cursor: pointer;
+  filter: drop-shadow(0rem 0rem 1rem rgba(236, 116, 100, 0.8));
+}
+
+@media (max-width: 768px) {
+  .system-info {
+    display: none !important;
   }
-  
-  .card {
-    border-radius: 1rem;
-    backdrop-filter: blur(5px);
-    background-color: rgba(255, 255, 255, 0.85);
+
+  .login-card {
+    margin-top: 1rem;
+    border-left: none;
   }
 
-  .login-container {
-            min-width: 300px;
-            max-width: 800px;
-            width: 100%;
-        }
+  .login-content {
+    flex-direction: column;
+    width: 90%!important;
+  }
+}
 
+/* Línea que aparece de izquierda a derecha */
+.hover-line-right_local {
+    position: relative;
+    display: inline-block;
+}
 
-  .optionsIcon{
+.hover-line-right_local::after {
+    content: '';
     position: absolute;
-    right: 20px;
-    padding: 20px;
-    min-width: 40px;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    height: 2px;
+    background-color: var(--color-primary);
+    transition: width 0.2s ease;
+}
+
+.hover-line-right_local:hover::after {
+    width: 100%;
 }

@@ -1,5 +1,5 @@
 /*-------------contenedor-principal-----------*/
-.contenedor-principal{
+.contenedor-principal {
     height: -moz-calc(100vh - (90px));
     height: -webkit-calc(100vh - (90px));
     height: calc(100vh - (90px));
@@ -7,27 +7,38 @@
     transition: all 0.3s ease-out;
 }
 
-.sidebar{
-    width: 15%;
+.sidebar {
+    width: 250px;
+    transition: width 0.3s ease;
     overflow: hidden;
-    transition: all 0.3s ease-out;
-    top:50px!important;
+    /* quita 'top' a menos que tenga sentido específico en tu caso */
 }
 
-.sidebar.collapse_{
-    opacity: 0;
-    margin-left: -15%;
-    visibility: hidden;
-}
-
-
-.content-wrap{
-    min-width: 0;
-    width: 100%;
+.content-wrap {
+    flex-grow: 1;
     transition: all 0.3s ease-out;
     border-radius: 2px;
     max-height: 100vh;
     overflow-y: auto;
     position: relative;
-}
+    padding: 1rem;
 
+    &.expanded {
+        margin-left: 0px; // mismo ancho que el sidebar expandido
+    }
+
+    &.collapsed {
+        margin-left: -200px; // mismo ancho que el sidebar colapsado
+    }
+
+    border-left: 1px solid rgba(0, 0, 0, 0.05);
+
+    @media (max-width: 768px) {
+
+        &.expanded,
+        &.collapsed {
+            margin-left: -250px !important;
+            width: 100%; // Asegura que el contenido se extienda completamente
+        }
+    }
+}

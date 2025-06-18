@@ -6,7 +6,8 @@
                 <app-sidebar></app-sidebar>
             </div>
         </div>
-        <div class="content-wrap" id="principal">
+        <div class="content-wrap" id="principal"[class.expanded]="sidebarService.isExpanded()"
+  [class.collapsed]="sidebarService.isCollapsed()">
             <router-outlet></router-outlet>
         </div>
     </div>

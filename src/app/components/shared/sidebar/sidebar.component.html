@@ -1,41 +1,24 @@
 <div class="sidebar-container">
-      <!-- Sidebar -->
-      <nav class="sidebar bg-secondary" [class.collapsed]="sidebarService.isCollapsed()">
-        <!-- Header con botón hamburguesa -->
-        <!-- <div class="sidebar-header">
-          <button 
-            class="hamburger-btn" 
-            (click)="onToggleClick()"
-            [attr.aria-label]="sidebarService.isCollapsed() ? 'Expandir menú' : 'Colapsar menú'">
-            <div class="hamburger-icon" [class.active]="sidebarService.isExpanded()">
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-          </button>
-          <h2 class="sidebar-title" *ngIf="sidebarService.isExpanded()">Mi App</h2>
-        </div> -->
+			<!-- Sidebar -->
+			<nav class="sidebar bg-secondary" [class.collapsed]="sidebarService.isCollapsed()"
+			 [class.mobile-visible]="sidebarService.isMobile() && sidebarService.isExpanded()">
 
-        <!-- Menú de navegación -->
-        <ul class="sidebar-menu">
-          <li class="menu-item" *ngFor="let item of menuItems">
-            <a href="#" class="menu-link hover-line-left" (click)="selectItem(item.id, $event)">
-              <span class="{{item.icon}}" [innerHTML]=""></span>
-              <span class="menu-text" *ngIf="sidebarService.isExpanded()">{{ item.label }}</span>
-            </a>
-          </li>
-        </ul>
+				<!-- Menú de navegación -->
+				<ul class="sidebar-menu">
+					<li class="menu-item" *ngFor="let item of menuItems">
+						<a href="#" class="menu-link hover-line-left" (click)="selectItem(item, $event)">
+							<span class="{{item.icon}}" [innerHTML]=""></span>
+							<span class="menu-text" *ngIf="sidebarService.isExpanded()">{{ item.label }}</span>
+						</a>
+					</li>
+				</ul>
+		 
+			</nav>
 
-        <!-- Footer -->
-       <!--  <div class="sidebar-footer" *ngIf="sidebarService.isExpanded()">
-          <p class="footer-text">Ayuda</p>
-        </div> -->
-      </nav>
-
-      <!-- Overlay para mobile -->
-      <div 
-        class="sidebar-overlay" 
-        *ngIf="sidebarService.isExpanded() && sidebarService.isMobile()"
-        (click)="onOverlayClick()">
-      </div>
-    </div>
+			<!-- Overlay para mobile -->
+			<div 
+				class="sidebar-overlay" 
+				*ngIf="sidebarService.isExpanded() && sidebarService.isMobile()"
+				(click)="onOverlayClick()">
+			</div>
+</div>

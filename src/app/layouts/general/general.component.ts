@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
+import { SidebarService } from '../../services/sidebar-service.service'; // ajusta el path si es necesario
 
 @Component({
   selector: 'app-general',
@@ -7,7 +8,7 @@ import { Component } from '@angular/core';
   styleUrl: './general.component.scss'
 })
 export class GeneralComponent {
-
+  sidebarService = inject(SidebarService);
   toggleMenuMovil(){
     
   }

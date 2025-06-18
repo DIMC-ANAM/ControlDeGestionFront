@@ -10,10 +10,9 @@ import { Router } from '@angular/router';
   styleUrl: './sidebar.component.scss',
 })
 export class SidebarComponent {
-  // Inyectar el servicio usando la nueva función inject()
+ // Inyección moderna (limpia y sin constructor)
+  private router = inject(Router);
   public sidebarService = inject(SidebarService);
-
-  constructor(private router: Router) {}
 
   menuItems = [
     {
@@ -42,31 +41,19 @@ export class SidebarComponent {
     }
   ];
 
-  /**
-   * Maneja el click del botón toggle
+   /**
+   * Navega al enlace del ítem y colapsa si está en móvil
    */
-  onToggleClick(): void {
-    this.sidebarService.toggleSidebar();
-  }
+selectItem(item: any, event: Event): void {
+  event.preventDefault();
+  this.router.navigate([item.link]);
+  this.sidebarService.autoCloseOnMobile();
+}
 
   /**
-   * Maneja el click en el overlay (mobile)
+   * Cierra el sidebar cuando se hace click en el overlay
    */
-  onOverlayClick(): void {
+  public onOverlayClick(): void {
     this.sidebarService.collapseSidebar();
-  }
-
-  /**
-   * Maneja la selección de items del menú
-   */
-  selectItem(itemId: string, event: Event): void {
-    event.preventDefault();
-    console.log('Item seleccionado:', itemId);
-    /* navegar al link que trae cada elemento */
-    const item = this.menuItems.find(item => item.id === itemId);
-    this.router.navigate([item?.link]);
-    
-    // Auto-cerrar en mobile después de seleccionar
-    this.sidebarService.autoCloseOnMobile();
   }
 }
