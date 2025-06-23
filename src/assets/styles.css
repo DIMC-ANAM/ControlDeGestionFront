@@ -131,6 +131,69 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+
+.w-10  { width: 10%; }
+.w-20  { width: 20%; }
+.w-30  { width: 30%; }
+.w-40  { width: 40%; }
+.w-50  { width: 50%; }
+.w-60  { width: 60%; }
+.w-70  { width: 70%; }
+.w-80  { width: 80%; }
+.w-90  { width: 90%; }
+.w-100 { width: 100%; }
+
+
+.hp-100  { height: 100px !important;}
+.hp-200  { height: 200px !important;}
+.hp-300  { height: 300px !important;}
+.hp-400  { height: 400px !important;}
+.hp-500  { height: 500px !important;}
+.hp-600  { height: 600px !important;}
+.hp-700  { height: 700px !important;}
+.hp-800  { height: 800px !important;}
+.hp-900  { height: 900px !important;}
+
+
+/* ===== Centrado horizontal ===== */
+.text-center { text-align: center !important; }
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+}
+
+/* ===== Centrado con Flexbox ===== */
+.flex-center {
+  display: flex !important;
+  justify-content: center !important; /* horizontal */
+  align-items: center !important;    /* vertical */
+}
+
+.flex-v-center {
+  display: flex !important;
+  align-items: center !important; /* solo vertical */
+}
+
+.flex-h-center {
+  display: flex !important;
+  justify-content: center !important; /* solo horizontal */
+}
+
+/* ===== Centrado absoluto ===== */
+.absolute-center {
+  position: absolute !important;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+/* ===== Centrado con grid ===== */
+.grid-center {
+  display: grid !important;
+  place-items: center !important;
+}
+
 /* ========================================
     3. CLASES UTILITARIAS DE COLOR
     ======================================== */
@@ -149,7 +212,14 @@ body {
 .bg-gold { background-color: var(--color-gold) !important; }
 .bg-light { background-color: var(--bg-primary) !important; }
 .bg-white { background-color: var(--bg-white) !important; }
+.bg-gray { background-color: #b6b2b217 !important; }
 
+
+/* borders */
+.border-rounded{
+    border-radius: 24px;
+
+}
 /* ========================================
     4. TIPOGRAFÍA
     ======================================== */
@@ -165,14 +235,18 @@ h1, .h1 {
     margin-bottom: 1rem;     
     /* BORDE INFERIOR CON LINEA COLOR GOLD*/
     padding-bottom: 0.5rem;
-    border-bottom: 3px solid var(--color-gold);
-}
-.tituloBorderLeft{
-    border-left: solid 4px #BC955C;
+    
     padding-left: 10px;
+}
+
+.tituloBorderLeft{
+    /* border-bottom: 3px solid var(--color-gold); */
+    border-left: solid 4px #BC955C;
     font-weight: var(--font-weight-bold);
     color: var(--color-dark-gray);
+
 }
+
 h2, .h2 {
     font-family: var(--font-family-titles);
     font-size: var(--font-size-h2);
@@ -274,6 +348,13 @@ p, .text-base {
     min-width: 80px;
 }
 
+.btn-rounded{
+    border-radius: 35px;
+    padding: 10px;
+}
+
+
+
 .btn:focus {
     box-shadow: 0 0 0 3px rgba(159, 34, 65, 0.3);
 }
@@ -353,6 +434,7 @@ input[type="number"],
 input[type="tel"],
 input[type="url"],
 input[type="search"],
+textarea,
 select {
     width: 100%;
     padding: 12px;
@@ -366,26 +448,6 @@ select {
     transition: all 0.2s ease-in-out;
     outline: none;
     box-sizing: border-box;
-}
-.form-input,
-textarea{
-    width: 100%;
-    padding: 12px;
-    border: 2px solid var(--input-border-default);
-    border-radius: 10px;
-    font-family: var(--font-family-text);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-primary);
-    background-color: var(--bg-white);
-    transition: all 0.2s ease-in-out;
-    outline: none;
-    box-sizing: border-box;  
-
-}
-
-textarea.forceHeightTxA{
-    height: 200px;
 }
 
 /* Estado Focus */
@@ -437,6 +499,12 @@ select:disabled {
     cursor: not-allowed;
 }
 
+/* Textarea específico */
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
 /* Select específico */
 select {
     cursor: pointer;
@@ -462,10 +530,9 @@ select {
     display: block;
     font-family: var(--font-family-text);
     font-size: var(--font-size-base);
-    font-weight: var(--font-weight-bold);
+    font-weight: var(--font-weight-medium);
     color: var(--text-primary);
     margin-bottom: 6px;
-    
 }
 
 /* Contenedor de campo de formulario */
@@ -538,6 +605,36 @@ select {
 }
 
 
+
+.icon-bg-base-round {
+  background-color: rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.1s ease-in;
+  font-size: 0.9rem;
+  width: 32px;            /* ancho fijo */
+  height: 32px;           /* alto fijo */
+}
+
+.icon-bg-alert-round {
+  background-color: rgba(238, 195, 195, 0.7);
+  border-radius: 50%;
+  padding: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.1s ease-in;
+  font-size: 0.9rem;
+  width: 32px;            /* ancho fijo */
+  height: 32px;           /* alto fijo */
+}
+.icon-bg-base-round:hover {
+    background-color: rgba(224, 224, 224, 0.45); /* color al hacer hover */
+    padding: 6px;
+}
 .centrado{
     justify-self: anchor-center;
 }
