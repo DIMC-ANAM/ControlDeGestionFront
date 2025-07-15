@@ -8,6 +8,7 @@ import { ConsultarTurnadosComponent } from './content/consultar-turnados/consult
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
+import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
 
 const routes: Routes = [
   {
@@ -25,6 +26,10 @@ const routes: Routes = [
       {
         path: 'registro-asunto',
         component: RegistroAsuntoComponent
+      },
+      {
+        path: 'consultar-asuntos',
+        component: ConsultarAsuntosComponent
       },
       {
         path: 'consultar-turnados',

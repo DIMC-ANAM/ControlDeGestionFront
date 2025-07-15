@@ -26,13 +26,13 @@
   font-display: swap;
 }
 :root {
-    /* Colores principales */
+ /* Colores principales */
     --color-primary: #9F2241;
     --color-secondary: #691C32;
     --color-success: #007B5D;
     --color-gold: #C9A977;
     --color-error: #9F0D3D;
-    
+
     /* Colores de apoyo */
     --color-dark-gray: #6F7271;
     --color-light-gray: #98989A;
@@ -40,31 +40,31 @@
     --color-deep-blue: #0D324D;
     --color-purple: #A188A6;
     --color-light-blue: #C9DAEA;
-    
+
     /* Colores tipográficos específicos */
     --color-title-primary: #424242;
     --color-title-secondary: #757575;
     --color-text-base: #212121;
-    
-    
+
+
     /* Variables derivadas para consistencia */
     --color-primary-hover: #7A1B34;
     --color-primary-light: rgba(159, 34, 65, 0.1);
     --color-secondary-hover: #4F1525;
     --color-success-hover: #005A45;
     --color-error-hover: #7A0A2F;
-    
+
     /* Colores para botones */
     --btn-primary-hover: var(--color-secondary);
     --btn-secondary-hover: var(--color-light-bg);
     --btn-disabled-bg: #E0E0E0;
     --btn-disabled-text: #BDBDBD;
-    
+
     /* Colores para inputs */
     --input-border-default: #C4C4C4;
     --input-border-focus: var(--color-success);
     --input-border-error: var(--color-error);
-    
+
     /* Colores de texto */
     --text-primary: var(--color-text-base);
     --text-secondary: var(--color-dark-gray);
@@ -74,11 +74,11 @@
     --text-title-h1: var(--color-title-primary);
     --text-title-h2: var(--color-title-secondary);
     --text-auxiliary: var(--color-light-gray);
-    
+
     /* Tipografía */
     --font-family-titles: 'Patria', serif;
     --font-family-text: 'Noto Sans', sans-serif;
-    
+
     /* Tamaños de fuente */
     --font-size-h1: 32px;
     --font-size-h2: 24px;
@@ -86,13 +86,13 @@
     --font-size-base: 16px;
     --font-size-button: 14px;
     --font-size-auxiliary: 12px;
-    
+
     /* Pesos de fuente */
     --font-weight-bold: 700;
     --font-weight-medium: 500;
     --font-weight-regular: 400;
     --font-weight-light: 300;
-    
+
     /* Colores de fondo */
     --bg-primary: var(--color-light-bg);
     --bg-white: #FFFFFF;
@@ -425,120 +425,18 @@ p, .text-base {
 /* ========================================
     6. INPUTS Y FORMULARIOS
     ======================================== */
-/* Estilos base para inputs */
-.form-input,
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="number"],
-input[type="tel"],
-input[type="url"],
-input[type="search"],
-textarea,
-select {
-    width: 100%;
-    padding: 12px;
-    border: 2px solid var(--input-border-default);
-    border-radius: 10px;
-    font-family: var(--font-family-text);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-regular);
-    color: var(--text-primary);
-    background-color: var(--bg-white);
-    transition: all 0.2s ease-in-out;
-    outline: none;
-    box-sizing: border-box;
-}
-
-/* Estado Focus */
-.form-input:focus,
-input:focus,
-textarea:focus,
-select:focus,
-.form-input.ng-touched.ng-valid:focus,
-input.ng-touched.ng-valid:focus,
-textarea.ng-touched.ng-valid:focus,
-select.ng-touched.ng-valid:focus {
-    border-color: var(--input-border-focus);
-    box-shadow: 0 0 0 3px rgba(0, 123, 93, 0.1);
-}
-
-/* Estado Valid (cuando ha sido tocado y es válido) */
-.input-valid {
-    border-color: var(--input-border-focus);
-}
-
-/* Estado Invalid/Error - Cuando ha sido tocado y es inválido */
-.input-invalid {
-    border-color: var(--input-border-error);
-    color: var(--input-border-error);
-}
-
-/* Placeholder styling */
-.form-input::placeholder,
-input::placeholder,
-textarea::placeholder {
-    color: var(--text-light);
-    font-weight: var(--font-weight-regular);
-    opacity: 0.7;
-}
-
-/* Estados de focus para inputs con error */
-.input-invalid:focus {
-    box-shadow: 0 0 0 3px rgba(159, 13, 61, 0.1);
-}
-
-/* Disabled state */
-.form-input:disabled,
-input:disabled,
-textarea:disabled,
-select:disabled {
-    background-color: #F5F5F5;
-    border-color: #E0E0E0;
-    color: var(--text-light);
-    cursor: not-allowed;
-}
-
-/* Textarea específico */
-textarea {
-    resize: vertical;
-    min-height: 80px;
-}
-
-/* Select específico */
-select {
-    cursor: pointer;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 12px center;
-    background-size: 16px;
-    padding-right: 40px;
-    appearance: none;
-}
-
 /* Mensajes de error */
-.error-message {
+.invalid-field {
     color: var(--input-border-error);
     font-size: var(--font-size-auxiliary);
     font-weight: var(--font-weight-regular);
     margin-top: 4px;
     display: block;
+    margin-bottom: -10px;
+    padding-left: 5px;
 }
 
-/* Labels */
-.form-label {
-    display: block;
-    font-family: var(--font-family-text);
-    font-size: var(--font-size-base);
-    font-weight: var(--font-weight-medium);
-    color: var(--text-primary);
-    margin-bottom: 6px;
-}
 
-/* Contenedor de campo de formulario */
-.form-field {
-    margin-bottom: 20px;
-}
 
 
 .hover-line-center {
@@ -637,4 +535,270 @@ select {
 }
 .centrado{
     justify-self: anchor-center;
+}
+
+.frmlabel {
+    padding-top: 20px;
+    font-weight: bolder;
+    color: var(--color-dark-gray);
+}
+
+input.form-control,
+select.form-control {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    box-shadow: 0 0 5px 1px gray;
+    border-radius: 10px;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    /* height: 40px!important; */
+    /*  */
+    transition: all 0.1s ease-in-out;
+    appearance: auto;
+
+    &:focus {
+        outline: none;
+        border: none;
+        box-shadow: 0 0 10px 1px rgb(107, 105, 105);
+
+    }
+
+    &.valid {
+        box-shadow: 0 0 5px 1px #08741a;
+    }
+
+    &.invalid {
+        border: #b31c1c;
+        box-shadow: 0 0 5px 1px #b31c1c95;
+
+    }
+
+    // Si está enfocado Y es inválido, gana el rojo
+    &.invalid:focus {
+        border-color: #e50d0d;
+        box-shadow: 0 0 10px 1px rgb(191, 93, 93);
+        background-color: rgba(210, 146, 146, 0.104);
+    }
+
+    // Si está enfocado Y es válido, gana el verde oscuro
+    &.valid:focus {
+        background-color: #4ea18927;
+        box-shadow: 0 0 10px 1px rgb(46, 125, 78);
+    }
+}
+textarea.form-control{
+    width: 100%;
+    height: 150px!important;
+}
+input[type="checkbox"].form-check-input {
+    box-shadow: gray 0 0 4px 1px;
+    border: none;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+   /*  border: solid 1px var(--color-gold);*/
+    
+    display: inline;
+    &:checked {
+        background-color: var(--color-success);
+        border-color: var(--color-success);
+    }
+}
+
+.input-icon-wrapper {
+    position: relative;
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .icon {
+        position: absolute;
+        top: 0%;
+        left:96%;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        transition: color 0.1s ease-in-out;
+
+        &.valid-icon {
+            color: #08741a; // Verde    
+        }
+
+        &.invalid-icon {
+            color: #a33635; // Verde    
+        }
+
+    }
+
+    .search-icon {
+        position: absolute;
+        top: 50%;
+        right: 20px;
+        transform: translateY(-50%);
+        color: #aaa;
+        pointer-events: none;
+    }
+
+    .initial {
+        position: absolute;
+        top: 50%;
+        left: 20px;
+        transform: translateY(-50%);
+        color: #aaa;
+        pointer-events: none;
+    }
+
+    .icon-left {
+        padding-left: 50px;
+    }
+}
+
+.filename {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    max-width: 80%;
+}
+
+.tagged-text {
+    width: fit-content;
+    color: white;
+    font-weight: 400;
+    font-size: small;
+    padding: 0 2px 0 2px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+
+    &-1 {
+        background-color: var(--color-primary);
+    }
+
+    &-2 {
+        background-color: var(--color-gold);
+    }
+
+    &-3 {
+        background-color: var(--color-title-secondary);
+    }
+
+    &-4 {
+        background-color: var(--color-deep-blue);
+    }
+
+    &-5 {
+        background-color: var(--color-purple);
+    }
+}
+
+
+/* tablas */
+.table-border-colapse {
+    border-collapse: collapse;
+
+    thead td,
+    thead th {
+        border: none;
+        color: var(--color-success-hover);
+        font-weight: 600;
+        font-size: small;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    tbody tr:hover {
+        background-color: #aaaaaa1d;
+        /* o el color que prefieras */
+    }
+
+    tbody td {
+        border: 1px solid #ccc;
+        /* Puedes cambiar el color según lo necesites */
+        padding: 2px 5px 3px 5px;
+    }
+
+}
+
+.tool-icon {
+    font-size: 14px;
+    color: var(--color-deep-blue);
+    background-color: rgba(196, 196, 196, 0.557);
+    border-radius: 50%;
+    padding: 4px;
+    margin: 4px;
+
+    &:hover {
+        scale: 1.02;
+        transform: translateY(-2px);
+    }
+
+    cursor: pointer;
+}
+
+
+.required::before {
+    content: '*';
+    font-size: small;
+    color: var(--color-primary);
+    padding: 2px;
+}
+
+
+// Estilos globales para tamaños personalizados
+.modal-width-400px .modal-dialog {
+    width: 70%;
+    max-width: none;
+}
+
+.modal-height-80vh .modal-dialog {
+    height: 500px;
+    max-height: none;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-height-80vh .modal-content {
+    flex: 1 1 auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-height-80vh {
+    flex: 1 1 auto;
+    overflow-y: auto;
+}
+
+.tooltip-wrapper {
+    display: inline-block;
+    position: relative;
+}
+
+.tooltip-wrapper::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%) translateY(30%);
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 5px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.2s ease-in-out;
+    z-index: 1000;
+}
+
+.tooltip-wrapper:hover::after {
+    opacity: 1;
+    visibility: visible;
 }

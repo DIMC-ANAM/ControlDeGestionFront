@@ -22,6 +22,12 @@ export class SidebarComponent {
       link: '/registro-asunto'
     },
     {
+      id: 'consultarAsuntos',
+      label: 'Consultar asuntos',
+      icon: 'fas fa-file-import',
+      link: '/consultar-asuntos'
+    },
+    {
       id: 'consultarTurnados',
       label: 'Consultar turnados',
       icon: 'fas fa-file-import',
@@ -38,7 +44,13 @@ export class SidebarComponent {
       label: 'Reportes',
       icon: 'fas fa-chart-pie',
       link: '/reportes'
-    }
+    },
+    {
+      id: 'catalogos',
+      label: 'Catálogos',
+      icon: 'fas fa-cogs',
+      link: '/catalogos'
+    },
   ];
 
    /**

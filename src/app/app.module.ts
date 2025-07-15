@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './content/dashboard/dashboard.component';
@@ -14,6 +13,12 @@ import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { ConsultarTurnadosComponent } from './content/consultar-turnados/consultar-turnados.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {  FechaMexicoPipe } from './pipes/date-mx-format';
+import { registerLocaleData } from '@angular/common';
+import localeEsMx from '@angular/common/locales/es-MX';
+import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
+registerLocaleData(localeEsMx, 'es-MX');
 
 @NgModule({
   declarations: [
@@ -26,6 +31,8 @@ import { UnitTestComponent } from './content/unit-test/unit-test.component';
     ReportesComponent,
     ConsultarTurnadosComponent,
     UnitTestComponent,
+    FechaMexicoPipe,
+    ConsultarAsuntosComponent
     
   ],
   imports: [
@@ -36,7 +43,8 @@ import { UnitTestComponent } from './content/unit-test/unit-test.component';
     ReactiveFormsModule,
     SharedModule,    
     CuentaModule,
-    AppRoutingModule
+    AppRoutingModule,
+    NgbModule
   ],
   providers: [],
   bootstrap: [AppComponent]

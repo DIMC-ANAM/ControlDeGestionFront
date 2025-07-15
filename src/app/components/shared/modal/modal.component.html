@@ -1,0 +1,17 @@
+<div class="modal-header">
+  <h4 class="modal-title frmlabel p-0" [innerHTML]="safeTitle" ></h4>
+  <button type="button" class="btn-close p-3" aria-label="Close" (click)="onCancel()"></button>
+</div>
+
+<div class="modal-body">
+  <ng-container *ngIf="contentTemplate">
+    <ng-container *ngTemplateOutlet="contentTemplate; context: context"></ng-container>
+  </ng-container>
+</div>
+
+<ng-container *ngIf="showFooter">
+  <div class="modal-footer">
+    <button class="btn btn-secondary" (click)="onCancel()">Cancelar</button>
+    <button class="btn btn-primary" (click)="onAccept()">Aceptar</button>
+  </div>
+</ng-container>

@@ -7,195 +7,374 @@
 
     </div>
     <div class="row">
-        
-            <div class="pb-2">
-                <h3 class="p-2 tituloBorderLeft">Datos generales</h3>
-            </div>
 
-            <!-- Formulario de registro de asunto -->
-            <form [formGroup]="documentoForm" (ngSubmit)="onSubmit()" novalidate>
-                
-                <!-- Primera fila: Tipo documento, Número oficio, Tema -->
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label for="idTipoDocumento" class="form-label">Tipo de documento *</label>
-                        <select id="idTipoDocumento" class="form-control" [ngClass]="controlState('idTipoDocumento')"
-                            formControlName="idTipoDocumento">
+        <div class="pb-2">
+            <h3 class="p-2 frmlabel">Datos generales</h3>
+        </div>
+
+        <!-- Formulario de registro de asunto -->
+        <form [formGroup]="documentoForm" (ngSubmit)="onSubmit()">
+
+            <!-- Primera fila: Tipo documento, Número oficio, Tema -->
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="form-label frmlabel required" for="idTipoDocumento">Tipo de documento</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('idTipoDocumento') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idTipoDocumento') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idTipoDocumento" class="form-control" formControlName="idTipoDocumento"
+                            [class.invalid]="getValidationStatus('idTipoDocumento') == 'invalid'"
+                            [class.valid]="getValidationStatus('idTipoDocumento') == 'valid'">
                             <option value="null" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of tipoDocumentoDS" [value]="'idTipoDocumento'">{{ t }}</option>
+                            <option *ngFor="let t of tipoDocumentoDS" [value]="t">{{ t }}</option>
                         </select>
-                        <div *ngIf="isInvalid('tipoDocumento')" class="text-danger">Este campo es obligatorio.</div>
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="noOficio" class="form-label">Número de oficio *</label>
-                        <input type="text" placeholder="Número de oficio" id="noOficio" class="form-control"
-                            [ngClass]="controlState('noOficio')" formControlName="noOficio" />
-                        <div *ngIf="isInvalid('noOficio')" class="text-danger">Este campo es obligatorio.</div>
+                    <p *ngIf="getValidationStatus('idTipoDocumento') == 'invalid'" class="invalid-field">Este campo es
+                        obligatorio.</p>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label frmlabel required" for="noOficio">Número de oficio</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('noOficio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('noOficio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <input id="noOficio" type="text" placeholder="Número de oficio" formControlName="noOficio"
+                            class="form-control" [class.invalid]="getValidationStatus('noOficio') == 'invalid'"
+                            [class.valid]="getValidationStatus('noOficio') == 'valid'" />
                     </div>
-                    <div class="col-md-4 mb-3">
-                        <label for="tema" class="form-label">Tema *</label>
-                        <select id="tema" class="form-control" [ngClass]="controlState('tema')" formControlName="tema">
+                    <p *ngIf="getValidationStatus('noOficio') == 'invalid'" class="invalid-field">Este campo es
+                        obligatorio.</p>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label frmlabel required" for="tema">Tema</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('tema') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('tema') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="tema" class="form-control" formControlName="tema"
+                            [class.invalid]="getValidationStatus('tema') == 'invalid'"
+                            [class.valid]="getValidationStatus('tema') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
                             <option *ngFor="let t of temas" [value]="t">{{ t }}</option>
                         </select>
-                        <div *ngIf="isInvalid('tema')" class="text-danger">Campo obligatorio.</div>
+                    </div>
+                    <p *ngIf="getValidationStatus('tema') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+                </div>
+            </div>
+
+            <!-- Segunda fila: Fechas y Prioridad -->
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label frmlabel required" for="fechaDocumento">Fecha del documento</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('fechaDocumento') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('fechaDocumento') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <input type="date" id="fechaDocumento" class="form-control" formControlName="fechaDocumento"
+                            [class.invalid]="getValidationStatus('fechaDocumento') == 'invalid'"
+                            [class.valid]="getValidationStatus('fechaDocumento') == 'valid'" />
+                    </div>
+                    <p *ngIf="getValidationStatus('fechaDocumento') == 'invalid'" class="invalid-field">Fecha no puede
+                        ser mayor a hoy.</p>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label frmlabel required" for="fechaRecepcion">Fecha de recepción</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('fechaRecepcion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('fechaRecepcion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <input type="date" id="fechaRecepcion" class="form-control" formControlName="fechaRecepcion"
+                            [class.invalid]="getValidationStatus('fechaRecepcion') == 'invalid'"
+                            [class.valid]="getValidationStatus('fechaRecepcion') == 'valid'" />
                     </div>
                 </div>
 
-                <!-- Segunda fila: Fechas y Prioridad -->
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <label for="fechaDocumento" class="form-label">Fecha del documento *</label>
-                        <input type="date" id="fechaDocumento" class="form-control"
-                            [ngClass]="controlState('fechaDocumento')" formControlName="fechaDocumento" />
-                        <div *ngIf="isInvalid('fechaDocumento')" class="text-danger">Fecha no puede ser mayor a hoy.</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="fechaRecepcion" class="form-label">Fecha de recepción *</label>
-                        <input type="date" id="fechaRecepcion" class="form-control"
-                            [ngClass]="controlState('fechaRecepcion')" formControlName="fechaRecepcion" />
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="fechaCumplimiento" class="form-label">Fecha y hora de cumplimiento *</label>
+                <div class="col-md-3">
+                    <label class="form-label frmlabel required" for="fechaCumplimiento">Fecha y hora de
+                        cumplimiento</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('fechaCumplimiento') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('fechaCumplimiento') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
                         <input type="datetime-local" id="fechaCumplimiento" class="form-control"
-                            [ngClass]="controlState('fechaCumplimiento')" formControlName="fechaCumplimiento" />
-                        <div *ngIf="isInvalid('fechaCumplimiento')" class="text-danger">No puede ser anterior a hoy.</div>
+                            formControlName="fechaCumplimiento"
+                            [class.invalid]="getValidationStatus('fechaCumplimiento') == 'invalid'"
+                            [class.valid]="getValidationStatus('fechaCumplimiento') == 'valid'" />
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="prioridad" class="form-label">Prioridad *</label>
-                        <select id="prioridad" class="form-control" [ngClass]="controlState('prioridad')" formControlName="prioridad">
+                    <p *ngIf="getValidationStatus('fechaCumplimiento') == 'invalid'" class="invalid-field">No puede ser
+                        anterior a hoy.</p>
+                </div>
+
+                <div class="col-md-3">
+                    <label class="form-label frmlabel required" for="prioridad">Prioridad</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('prioridad') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('prioridad') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="prioridad" class="form-control" formControlName="prioridad"
+                            [class.invalid]="getValidationStatus('prioridad') == 'invalid'"
+                            [class.valid]="getValidationStatus('prioridad') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
                             <option *ngFor="let t of opciones['prioridad']" [value]="t.id">{{ t.nombre }}</option>
                         </select>
-                        <div *ngIf="isInvalid('prioridad')" class="text-danger">Campo obligatorio.</div>
                     </div>
+                    <p *ngIf="getValidationStatus('prioridad') == 'invalid'" class="invalid-field">Campo obligatorio.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Tercera fila: Checkboxes volante y guía -->
+            <div class="row">
+                <!-- Volante -->
+                <div class="col-md-3">
+                    <label class="form-label frmlabel" for="esVolante">Es volante</label>
+                    <div class="input-icon-wrapper">
+                        <input class="form-check-input" type="checkbox" formControlName="esVolante" id="esVolante" />
+                        <input *ngIf="documentoForm.get('esVolante')?.value" type="text" formControlName="numeroVolante"
+                            style="width:80%; display: inline;" placeholder="No. de volante" class="form-control ms-2"
+                            [class.invalid]="getValidationStatus('numeroVolante') == 'invalid'"
+                            [class.valid]="getValidationStatus('numeroVolante') == 'valid'" />
+                    </div>
+                    <p *ngIf="documentoForm.get('esVolante')?.value && getValidationStatus('numeroVolante') == 'invalid'"
+                        class="invalid-field">
+                        Este campo es obligatorio.
+                    </p>
                 </div>
 
-                <!-- Tercera fila: Checkboxes volante y guía -->
-                <div class="row">
-                    <div class="col-md-3 mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="form-check m-0">
-                                <input class="form-check-input" type="checkbox" formControlName="esVolante" id="esVolante" />
-                                <label class="form-check-label ms-1" for="esVolante">Es volante</label>
-                            </div>
-                            <input *ngIf="documentoForm.get('esVolante')?.value"
-                                class="form-control"
-                                style="max-width: 60%;"
-                                type="text"
-                                formControlName="numeroVolante"
-                                placeholder="No. de volante" />
+                <!-- Guía -->
+                <div class="col-md-3">
+                    <label class="form-label frmlabel" for="esGuia">Es guía</label>
+                    <div class="input-icon-wrapper">
+                        <input class="form-check-input" type="checkbox" formControlName="esGuia" id="esGuia" />
+                        <input *ngIf="documentoForm.get('esGuia')?.value" type="text" formControlName="numeroGuia"
+                            style="width:80%; display: inline;" placeholder="No. de guía" class="form-control ms-2"
+                            [class.invalid]="getValidationStatus('numeroGuia') == 'invalid'"
+                            [class.valid]="getValidationStatus('numeroGuia') == 'valid'" />
+                    </div>
+                    <p *ngIf="documentoForm.get('esGuia')?.value && getValidationStatus('numeroGuia') == 'invalid'"
+                        class="invalid-field">
+                        Este campo es obligatorio.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Cuarta fila: Descripción del asunto -->
+            <div class="row">
+                <div class="col-12">
+                    <label class="form-label frmlabel required" for="descripcionAsunto">Descripción del asunto</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('descripcionAsunto') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('descripcionAsunto') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <textarea id="descripcionAsunto" class="form-control" formControlName="descripcionAsunto"
+                            [class.invalid]="getValidationStatus('descripcionAsunto') == 'invalid'"
+                            [class.valid]="getValidationStatus('descripcionAsunto') == 'valid'"></textarea>
+                    </div>
+                    <p *ngIf="getValidationStatus('descripcionAsunto') == 'invalid'" class="invalid-field">Campo
+                        obligatorio.</p>
+                </div>
+            </div>
+
+            <!-- Título: Datos de recepción -->
+            <div class="row mt-4">
+                <div class="pb-2">
+                    <h3 class="p-2 frmlabel">Datos de recepción</h3>
+                </div>
+            </div>
+
+            <!-- Quinta fila: Campos del remitente (dinámicos) -->
+            <div class="row">
+                <div class="col-md-4" *ngFor="let field of remitenteFields">
+                    <label class="form-label frmlabel required" [for]="field.name">{{ field.label }}</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus(field.name) == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(field.name) == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <input type="text" [id]="field.name" class="form-control" [formControlName]="field.name"
+                            [placeholder]="field.label" [class.invalid]="getValidationStatus(field.name) == 'invalid'"
+                            [class.valid]="getValidationStatus(field.name) == 'valid'" />
+                    </div>
+                    <p *ngIf="getValidationStatus(field.name) == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+                </div>
+            </div>
+
+            <!-- Séptima fila: Medio y Recepción -->
+            <div class="row">
+                <!-- Documento principal -->
+                <div class="col-md-4">
+                    <label class="form-label frmlabel required" for="documento">Documento</label>
+                    <div class="row">
+                        <div class="col-md-9">
+                            <input type="text" id="nombreDocumento" class="form-control" maxlength="100" [ngModelOptions]="{standalone: true}"
+                                [(ngModel)]="nombreDocumento" name="nombreDocumento"
+                                placeholder="Ingrese el nombre del documento" />
+                        </div>
+                        <div class="col-md-3">
+                            <label for="documento" class="form-label d-block text-center">
+                                <div id="drop-zone" class="drop-zone">
+                                    <i class="fas fa-upload"></i>
+                                </div>
+                            </label>
+                            <input type="file" id="documento" class="hidden-input"
+                                (change)="onDocumentoSeleccionado($event)">
                         </div>
                     </div>
-                    <div class="col-md-3 mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="form-check m-0">
-                                <input class="form-check-input" type="checkbox" formControlName="esGuia" id="esGuia" />
-                                <label class="form-check-label ms-1" for="esGuia">Es guía</label>
-                            </div>
-                            <input *ngIf="documentoForm.get('esGuia')?.value"
-                                class="form-control"
-                                style="max-width: 68%;"
-                                type="text"
-                                formControlName="numeroGuia"
-                                placeholder="No. de guía" />
-                        </div>
-                    </div>
-                </div>
 
-                <!-- Cuarta fila: Descripción del asunto -->
-                <div class="row">
-                    <div class="col-12 mb-3">
-                        <label for="descripcionAsunto" class="form-label">Descripción del asunto *</label>
-                        <textarea id="descripcionAsunto" rows="5" class="form-control" 
-                            [ngClass]="controlState('descripcionAsunto')"
-                            formControlName="descripcionAsunto"></textarea>
-                        <div *ngIf="isInvalid('descripcionAsunto')" class="text-danger">Campo obligatorio.</div>
-                    </div>
-                </div>
-
-                <!-- Título: Datos de recepción -->
-                <div class="row mt-4">
-                    <div class="pb-2">
-                        <h3 class="p-2 tituloBorderLeft">Datos de recepción</h3>
-                    </div>
-                </div>
-
-                <!-- Quinta fila: Campos del remitente (dinámicos) -->
-                <div class="row">
-                    <div class="col-md-4 mb-3" *ngFor="let field of remitenteFields">
-                        <label [for]="field.name" class="form-label">{{ field.label }} *</label>
-                        <input type="text" [id]="field.name" class="form-control" [ngClass]="controlState(field.name)"
-                            [formControlName]="field.name" [placeholder]="field.label" />
-                        <div *ngIf="isInvalid(field.name)" class="text-danger">Campo obligatorio.</div>
-                    </div>
-                </div>
-
-				<!-- Séptima fila: Medio y Recepción -->
-                <div class="row">
-                    <div class="col-6 mb-3">
-                        <label for="tipoDocumento" class="form-label">
-                            <i class="fas fa-file-alt"></i> Carga de documentos de seguimiento *
-                        </label>
-                        
-                        <div class="row">
-                            <div class="col-md-9">
-                                <input type="text" id="nombreDocumento" class="form-control" maxlength="100"
-                                    placeholder="Ingrese el nombre del documento">
-                            </div>
-                            <div class="col-md-3 mb-3">
-                                <label for="documento" class="form-label d-block text-center">
-                                    <div id="drop-zone" class="drop-zone">
-                                        <i class="fas fa-upload"></i>
-                                    </div>
-                                </label>
-                                <input type="file" id="documento" class="hidden-input" (change)="onDocumentoSeleccionado($event)">
-                            </div>
-                        </div>
-
-                        <div class="row" *ngIf="documento != null">
-                            <div class="col-12">
-                                <div class="document-list">
-                                    <div class="document-item">
-                                        <i class="fas fa-file-alt"></i> {{ documento.name }}
-                                        <i class="fas fa-trash-alt delete-icon" (click)="borrarDocumento()"></i>
-                                    </div>
+                    <div class="row" *ngIf="documento">
+                        <div class="col-12">
+                            <div class="document-list">
+                                <div class="document-item">
+                                     <span class="pl-2 pr-2">  {{ documento.nombre || documento.file.name }} </span>
+                                    <i class="fas fa-trash-alt delete-icon" (click)="borrarDocumento()"></i>
                                 </div>
                             </div>
                         </div>
                     </div>
-					<div class="col-md-3 mb-3">
-                        <label for="medio" class="form-label">Medio de recepción *</label>
-                        <select id="medio" class="form-control" [ngClass]="controlState('medio')" formControlName="medio">
-                            <option value="" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of opciones['medio']" [value]="t.id">{{ t.nombre }}</option>
-                        </select>
-                        <div *ngIf="isInvalid('medio')" class="text-danger">Campo obligatorio.</div>
-                    </div>
-                    <div class="col-md-3 mb-3">
-                        <label for="recepcion" class="form-label">Recepción *</label>
-                        <select id="recepcion" class="form-control" [ngClass]="controlState('recepcion')" formControlName="recepcion">
-                            <option value="" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of opciones['recepcion']" [value]="t.id">{{ t.nombre }}</option>
-                        </select>
-                        <div *ngIf="isInvalid('recepcion')" class="text-danger">Campo obligatorio.</div>
-                    </div>
                 </div>
 
-                
-				<p class="text-auxiliary text-muted">* Campos obligatorios</p>
+                <!-- Anexos -->
+                <div class="col-md-4">
+                    <label class="form-label frmlabel" for="anexos">Anexos</label>
+                    <div class="row">
+                        <div class="">
+                            <label for="anexo" class="form-label d-block text-center">
+                                <div id="drop-zone" class="drop-zone">
+                                    <i class="fas fa-upload"></i>
+                                </div>
+                            </label>
+                            <input type="file" id="anexo" class="hidden-input" (change)="onAnexoSeleccionado($event)">
+                        </div>
+                    </div>
 
-                <!-- Octava fila: Botones -->
-                <div class="row pt-4">
-                    <div class="col-12">
-                        <div class="text-center">
-                            <button type="button" class="m-2 btn btn-secondary">Previsualizar</button>
-                            <button type="submit" class="m-2 btn btn-primary">Guardar</button>
+                    <div class="row" *ngIf="anexos.length > 0">
+                        <div class="col-12">
+                            <div class="document-list">
+                                <div class="document-item" *ngFor="let anexo of anexos">                                        
+                                        <span class="pl-2 pr-2"> {{ anexo.name }}</span >
+                                        <i class="fas fa-trash-alt delete-icon pr-5" (click)="borrarAnexo(anexo)"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-            </form>
-        
+                <div class="col-md-4">
+                    <label class="form-label frmlabel required" for="medio">Medio de recepción</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('medio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('medio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="medio" class="form-control" formControlName="medio"
+                            [class.invalid]="getValidationStatus('medio') == 'invalid'"
+                            [class.valid]="getValidationStatus('medio') == 'valid'">
+                            <option value="" disabled selected>Seleccione</option>
+                            <option *ngFor="let t of opciones['medio']" [value]="t.id">{{ t.nombre }}</option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus('medio') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+                </div>
+
+                <!-- <div class="col-md-3">
+                    <label class="form-label frmlabel required" for="recepcion">Recepción</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus('recepcion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('recepcion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="recepcion" class="form-control" formControlName="recepcion"
+                            [class.invalid]="getValidationStatus('recepcion') == 'invalid'"
+                            [class.valid]="getValidationStatus('recepcion') == 'valid'">
+                            <option value="" disabled selected>Seleccione</option>
+                            <option *ngFor="let t of opciones['recepcion']" [value]="t.id">{{ t.nombre }}</option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus('recepcion') == 'invalid'" class="invalid-field">Campo obligatorio.
+                    </p>
+                </div> -->
+            </div>
+
+            <p class="text-auxiliary text-muted">* Campos obligatorios</p>
+
+            <!-- Octava fila: Botones -->
+            <div class="row pt-4">
+                <div class="col-12">
+                    <div class="text-center">
+                        <button type="button" class="m-2 btn btn-secondary" (click)="openModalPrev()">Previsualizar</button>
+                        <button type="submit" class="m-2 btn btn-primary">Guardar</button>
+                    </div>
+                </div>
+            </div>
+        </form>
     </div>
 </div>
+
+<!-- template paara abrir un modal-->
+<ng-template #modalPrevisualizar let-acepar = 'cerrar'>
+<div class="container mt-4">
+  <h4 class="mb-4">Previsualización del documento</h4>
+
+  <!-- Datos generales -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <p><strong>Tipo de documento:</strong> {{ documentoForm.value.idTipoDocumento }}</p>
+      <p><strong>Número de oficio:</strong> {{ documentoForm.value.noOficio }}</p>
+      <p><strong>Tema:</strong> {{ documentoForm.value.tema }}</p>
+      <p><strong>Fecha del documento:</strong> {{ documentoForm.value.fechaDocumento | fechaMexico }}</p>
+      <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico }}</p>
+      <p><strong>Fecha de cumplimiento:</strong> {{ documentoForm.value.fechaCumplimiento | fechaMexico }} </p>
+      <p><strong>Prioridad:</strong> {{ documentoForm.value.prioridad }}</p>
+    </div>
+
+    <div class="col-md-6">
+      <p><strong>Medio de recepción:</strong> {{ documentoForm.value.medio }}</p>
+      <p><strong>Recepción:</strong> {{ documentoForm.value.recepcion }}</p>
+      <p><strong>Es volante:</strong> {{ documentoForm.value.esVolante ? 'Sí' : 'No' }}</p>
+      <p *ngIf="documentoForm.value.esVolante"><strong>Número de volante:</strong> {{ documentoForm.value.numeroVolante }}</p>
+      <p><strong>Es guía:</strong> {{ documentoForm.value.esGuia ? 'Sí' : 'No' }}</p>
+      <p *ngIf="documentoForm.value.esGuia"><strong>Número de guía:</strong> {{ documentoForm.value.numeroGuia }}</p>
+    </div>
+  </div>
+
+  <hr />
+
+  <!-- Remitente y destinatario -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <h5>Remitente</h5>
+      <p><strong>Nombre:</strong> {{ documentoForm.value.remitenteNombre }}</p>
+      <p><strong>Cargo:</strong> {{ documentoForm.value.remitenteCargo }}</p>
+      <p><strong>Dependencia:</strong> {{ documentoForm.value.remitenteDependencia }}</p>
+    </div>
+
+    <div class="col-md-6">
+      <h5>Dirigido a</h5>
+      <p><strong>Nombre:</strong> {{ documentoForm.value.dirigidoA }}</p>
+      <p><strong>Cargo:</strong> {{ documentoForm.value.dirigidoACargo }}</p>
+      <p><strong>Dependencia:</strong> {{ documentoForm.value.dirigidoADependencia }}</p>
+    </div>
+  </div>
+
+  <!-- Descripción -->
+  <div class="mb-4">
+    <h5>Descripción del asunto</h5>
+    <div class="bg-light p-3 rounded border">
+      {{ documentoForm.value.descripcionAsunto }}
+    </div>
+  </div>
+
+  <!-- Documento principal -->
+  <div class="mb-4">
+    <h5>Documento principal</h5>
+    <div class="d-flex align-items-center rounded p-2">
+        <span *ngIf="documento">
+        <i class="fas fa-file-alt fa-lg me-2 text-primary"></i>
+        <strong>{{ documento.nombre || documento.file.name }}</strong>
+      </span>
+    </div>
+  </div>
+
+  <!-- Anexos -->
+  <div *ngIf="anexos.length > 0" class="mb-4">
+    <h5>Anexos</h5>
+    <ul class="list-group">
+      <li class="list-group-item d-flex align-items-center" *ngFor="let anexo of anexos">
+        <i class="fas fa-paperclip me-2 text-secondary"></i>
+        {{ anexo.name }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+</ng-template>
