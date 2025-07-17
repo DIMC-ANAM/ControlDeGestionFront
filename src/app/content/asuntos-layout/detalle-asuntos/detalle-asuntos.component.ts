@@ -1,56 +1,14 @@
-// --- gestion-asuntos.component.ts ---
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
-interface Documento {
-  name: string;
-  url: string;
-  size: string;
-  type: string;
-}
-
-type Asignacion = {
-  id: number;
-  usuario: string;
-  rol: string;
-  fecha: string;
-  estado: string;
-  statusAsignacion: string;
-};
-
-type Asunto = {
-  id: number;
-  titulo: string;
-  estado: string;
-  prioridad: string;
-  fechaCreacion: string;
-  fechaVencimiento: string;
-  responsable: string;
-  departamento: string;
-  categoria: string;
-  cliente: string;
-  telefono: string;
-  email: string;
-  direccion: string;
-  observaciones: string;
-  documentos: Documento[];
-  asignaciones: Asignacion[];
-};
 @Component({
-  selector: 'app-consultar-asuntos',
+  selector: 'app-detalle-asuntos',
   standalone: false,
-  templateUrl: './consultar-asuntos.component.html',
-  styleUrl: './consultar-asuntos.component.scss',
+  templateUrl: './detalle-asuntos.component.html',
+  styleUrl: './detalle-asuntos.component.scss'
 })
-export class ConsultarAsuntosComponent {
-  tabActiva = 'detalles';
-  filtroTexto = '';
-  filtroEstado = '';
-  filtroPrioridad = '';
-  filtroTema = '';
-  filtroFechaInicio: Date | null = null;
-  filtroFechaFin: Date | null = null;
-
-  asuntos = [
+export class DetalleAsuntosComponent {
+  @Input() idAsunto: number | null = null;
+    asuntos = [
     {
       idAsunto: 1,
       idTipoDocumento: 101,
@@ -188,73 +146,16 @@ export class ConsultarAsuntosComponent {
       observaciones: 'lorem ipsum dolor sit amet, cons... ',
     },
   ];
-  asuntoSeleccionado = this.asuntos[0];
-  filtros = {
-    busqueda: '',
-    estado: '',
-    prioridad: '',
-    departamento: '',
-  };
-
-  estadoColors: { [key: string]: string } = {
-    pendiente: 'bg-deep-blue  text-white',
-    en_progreso: 'bg-purple text-white',
-    completado: 'bg-success text-white',
-  };
-
-  prioridadColors: { [key: string]: string } = {
-    alta: 'bg-primary text-white',
-    media: 'bg-gold text-white',
-    baja: 'bg-secondary text-white',
-  };
-
-  get asuntosFiltrados() {
-    return this.asuntos.filter((a) => {
-      const texto = this.filtroTexto.toLowerCase();
-      const coincideTexto = Object.values(a).some((valor) => {
-        if (typeof valor === 'string') {
-          return valor.toLowerCase().includes(texto);
-        }
-        return false;
-      });
-
-      const coincideEstado = this.filtroEstado
-        ? a.statusAsunto === this.filtroEstado
-        : true;
-      const coincidePrioridad = this.filtroPrioridad
-        ? a.prioridad === this.filtroPrioridad
-        : true;
-      const coincideTema = this.filtroTema ? a.Tema === this.filtroTema : true;
-      const coincideFecha =
-        (!this.filtroFechaInicio ||
-          new Date(a.fechaRegistro) >= this.filtroFechaInicio) &&
-        (!this.filtroFechaFin ||
-          new Date(a.fechaRegistro) <= this.filtroFechaFin);
-
-      return (
-        coincideTexto &&
-        coincideEstado &&
-        coincidePrioridad &&
-        coincideTema &&
-        coincideFecha
-      );
-    });
+  tabActiva = 'detalles';
+  asuntoSeleccionado: any = null;
+  ngOnChanges() {
+    if (this.idAsunto) {
+      this.cargarDetalle(this.idAsunto);
+    }
   }
-  seleccionarAsunto(asunto: any) {
-    this.asuntoSeleccionado = asunto;
-  }
-
-  limpiarFiltros() {
-    this.filtros = {
-      busqueda: '',
-      estado: '',
-      prioridad: '',
-      departamento: '',
-    };
-  }
-
-  cambiarTab(tab: string) {
-    this.tabActiva = tab;
+  cargarDetalle(id: number) {
+    // Aquí podrías llamar a un servicio para obtener los detalles del asunto
+    this.asuntoSeleccionado = this.asuntos.find(a => a.idAsunto === id) || null;
   }
 
   getEstadoIcon(estado: string): string {
@@ -263,18 +164,22 @@ export class ConsultarAsuntosComponent {
         return 'fas fa-clock';
       case 'en_progreso':
         return 'fas fa-edit';
-      case 'completado':
+      case 'Concluido':
         return 'fas fa-check';
       default:
         return 'x-circle';
     }
   }
+      estadoColors: { [key: string]: string } = {
+    pendiente: 'bg-deep-blue  text-white',
+    en_progreso: 'bg-purple text-white',
+    Concluido: 'bg-success text-white',
+  };
 
-  getDocumentIcon(tipo: string): string {
-    const t = tipo.toLowerCase();
-    if (t === 'pdf') return 'file-pdf';
-    if (t === 'doc' || t === 'docx') return 'file-word';
-    if (t === 'xls' || t === 'xlsx') return 'file-excel';
-    return 'file';
-  }
+  prioridadColors: { [key: string]: string } = {
+    alta: 'bg-primary text-white',
+    media: 'bg-gold text-white',
+    baja: 'bg-secondary text-white',
+  };
+
 }

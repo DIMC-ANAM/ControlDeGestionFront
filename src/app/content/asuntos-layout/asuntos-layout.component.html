@@ -1,0 +1,13 @@
+<div class="container-override h-100">
+  <div class="d-flex h-100 overflow-hidden">
+    <!-- Panel izquierdo - Lista de asuntos -->
+    <div class="panel-resistant h-100 border-end">
+      <app-lista-asuntos (asuntoSeleccionado)="recibirAsunto($event)"></app-lista-asuntos>
+    </div>
+    
+    <!-- Panel derecho - Detalle de asuntos -->
+    <div class="panel-resistant h-100">
+      <app-detalle-asuntos [idAsunto]="idAsuntoSeleccionado"></app-detalle-asuntos>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,429 @@
+<div class="d-flex flex-column h-100">
+    <ng-container *ngIf="asuntoSeleccionado; else elseTemplate">
+        <div class="d-flex flex-column h-100">
+            <div class="p-3 border-bottom bg-white w-100 flex-shrink-0">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="flex-grow-1 me-3" style="min-width: 0">
+                        <h2 class="fw-bold text-truncate">{{ asuntoSeleccionado.noOficio }}</h2>
+                        <div class="text-muted small fw-bold ">
+                            <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de registro'"><i
+                                    class="fas fa-calendar-day text-primary"></i></span>
+                            {{ asuntoSeleccionado.fechaRegistro | fechaMexico}}
+
+                        </div>
+                        <div class="text-muted small fw-bold">
+                            <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de cumplimiento'"><i
+                                    class="fas fa-calendar-check text-success "></i></span>
+                            {{ asuntoSeleccionado.fechaCumplimiento | fechaMexico}}
+                        </div>
+                    </div>
+                    <div class="text-end flex-shrink-0">
+                        <div class="d-flex flex-column gap-1">
+                            <span class="badge" [ngClass]="estadoColors[asuntoSeleccionado.statusAsunto]">
+                                <i class="fas" [ngClass]="getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
+                                <span class="ms-1 text-capitalize">{{ asuntoSeleccionado.statusAsunto.replace('_', '
+                                    ')
+                                    }}</span>
+                            </span>
+                            <span class="badge" [ngClass]="prioridadColors[asuntoSeleccionado.prioridad]">
+                                <i class="fas fa-star me-1 small"></i>
+                                {{ asuntoSeleccionado.prioridad }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-share me-2"></i> Turnar
+                    </button>
+                    <button class="btn btn-outline-secondary btn-sm">
+                        <i class="fas fa-edit me-2"></i> Editar
+                    </button>
+                </div>
+            </div>
+            <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
+            (click)="tabActiva = 'detalles'">
+            <i class="fas fa-file-alt me-2"></i> Detalles
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
+            (click)="tabActiva = 'expediente'">
+            <i class="fas fa-folder-open me-2"></i> Expediente
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
+            (click)="tabActiva = 'turnados'">
+            <i class="fas fa-sync me-2"></i> Turnados
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
+            (click)="tabActiva = 'historial'">
+            <i class="fas fa-clock me-2"></i> Historial
+        </button>
+    </li>
+</ul>
+
+            <!-- Contenido de tabs con scroll -->
+            <div class="flex-grow-1 p-4 overflow-auto">
+                <!-- Detalles -->
+                <div *ngIf="tabActiva === 'detalles'">
+                    <!-- Información General -->
+                    <div class="section">
+                        <div class="section-header">
+                            <i class="fas fa-file-alt"></i>
+                            <h6 class="fw-bold mb-0">Información General</h6>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Tipo de Documento:</label>
+                                    <div>{{ asuntoSeleccionado.tipoDocumento }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>No. de Oficio:</label>
+                                    <div>{{ asuntoSeleccionado.noOficio }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Es Volante:</label>
+                                    <div>{{ asuntoSeleccionado.esVolante ? 'Sí' : 'No' }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row" *ngIf="asuntoSeleccionado?.esVolante">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Número de Volante:</label>
+                                    <div>{{ asuntoSeleccionado.numeroVolante }}</div>
+                                </div>
+                            </div>
+                        
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Es Guía:</label>
+                                    <div>{{ asuntoSeleccionado.esGuia ? 'Sí' : 'No' }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4" *ngIf="asuntoSeleccionado?.esGuia">
+                                <div class="field">
+                                    <label>Número de Guía:</label>
+                                    <div>{{ asuntoSeleccionado.numeroGuia }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Tema:</label>
+                                    <div>{{ asuntoSeleccionado.Tema }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Fecha de Cumplimiento:</label>
+                                    <div>{{ asuntoSeleccionado.fechaCumplimiento | date }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Prioridad:</label>
+                                    <div>{{ asuntoSeleccionado.prioridad }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Estatus:</label>
+                                    <div>{{ asuntoSeleccionado.statusAsunto }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Usuario que registra:</label>
+                                    <div>{{ asuntoSeleccionado.usuarioRegistra }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Unidad Administrativa:</label>
+                                    <div>{{ asuntoSeleccionado.unidadAdministrativa }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Fecha de Registro:</label>
+                                    <div>{{ asuntoSeleccionado.fechaRegistro | date }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Fecha del Documento:</label>
+                                    <div>{{ asuntoSeleccionado.fechaDocumento | date }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="field">
+                                    <label>Descripción:</label>
+                                    <div>{{ asuntoSeleccionado.descripcionAsunto }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Datos de Recepción -->
+                    <div class="section">
+                        <div class="section-header">
+                            <i class="fas fa-inbox"></i>
+                            <h6 class="fw-bold mb-0">Datos de Recepción</h6>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Fecha de Recepción:</label>
+                                    <div>{{ asuntoSeleccionado.fechaRecepcion | date }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Remitente:</label>
+                                    <div>{{ asuntoSeleccionado.remitenteNombre }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Cargo:</label>
+                                    <div>{{ asuntoSeleccionado.remitenteCargo }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Dependencia:</label>
+                                    <div>{{ asuntoSeleccionado.remitenteDependencia }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Dirigido a:</label>
+                                    <div>{{ asuntoSeleccionado.dirigidoA }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Cargo Dirigido a:</label>
+                                    <div>{{ asuntoSeleccionado.dirigidoACargo }}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Dependencia Destino:</label>
+                                    <div>{{ asuntoSeleccionado.dirigidoADependencia }}</div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Medio:</label>
+                                    <div>{{ asuntoSeleccionado.medio }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="section">
+                        <div class="section-header">
+                            <i class="fas fa-comment-alt"></i>
+                            <h6 class="fw-bold mb-0">Observaciones</h6>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="field">
+                                    <div>{{ asuntoSeleccionado.observaciones || 'Sin observaciones' }}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Expediente -->
+                <div *ngIf="tabActiva === 'expediente'">
+                    <div class="p-4">
+                        <!-- Documento principal -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0">Documento Principal</h6>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-upload me-2"></i> Reemplazar Documento
+                                </button>
+                            </div>
+
+                            <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                                <div class="d-flex align-items-center gap-3">
+                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                    <div>
+                                        <div class="fw-semibold">{{ asuntoSeleccionado.documento.nombre }}</div>
+                                        <div class="text-muted small">
+                                            {{ asuntoSeleccionado.documento.type }} • {{
+                                            asuntoSeleccionado.documento.size
+                                            }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-light">
+                                        <i class="fas fa-download"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr />
+
+                        <!-- Anexos -->
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <h6 class="fw-bold mb-0">Anexos</h6>
+                                <button class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-plus me-2"></i> Agregar Anexo
+                                </button>
+                            </div>
+
+                            <div *ngIf="asuntoSeleccionado.anexos.length > 0; else sinAnexos">
+                                <div class="card mb-2 p-3" *ngFor="let anexo of asuntoSeleccionado.anexos">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center gap-3">
+                                            <i class="fas fa-paperclip fa-lg text-secondary"></i>
+                                            <div>
+                                                <div class="fw-semibold">{{ anexo.name }}</div>
+                                                <div class="text-muted small">{{ anexo.type }} • {{ anexo.size }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-light">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-light">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <ng-template #sinAnexos>
+                                <p class="text-muted">No hay anexos disponibles para este asunto.</p>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Asignaciones -->
+                <div *ngIf="tabActiva === 'turnados'">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-user-check me-2"></i> Nuevo turnado
+                        </button>
+                    </div>
+                    <!-- <div *ngFor="let asignacion of asuntoSeleccionado.asignaciones" class="card p-3 mb-2">
+          <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center gap-3">
+              <div class="icon-circle"><i class="fas fa-user"></i></div>
+              <div>
+                <p class="mb-0 fw-semibold">{{ asignacion.usuario }}</p>
+                <small class="text-muted">{{ asignacion.rol }}</small><br />
+                <small class="text-muted">Asignado: {{ asignacion.fecha }}</small>
+              </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge"
+                [ngClass]="asignacion.statusAsignacion === 'activo' ? 'bg-success text-white' : 'bg-secondary text-white'">
+                {{ asignacion.statusAsignacion }}
+              </span>
+              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
+            </div>
+          </div>
+        </div> -->
+                </div>
+
+                <!-- Historial -->
+                <div *ngIf="tabActiva === 'historial'">
+                    <h6 class="fw-bold mb-3">Historial de Actividades</h6>
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <div class="icon-circle bg-primary"></div>
+                        <div>
+                            <p class="mb-0 fw-semibold">Asunto creado</p>
+                            <small class="text-muted">Por {{ asuntoSeleccionado.unidadAdministrativa }} • {{
+                                asuntoSeleccionado.fechaRegistro }}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start mb-3">
+                        <div class="icon-circle bg-success"></div>
+                        <div>
+                            <p class="mb-0 fw-semibold">Documentos agregados</p>
+                            <small class="text-muted">{{ asuntoSeleccionado.anexos.length }} documentos • {{
+                                asuntoSeleccionado.fechaRegistro }}</small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-3 align-items-start">
+                        <div class="icon-circle bg-warning"></div>
+                        <div>
+                            <p class="mb-0 fw-semibold">Estado actualizado</p>
+                            <small class="text-muted">Cambiado a {{ asuntoSeleccionado.statusAsunto }} • Hace 2
+                                días</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <div class="d-flex align-items-center justify-content-center h-100">
+            <p class="text-muted">Selecciona un asunto para ver los detalles</p>
+        </div>
+    </ng-template>
+</div>

@@ -29,7 +29,7 @@ const routes: Routes = [
       },
       {
         path: 'consultar-asuntos',
-        component: ConsultarAsuntosComponent
+         loadChildren: () => import('./content/asuntos-layout/asuntos-layout.module').then(m => m.AsuntosLayoutModule)
       },
       {
         path: 'consultar-turnados',

@@ -1,29 +1,25 @@
-<div class="d-flex h-100">
-  <!-- Lista de Asuntos -->
-  <div class="w-50 border-end d-flex flex-column bg-white">
+<div class="container-fluid h-100">
+  <div class="d-flex h-100"> 
+  <div class="w-50 border-end bg-white d-flex flex-column overflow-hidden">
+      <div class="flex-grow-1 overflow-hidden p-3">
     <!-- Encabezado y Filtros -->
     <div class="p-4 border-bottom">
-      <div class="d-flex justify-content-between align-items-start mb-3">
+      <div class="d-flex justify-content-between align-items-start mb-1">
         <div>
-          <h2 class="fw-bold mb-1 text-muted">Asuntos registrados</h2>
-          <small class="text-muted">{{asuntosFiltrados.length}} asuntos encontrados</small>
+          <H1 class="fw-bold mb-1 text-muted">Asuntos registrados</H1>
+          <small class="m-2 fw-bold text-muted">{{asuntosFiltrados.length}} resultados</small>
         </div>
-        <!-- <button class="btn btn-primary">
-          <i class="fas fa-plus me-2"></i>
-          Nuevo Asunto
-        </button> -->
       </div>
-
-      <div class="p-3 border-bottom bg-light">
-        <h5 class="mb-3">Filtros</h5>
-        <div class="row g-2">
-
-          <div class="col-md-6">
+      <!-- aquí iría un chevron para colapasar los filtros -->
+      <div class="p-1  bg-light"> 
+        <div class="row pb-3">
+          <div class="col-md-12">
             <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto" />
           </div>
-
-          <div class="col-md-6">
-            <select class="form-select" [(ngModel)]="filtroEstado">
+        </div>
+        <div class="row g-3">
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroEstado">
               <option value="">Todos los Estados</option>
               <option value="pendiente">Pendiente</option>
               <option value="en_progreso">En Progreso</option>
@@ -31,8 +27,8 @@
             </select>
           </div>
 
-          <div class="col-md-6">
-            <select class="form-select" [(ngModel)]="filtroPrioridad">
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroPrioridad">
               <option value="">Todas las Prioridades</option>
               <option value="alta">Alta</option>
               <option value="media">Media</option>
@@ -40,48 +36,51 @@
             </select>
           </div>
 
-          <div class="col-md-6">
-            <select class="form-select" [(ngModel)]="filtroTema">
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroTema">
               <option value="">Todos los Temas</option>
               <option *ngFor="let asunto of asuntos" [value]="asunto.Tema">{{ asunto.Tema }}</option>
             </select>
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-4">
             <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio" placeholder="Fecha desde" />
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-4">
             <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" placeholder="Fecha hasta" />
           </div>
 
+          <div class="col-md-4 pt-2 text-center">
+            <button class="btn btn-outline-secondary btn-sm"
+              (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
+              <i class="fas fa-filter me-2"></i> Limpiar Filtros
+            </button>
+          </div>
         </div>
 
-        <div class="mt-3 text-end">
-          <button class="btn btn-outline-secondary btn-sm"
-            (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
-            <i class="fas fa-filter me-2"></i> Limpiar Filtros
-          </button>
-        </div>
       </div>
     </div>
 
     <!-- Lista de tarjetas -->
     <div class="p-4 overflow-auto">
       <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
-        [class.border-primary]="asuntoSeleccionado.idAsunto === asunto.idAsunto" (click)="asuntoSeleccionado = asunto">
+      [ngClass]="{'seleccionado': asuntoSeleccionado.idAsunto === asunto.idAsunto}"
+        (click)="asuntoSeleccionado = asunto">
         <div class="card-body">
           <div class="d-flex justify-content-between align-items-start">
             <div class="w-75">
               <h6 class="card-title mb-1 fw-bold">{{ asunto.noOficio }}</h6>
               <p class="card-text text-muted mb-2 small">{{ asunto.descripcionAsunto }}</p>
               <div class="d-flex align-items-center text-muted small">
-                <i class="fas fa-building-columns me-2 text-secondary"></i>
+                <span class="tooltip-wrapper" [attr.data-tooltip]="'Unidad Administrativa'">
+                  <i class="fas fa-building-columns me-2 text-secondary"></i>
+                </span>
                 <span>{{ asunto.unidadAdministrativa }}</span>
               </div>
               <div class="d-flex align-items-center text-muted small mt-1">
-                <i class="fas fa-calendar-alt me-2 text-secondary"></i>
-                <span>{{ asunto.fechaRegistro | date: 'dd/MM/yyyy' }}</span>
+                <span class="tooltip-wrapper" [attr.data-tooltip]="'Fecha de registro'"><i class="fas fa-calendar-alt me-2 text-secondary"></i></span>
+                <span>{{ asunto.fechaRegistro | fechaMexico }}</span>
               </div>
             </div>
 
@@ -103,17 +102,20 @@
       </div>
     </div>
   </div>
+  </div>
 
   <!-- Vista Detalles -->
-  <div class="w-50 bg-white d-flex flex-column ">
-    <div class="p-4 border-bottom bg-white">
+   <div class="w-50 bg-white d-flex flex-column overflow-hidden">
+      <div class="flex-grow-1  p-3">
+    
+        <div class="p-4 border-bottom bg-white">
       <div class="d-flex justify-content-between align-items-start mb-3">
         <div class="w-75">
           <h5 class="fw-bold">{{ asuntoSeleccionado.noOficio }}</h5>
-          <p class="text-muted small overflow-auto"
-            style="max-height: 6rem; overflow-y: auto; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical;">
+          <span class="text-muted small "
+            style="max-height: 6rem; overflow-y: auto; display: -webkit-box; -webkit-box-orient: vertical;">
             {{ asuntoSeleccionado.descripcionAsunto }}
-          </p>
+        </span>
         </div>
         <div class="text-end">
           <span class="badge me-1" [ngClass]="estadoColors[asuntoSeleccionado.statusAsunto]">
@@ -135,27 +137,27 @@
           <i class="fas fa-edit me-2"></i> Editar
         </button>
       </div>
-    </div>
+        </div>
 
     <!-- Tabs -->
     <ul class="nav nav-tabs px-4 pt-3" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="tabActiva === 'detalles'" (click)="tabActiva = 'detalles'">
+      <li class="nav-item " role="presentation">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'" (click)="tabActiva = 'detalles'">
           <i class="fas fa-file-alt me-2"></i> Detalles
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="tabActiva === 'expediente'" (click)="tabActiva = 'expediente'">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'" (click)="tabActiva = 'expediente'">
           <i class="fas fa-folder-open me-2"></i> Expediente
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="tabActiva === 'asignaciones'" (click)="tabActiva = 'asignaciones'">
-          <i class="fas fa-users me-2"></i> Asignaciones
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'" (click)="tabActiva = 'turnados'">
+          <i class="fas fa-users me-2"></i> Turnados
         </button>
       </li>
       <li class="nav-item" role="presentation">
-        <button class="nav-link" [class.active]="tabActiva === 'historial'" (click)="tabActiva = 'historial'">
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'" (click)="tabActiva = 'historial'">
           <i class="fas fa-clock me-2"></i> Historial
         </button>
       </li>
@@ -206,8 +208,8 @@
               <div class="mb-2"><strong>Dependencia:</strong> {{ asuntoSeleccionado.remitenteDependencia }}</div>
               <div class="mb-2"><strong>Dirigido a:</strong> {{ asuntoSeleccionado.dirigidoA }}</div>
               <div class="mb-2"><strong>Cargo Dirigido a:</strong> {{ asuntoSeleccionado.dirigidoACargo }}</div>
-              <!-- <div class="mb-2"><strong>Dependencia Destino:</strong> {{ asuntoSeleccionado.dirigidoADependencia }}
-              </div> -->
+              <div class="mb-2"><strong>Dependencia Destino:</strong> {{ asuntoSeleccionado.dirigidoADependencia }}
+              </div>
               <div class="mb-2"><strong>Medio:</strong> {{ asuntoSeleccionado.medio }}</div>
             </div>
           </div>
@@ -298,11 +300,11 @@
       </div>
 
       <!-- Asignaciones -->
-      <div *ngIf="tabActiva === 'asignaciones'">
+      <div *ngIf="tabActiva === 'turnados'">
         <div class="d-flex justify-content-between align-items-center mb-3">
-          <h6 class="fw-bold mb-0">Asignaciones del Asunto</h6>
+          <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
           <button class="btn btn-primary">
-            <i class="fas fa-user-check me-2"></i> Nueva Asignación
+            <i class="fas fa-user-check me-2"></i> Nuevo turnado
           </button>
         </div>
         <!-- <div *ngFor="let asignacion of asuntoSeleccionado.asignaciones" class="card p-3 mb-2">
@@ -354,5 +356,7 @@
         </div>
       </div>
     </div>
+  </div>
+</div>
   </div>
 </div>

@@ -204,6 +204,7 @@ body {
 .text-gold { color: var(--color-gold) !important; }
 .text-dark-gray { color: var(--color-dark-gray) !important; }
 .text-light-gray { color: var(--color-light-gray) !important; }
+.text-deep-blue { color: var(--color-deep-blue) !important; }
 
 .bg-primary { background-color: var(--color-primary) !important; }
 .bg-secondary { background-color: var(--color-secondary) !important; }
@@ -213,6 +214,9 @@ body {
 .bg-light { background-color: var(--bg-primary) !important; }
 .bg-white { background-color: var(--bg-white) !important; }
 .bg-gray { background-color: #b6b2b217 !important; }
+.bg-deep-blue { background-color: var(--color-deep-blue) !important; }
+.bg-purple { background-color: var(--color-purple) !important; }
+.bg-light-blue { background-color: var(--color-light-blue) !important; }
 
 
 /* borders */
@@ -784,8 +788,8 @@ input[type="checkbox"].form-check-input {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
-    left: 50%;
-    transform: translateX(-50%) translateY(30%);
+    left: 70%;
+    transform: translateX(-10%) translateY(30%);
     background: rgba(0, 0, 0, 0.75);
     color: #fff;
     padding: 5px 8px;
@@ -795,10 +799,29 @@ input[type="checkbox"].form-check-input {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s ease-in-out, visibility 0.2s ease-in-out;
-    z-index: 1000;
+    z-index: 10000;
 }
 
 .tooltip-wrapper:hover::after {
     opacity: 1;
     visibility: visible;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  right: 20px!important;
+}
+
+::-webkit-scrollbar-track {
+  background: #0c520f21;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #b2beba;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #b2beba;
 }

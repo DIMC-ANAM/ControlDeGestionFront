@@ -14,15 +14,12 @@ import { ReportesComponent } from './content/reportes/reportes.component';
 import { ConsultarTurnadosComponent } from './content/consultar-turnados/consultar-turnados.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import {  FechaMexicoPipe } from './pipes/date-mx-format';
-import { registerLocaleData } from '@angular/common';
-import localeEsMx from '@angular/common/locales/es-MX';
 import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
-registerLocaleData(localeEsMx, 'es-MX');
+
 
 @NgModule({
   declarations: [
-    AppComponent,    
+    AppComponent,
     DashboardComponent,
     UxDesignComponent,
     RegistroAsuntoComponent,
@@ -31,9 +28,7 @@ registerLocaleData(localeEsMx, 'es-MX');
     ReportesComponent,
     ConsultarTurnadosComponent,
     UnitTestComponent,
-    FechaMexicoPipe,
-    ConsultarAsuntosComponent
-    
+    ConsultarAsuntosComponent,
   ],
   imports: [
     LayoutsModule,
@@ -41,12 +36,12 @@ registerLocaleData(localeEsMx, 'es-MX');
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    SharedModule,    
+    SharedModule,
     CuentaModule,
     AppRoutingModule,
-    NgbModule
+    NgbModule,    
   ],
   providers: [],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

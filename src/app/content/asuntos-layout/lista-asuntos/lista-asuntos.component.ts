@@ -1,48 +1,26 @@
-// --- gestion-asuntos.component.ts ---
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 
-interface Documento {
-  name: string;
-  url: string;
-  size: string;
-  type: string;
-}
-
-type Asignacion = {
-  id: number;
-  usuario: string;
-  rol: string;
-  fecha: string;
-  estado: string;
-  statusAsignacion: string;
-};
-
-type Asunto = {
-  id: number;
-  titulo: string;
-  estado: string;
-  prioridad: string;
-  fechaCreacion: string;
-  fechaVencimiento: string;
-  responsable: string;
-  departamento: string;
-  categoria: string;
-  cliente: string;
-  telefono: string;
-  email: string;
-  direccion: string;
-  observaciones: string;
-  documentos: Documento[];
-  asignaciones: Asignacion[];
-};
 @Component({
-  selector: 'app-consultar-asuntos',
+  selector: 'app-lista-asuntos',
   standalone: false,
-  templateUrl: './consultar-asuntos.component.html',
-  styleUrl: './consultar-asuntos.component.scss',
+  templateUrl: './lista-asuntos.component.html',
+  styleUrl: './lista-asuntos.component.scss'
 })
-export class ConsultarAsuntosComponent {
-  tabActiva = 'detalles';
+export class ListaAsuntosComponent {
+    @Output() asuntoSeleccionado = new EventEmitter<number>();
+
+    estadoColors: { [key: string]: string } = {
+    pendiente: 'bg-deep-blue  text-white',
+    en_progreso: 'bg-purple text-white',
+    Concluido: 'bg-success text-white',
+  };
+
+  prioridadColors: { [key: string]: string } = {
+    alta: 'bg-primary text-white',
+    media: 'bg-gold text-white',
+    baja: 'bg-secondary text-white',
+  };
+  
   filtroTexto = '';
   filtroEstado = '';
   filtroPrioridad = '';
@@ -187,27 +165,104 @@ export class ConsultarAsuntosComponent {
       asignaciones: [],
       observaciones: 'lorem ipsum dolor sit amet, cons... ',
     },
+    {
+      idAsunto: 4,
+      idTipoDocumento: 103,
+      tipoDocumento: 'Memorándum',
+      noOficio: 'MEM-2024-789',
+      esVolante: false,
+      numeroVolante: '',
+      esGuia: false,
+      numeroGuia: '',
+      fechaDocumento: '2024-05-20',
+      fechaRecepcion: '2024-05-21',
+      remitenteNombre: 'Andrés Herrera',
+      remitenteCargo: 'Analista',
+      remitenteDependencia: 'Planeación',
+      dirigidoA: 'Coordinador General',
+      dirigidoACargo: 'Coordinador',
+      dirigidoADependencia: 'Dirección de Planeación',
+      descripcionAsunto: 'Seguimiento a metas institucionales.',
+      idTema: 3,
+      Tema: 'Planeación Estratégica',
+      fechaCumplimiento: '2024-06-01',
+      idMedio: 3,
+      medio: 'Mensajería',
+      idPrioridad: 3,
+      prioridad: 'baja',
+      idStatusAsunto: 3,
+      statusAsunto: 'completado',
+      idUsuarioRegistra: 3,
+      usuarioRegistra: 'Marco Salas',
+      idUnidadAdministrativa: 3,
+      unidadAdministrativa: 'Planeación',
+      fechaRegistro: '2024-05-21',
+      documento: {
+        name: 'memorandum_metas.pdf',
+        url: '#',
+        size: '600KB',
+        type: 'PDF',
+      },
+      anexos: [
+        { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
+        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
+      ],
+      asignaciones: [],
+      observaciones: 'lorem ipsum dolor sit amet, cons... ',
+    },
+    {
+      idAsunto: 5,
+      idTipoDocumento: 103,
+      tipoDocumento: 'Memorándum',
+      noOficio: 'MEM-2024-789',
+      esVolante: false,
+      numeroVolante: '',
+      esGuia: false,
+      numeroGuia: '',
+      fechaDocumento: '2024-05-20',
+      fechaRecepcion: '2024-05-21',
+      remitenteNombre: 'Andrés Herrera',
+      remitenteCargo: 'Analista',
+      remitenteDependencia: 'Planeación',
+      dirigidoA: 'Coordinador General',
+      dirigidoACargo: 'Coordinador',
+      dirigidoADependencia: 'Dirección de Planeación',
+      descripcionAsunto: 'Seguimiento a metas institucionales.',
+      idTema: 3,
+      Tema: 'Planeación Estratégica',
+      fechaCumplimiento: '2024-06-01',
+      idMedio: 3,
+      medio: 'Mensajería',
+      idPrioridad: 3,
+      prioridad: 'baja',
+      idStatusAsunto: 3,
+      statusAsunto: 'completado',
+      idUsuarioRegistra: 3,
+      usuarioRegistra: 'Marco Salas',
+      idUnidadAdministrativa: 3,
+      unidadAdministrativa: 'Planeación',
+      fechaRegistro: '2024-05-21',
+      documento: {
+        name: 'memorandum_metas.pdf',
+        url: '#',
+        size: '600KB',
+        type: 'PDF',
+      },
+      anexos: [
+        { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
+        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
+      ],
+      asignaciones: [],
+      observaciones: 'lorem ipsum dolor sit amet, cons... ',
+    },
   ];
-  asuntoSeleccionado = this.asuntos[0];
-  filtros = {
-    busqueda: '',
-    estado: '',
-    prioridad: '',
-    departamento: '',
-  };
+  asuntoSeleccionadoItem: any = null;
 
-  estadoColors: { [key: string]: string } = {
-    pendiente: 'bg-deep-blue  text-white',
-    en_progreso: 'bg-purple text-white',
-    completado: 'bg-success text-white',
-  };
-
-  prioridadColors: { [key: string]: string } = {
-    alta: 'bg-primary text-white',
-    media: 'bg-gold text-white',
-    baja: 'bg-secondary text-white',
-  };
-
+  seleccionarAsunto(id: number): void {
+    this.asuntoSeleccionado.emit(id);
+    this.asuntoSeleccionadoItem = this.asuntos.find(a => a.idAsunto === id) || null;
+  }
+  
   get asuntosFiltrados() {
     return this.asuntos.filter((a) => {
       const texto = this.filtroTexto.toLowerCase();
@@ -240,41 +295,19 @@ export class ConsultarAsuntosComponent {
       );
     });
   }
-  seleccionarAsunto(asunto: any) {
+  /* seleccionarAsunto(asunto: any) {
     this.asuntoSeleccionado = asunto;
-  }
-
-  limpiarFiltros() {
-    this.filtros = {
-      busqueda: '',
-      estado: '',
-      prioridad: '',
-      departamento: '',
-    };
-  }
-
-  cambiarTab(tab: string) {
-    this.tabActiva = tab;
-  }
-
+  } */
   getEstadoIcon(estado: string): string {
     switch (estado) {
       case 'pendiente':
         return 'fas fa-clock';
       case 'en_progreso':
         return 'fas fa-edit';
-      case 'completado':
+      case 'Concluido':
         return 'fas fa-check';
       default:
         return 'x-circle';
     }
-  }
-
-  getDocumentIcon(tipo: string): string {
-    const t = tipo.toLowerCase();
-    if (t === 'pdf') return 'file-pdf';
-    if (t === 'doc' || t === 'docx') return 'file-word';
-    if (t === 'xls' || t === 'xlsx') return 'file-excel';
-    return 'file';
   }
 }

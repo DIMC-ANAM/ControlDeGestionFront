@@ -18,19 +18,19 @@ export class SidebarComponent {
     {
       id: 'registro',
       label: 'Registro de asuntos',
-      icon: 'fas fa-file-alt',
+      icon: 'fas fa-plus',
       link: '/registro-asunto'
     },
     {
       id: 'consultarAsuntos',
-      label: 'Consultar asuntos',
-      icon: 'fas fa-file-import',
+      label: 'Asuntos registrados',
+      icon: 'fas fa-file-alt',
       link: '/consultar-asuntos'
     },
     {
       id: 'consultarTurnados',
       label: 'Consultar turnados',
-      icon: 'fas fa-file-import',
+      icon: 'fas fa-sync',
       link: '/consultar-turnados'
     },
     {

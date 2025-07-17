@@ -1,16 +1,19 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, registerLocaleData } from '@angular/common';
 import { HeaderComponent } from './header/header.component';
 import { SidebarComponent } from './sidebar/sidebar.component';
 import { ModalComponent } from './modal/modal.component';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
-
-
+import { FechaMexicoPipe } from '../../pipes/date-mx-format';
+/* local mx date */
+import localeEsMx from '@angular/common/locales/es-MX';
+registerLocaleData(localeEsMx, 'es-MX');
 @NgModule({
   declarations: [
     HeaderComponent,
     SidebarComponent,
     ModalComponent,
+    FechaMexicoPipe
   ],
   imports: [
     CommonModule,
@@ -20,6 +23,7 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
     HeaderComponent,
     SidebarComponent,
     ModalComponent,
+    FechaMexicoPipe
   ],
 })
 export class SharedModule { }
