@@ -1,1 +1,97 @@
-<p>reportes works!</p>
+<div class="container-fluid p-4">
+    <!-- titulo Análi sis -->
+    <header class="header-title">
+            <div class="header-title-content">
+                <div class="logo-section">
+                    <div class="logo purple"><i class="fas fa-users-viewfinder"></i></div>
+                    <div class="title-section">
+                        <h1 class="frmlabel" >Reportes</h1>
+						<p>Métricas del control de movimientos de personal</p>
+                    </div>
+                </div>                
+            </div>
+        </header>
+    <div class=" header-title  flex-v-center  hp-100">
+        <div class="col-md-6">
+            <div class="dropdown-container">
+                <div class="input-icon-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" [(ngModel)]="searchText" (focus)="showDropdown = true" (input)="filterOptions()"
+                        (blur)="onBlur()" placeholder="Selecciona una unidad administrativa" class="form-control" />
+                </div>
+
+                <ul *ngIf="showDropdown" class="dropdown-list">
+                    <li *ngFor="let option of filteredOptions" (mousedown)="selectOption(option)">
+                        {{ option }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="importButtons text-lg-end">
+                <button type="button" class="m-3 btn btn-rounded btn-primary"><i class="fas fa-rotate p-1 "></i>
+                    Actualizar </button>
+                <button type="button" class="m-3 btn btn-rounded btn-secondary">Exportar CSV</button>
+            </div>
+        </div>
+    </div>
+
+    <div class=" header-title  mt-3 p-3 ">
+        <div class="graphs-container">
+            <div class="item rounded">
+              <div class="text-center h3 frmlabel">{{ graphs[0].title }}</div>                
+                        <app-graficas
+                            [chartID]="'graph-' + graphs[0].id"
+                            [width]="'100%'"
+                            [height]="'80%'"
+                            [type]="'bar'"
+                            [datasets]="graphs[0].chartData"
+                            [compact]="false"
+                        ></app-graficas>    
+            </div>
+            <div class="item rounded">
+              <div class="text-center h3 frmlabel">{{ graphs[1].title }}</div>                
+                        <app-graficas
+                            [chartID]="'graph-' + graphs[1].id"
+                            [width]="'100%'"
+                            [height]="'80%'"
+                            [type]="'pie'"
+                            [datasets]="graphs[1].chartData"
+                            [compact]="false"
+                            [showYAxisLabels]="false"
+                            [showXAxisLabels]="false"
+                            [showXAxis]="false"
+                            [showYAxis]="false"
+                            
+                            ></app-graficas>    
+                        </div>
+                         <div class="item rounded">
+                            <div class="text-center h3 frmlabel">{{ graphs[3].title }}</div>                
+                            <app-graficas
+                            [chartID]="'graph-' + graphs[3].id"
+                            [width]="'100%'"
+                            [height]="'80%'"
+                            [type]="'pie'"
+                            [datasets]="graphs[3].chartData"
+                            [compact]="false"
+                            [showYAxisLabels]="false"
+                            [showXAxisLabels]="false"
+                            [showXAxis]="false"
+                            [showYAxis]="false"
+                        ></app-graficas>    
+                        </div>
+                        <div class="item rounded">
+                            <div class="text-center h3 frmlabel">{{ graphs[2].title }}</div>                
+                            <app-graficas
+                            [chartID]="'graph-' + graphs[2].id"
+                            [width]="'100%'"
+                            [height]="'80%'"
+                            [type]="'multi'"
+                            [datasets]="graphs[2].chartData"
+                            [compact]="false"
+                            ></app-graficas>    
+                        </div>
+                       
+        </div>
+    </div>
+</div>

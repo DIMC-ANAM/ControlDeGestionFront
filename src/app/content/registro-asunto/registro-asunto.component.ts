@@ -94,7 +94,7 @@ export class RegistroAsuntoComponent {
       dirigidoADependencia: ['', [Validators.required, Validators.maxLength(255)]],
       descripcionAsunto: ['', [Validators.required, Validators.maxLength(1000)]],
       tema: ['', Validators.required],
-      fechaCumplimiento: ['', [Validators.required, this.fechaMinimaValidator()]],
+      fechaCumplimiento: ['', [, this.fechaMinimaValidator()]],
       medio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       prioridad: ['', Validators.required]

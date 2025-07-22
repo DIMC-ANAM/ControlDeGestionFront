@@ -4,11 +4,9 @@ import { GeneralComponent } from './layouts/general/general.component';
 import { DashboardComponent } from './content/dashboard/dashboard.component';
 import { UxDesignComponent } from './content/ux-design/ux-design.component';
 import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asunto.component';
-import { ConsultarTurnadosComponent } from './content/consultar-turnados/consultar-turnados.component';
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
-import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
 
 const routes: Routes = [
   {
@@ -33,8 +31,12 @@ const routes: Routes = [
       },
       {
         path: 'consultar-turnados',
-        component: ConsultarTurnadosComponent
+         loadChildren: () => import('./content/turnados-layout/turnados-layout.module').then(m => m.TurnadosLayoutModule)
       },
+      /* {
+        path: 'consultar-turnados',
+        component: ConsultarTurnadosComponent
+      }, */
       {
         path: 'busqueda-avanzada',
         component: BusquedaAvanzadaComponent

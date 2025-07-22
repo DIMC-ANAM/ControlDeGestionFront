@@ -53,8 +53,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #7bb7ff;
-  color: white;
+  background-color: #04d404;
 }
 
 .row {
@@ -79,37 +78,4 @@
   color: #6c757d;
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
-}
-
-
-/* Ocultar el input real */
-.hidden-input {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-}
-
-/* Zona de arrastre con icono */
-.drop-zone {
-    width: 100%;
-    height: 200px;
-    border: 2px dashed #ccc;
-    border-radius: 10px;
-    display: flex;
-    flex-direction: column; /* This is the key! */
-    align-items: center; /* Centers horizontally along the cross-axis */
-    justify-content: center; /* Centers vertically along the main-axis */
-    cursor: pointer;
-    transition: all 0.3s ease;
-}
-
-.drop-zone:hover {
-    background: #f8f9fa;
-    border-color: #0c8d07;
-}
-
-.drop-zone i {     
-    color: #09997a;
 }

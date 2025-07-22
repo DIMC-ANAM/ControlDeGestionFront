@@ -6,7 +6,7 @@ import { ListaAsuntosComponent } from './lista-asuntos/lista-asuntos.component';
 import { DetalleAsuntosComponent } from './detalle-asuntos/detalle-asuntos.component';
 import { AsuntosLayoutComponent } from './asuntos-layout.component';
 import { SharedModule } from '../../components/shared/shared.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     ListaAsuntosComponent,
@@ -18,7 +18,8 @@ import { FormsModule } from '@angular/forms';
     CommonModule,
     AsuntosLayoutRoutingModule,
     SharedModule,
-    FormsModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
 export class AsuntosLayoutModule { }

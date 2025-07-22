@@ -34,11 +34,12 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm" (click)="openConcluirModal()">
-                        <i class="fas fa-check-double me-2"></i> Concluir
+                    <button class="btn btn-primary btn-sm">
+                        <i class="fas fa-share me-2"></i> Dar respuesta
                     </button>
+                    
                     <button class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-edit me-2"></i> Editar
+                        <i class="fas fa-times me-2 fw-bold fa-"></i> Rechazar
                     </button>
                 </div>
             </div>
@@ -56,9 +57,9 @@
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
-            (click)="tabActiva = 'turnados'">
-            <i class="fas fa-sync me-2"></i> Turnados
+        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'respuesta'"
+            (click)="tabActiva = 'respuesta'">
+            <i class="fas fa-share me-2"></i> Respuesta
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -137,7 +138,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Cumplimiento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaCumplimiento | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaCumplimiento | fechaMexico }}</div>
                                 </div>
                             </div>
 
@@ -174,7 +175,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Registro:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRegistro | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaRegistro | fechaMexico }}</div>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +184,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha del Documento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaDocumento | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaDocumento | fechaMexico }}</div>
                                 </div>
                             </div>
                         </div>
@@ -209,7 +210,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Recepción:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRecepcion | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaRecepcion | fechaMexico }}</div>
                                 </div>
                             </div>
 
@@ -287,7 +288,7 @@
 
                 <!-- Expediente -->
                 <div *ngIf="tabActiva === 'expediente'">
-                    <div class="p-4">
+                    <div class="section">
                         <!-- Documento principal -->
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-2">
@@ -297,7 +298,7 @@
                                 </button>
                             </div>
 
-                            <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                            <div class="card p-2 d-flex flex-row justify-content-between align-items-center">
                                 <div class="d-flex align-items-center gap-3">
                                     <i class="fas fa-file-alt fa-2x text-primary"></i>
                                     <div>
@@ -362,32 +363,32 @@
                 </div>
 
                 <!-- Asignaciones -->
-                <div *ngIf="tabActiva === 'turnados'">
-                    <div class="p-4">
-
-                        <div class="d-flex justify-content-between align-items-center mb-3 ">
-                            <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
-                            <button class="btn btn-primary" (click)="openTurnarModal()">
-                                <i class="fas fa-users me-2"></i>Turnar
-                            </button>
-                        </div>
-                    
-                    <div *ngFor="let asignacion of turnados" class="card p-3 mb-2">
+                <div *ngIf="tabActiva === 'respuesta'">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h6 class="fw-bold mb-0">Detalle de la respuesta </h6>
+                        <!-- <button class="btn btn-primary">
+                            <i class="fas fa-user-check me-2"></i> Nuevo turnado
+                        </button> -->
+                    </div>
+                    <!-- <div *ngFor="let asignacion of asuntoSeleccionado.asignaciones" class="card p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
-              <div class="icon-circle"><i class="fas fa-share"></i></div>
+              <div class="icon-circle"><i class="fas fa-user"></i></div>
               <div>
-                <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable.nombre }}</p>
-                <small class="text-muted">{{ asignacion.instruccion.descripcion }}</small><br />
-                <small class="text-muted">Asignado: {{ '2025-07-22 00:00'  | fechaMexico}}</small>
+                <p class="mb-0 fw-semibold">{{ asignacion.usuario }}</p>
+                <small class="text-muted">{{ asignacion.rol }}</small><br />
+                <small class="text-muted">Asignado: {{ asignacion.fecha }}</small>
               </div>
             </div>
-            <div class="d-flex align-items-center gap-2">              
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge"
+                [ngClass]="asignacion.statusAsignacion === 'activo' ? 'bg-success text-white' : 'bg-secondary text-white'">
+                {{ asignacion.statusAsignacion }}
+              </span>
               <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
             </div>
           </div>
-        </div>
-                </div>
+        </div> -->
                 </div>
 
                 <!-- Historial -->
@@ -428,146 +429,3 @@
     </ng-template>
 </div>
 
-
-
-<ng-template #editarModal let-aceptar="aceptar" let-cancelar="cancelar">
-    
-</ng-template>
-<ng-template #turnarModal let-aceptar="aceptar" let-cancelar="cancelar">
-    <div class="container-fluid w-90  ">
-    <form [formGroup]="turnadoForm">
-      <div class="row">
-        <div class="col-md-12">
-          <label class="form-label frmlabel required" for="unidadResponsable">Unidad Responsable</label>
-          <div class="input-icon-wrapper">
-            <i
-              [ngClass]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <select
-              id="unidadResponsable"
-              class="form-control"
-              formControlName="unidadResponsable"
-              [class.invalid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'"
-              [class.valid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid'"
-            >
-              <option [value]="null" disabled selected>Seleccione una unidad</option>
-              <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.id">{{ unidad.nombre }}</option>
-            </select>
-          </div>
-          <p *ngIf="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'" class="invalid-field">Este campo es
-            obligatorio.</p>
-        </div>
-
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="instruccion">Instrucción</label>
-          <div class="input-icon-wrapper">
-            <i
-              [ngClass]="getValidationStatus(turnadoForm,'instruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'instruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <select
-              id="instruccion"
-              class="form-control"
-              formControlName="instruccion"
-              [class.invalid]="getValidationStatus(turnadoForm,'instruccion') == 'invalid'"
-              [class.valid]="getValidationStatus(turnadoForm,'instruccion') == 'valid'"
-            >
-              <option [value]="null" disabled selected>Seleccione una instrucción</option>
-              <option *ngFor="let instr of instruccionesDS" [value]="instr.id">{{ instr.descripcion }}</option>
-            </select>
-          </div>
-          <p *ngIf="getValidationStatus(turnadoForm,'instruccion') == 'invalid'" class="invalid-field">Este campo es
-            obligatorio.</p>
-        </div>
-
-        <div class="col-md-6 d-flex flex-v-center align-items-center mt-5 align-content-center justify-content-center">
-          <button class="btn btn-success" [disabled]="turnadoForm.invalid" (click)="addTurnado()">
-            <i class="fas fa-plus fw-bold"></i>
-          </button>
-        </div>
-      </div>
-    </form>    
-
-    <div class="table-responsive w-90 mx-auto" >
-      <table class="table table-hover table-border-colapse ">
-        <thead>
-          <tr>
-            <th>Unidad Responsable</th>
-            <th>Instrucción</th>
-            <th>Opciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="turnados.length === 0">
-            <td colspan="3" class="text-center">No hay turnados agregados.</td>
-          </tr>
-          <tr *ngFor="let turnado of turnados; let i = index">
-            <td>{{ turnado.unidadResponsable.nombre }}</td>
-            <td>{{ turnado.instruccion.descripcion }}</td>
-            <td class="text-center">
-              <i  role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>              
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>    
-
-    
-    <div class="w-100 d-flex justify-content-end">
-        <button class="btn btn-outline-dark m-2" (click)="cancelar()">Cancelar</button>
-        <button class="btn btn-primary m-2" (click)="aceptar()">   <i class="fas fa-share m-2"></i>Turnar </button>
-    </div>
-
-  </div>
-</ng-template>
-
-<ng-template #agregarAnexosModal let-aceptar="aceptar" let-cancelar="cancelar">
-</ng-template>
-
-<ng-template #confirmModal let-aceptar="aceptar" let-cancelar="cancelar">
-    ¿Está seguro de que desea continuar?
-</ng-template>
-
-<ng-template #concluirModal let-aceptar="aceptar" let-cancelar="cancelar">
-
-    <div class="container">
-       <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
-      <div class="mb-3">
-        <div class="w-100">
-          <label for="documentoCierre" class="form-label frmlabel d-block text-center mt-0">
-            <span class="mb-2 d-block text-start">Documento de Cierre</span>
-
-            <div
-              id="drop-zone"
-              class="drop-zone"
-              [class.drag-over]="isDragOver"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event)"
-            >
-              <i class="fas fa-upload fa-3x"></i>
-              <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
-            </div>
-
-            <input
-              type="file"
-              (change)="onFileSelected($event)"
-              id="documentoCierre"
-              class="hidden-input"
-            >
-          </label>
-        </div>
-
-        <p *ngIf="getValidationStatus(conclusionForm,'documentoCierre') == 'invalid'" class="invalid-field">Debe adjuntar un documento de cierre.</p>
-        
-        <div *ngIf="selectedFileNameFinalizar" class="mt-2 text-muted text-center">
-          Archivo seleccionado: <strong>{{ selectedFileNameFinalizar }}</strong>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end mt-4">
-        <button type="submit" class="btn btn-success" [disabled]="conclusionForm.invalid">
-          Concluir
-        </button>
-      </div>
-    </form>
-</div>
-
-</ng-template>

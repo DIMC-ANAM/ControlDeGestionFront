@@ -7,13 +7,15 @@ import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { FechaMexicoPipe } from '../../pipes/date-mx-format';
 /* local mx date */
 import localeEsMx from '@angular/common/locales/es-MX';
+import { GraficasComponent } from './graficas/graficas.component';
 registerLocaleData(localeEsMx, 'es-MX');
 @NgModule({
   declarations: [
     HeaderComponent,
     SidebarComponent,
     ModalComponent,
-    FechaMexicoPipe
+    FechaMexicoPipe,
+    GraficasComponent
   ],
   imports: [
     CommonModule,
@@ -23,7 +25,8 @@ registerLocaleData(localeEsMx, 'es-MX');
     HeaderComponent,
     SidebarComponent,
     ModalComponent,
-    FechaMexicoPipe
+    FechaMexicoPipe,
+    GraficasComponent
   ],
 })
 export class SharedModule { }

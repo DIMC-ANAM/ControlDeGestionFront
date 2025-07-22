@@ -29,7 +29,7 @@ export class SidebarComponent {
     },
     {
       id: 'consultarTurnados',
-      label: 'Consultar turnados',
+      label: 'Asuntos turnados',
       icon: 'fas fa-sync',
       link: '/consultar-turnados'
     },

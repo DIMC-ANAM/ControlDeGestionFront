@@ -8,8 +8,8 @@
     </div>
     <div class="row">
 
-        <div class="pb-2">
-            <h3 class="p-2 frmlabel">Datos generales</h3>
+        <div class="">
+            <h3 class="p-1 frmlabel">Datos generales</h3>
         </div>
 
         <!-- Formulario de registro de asunto -->
@@ -29,7 +29,7 @@
                             <option *ngFor="let t of tipoDocumentoDS" [value]="t">{{ t }}</option>
                         </select>
                     </div>
-                    <p *ngIf="getValidationStatus('idTipoDocumento') == 'invalid'" class="invalid-field">Este campo es
+                    <p *ngIf="getValidationStatus('idTipoDocumento') == 'invalid'" class="invalid-field">Campo
                         obligatorio.</p>
                 </div>
 
@@ -42,7 +42,7 @@
                             class="form-control" [class.invalid]="getValidationStatus('noOficio') == 'invalid'"
                             [class.valid]="getValidationStatus('noOficio') == 'valid'" />
                     </div>
-                    <p *ngIf="getValidationStatus('noOficio') == 'invalid'" class="invalid-field">Este campo es
+                    <p *ngIf="getValidationStatus('noOficio') == 'invalid'" class="invalid-field">Campo
                         obligatorio.</p>
                 </div>
 
@@ -89,7 +89,7 @@
                 </div>
 
                 <div class="col-md-3">
-                    <label class="form-label frmlabel required" for="fechaCumplimiento">Fecha y hora de
+                    <label class="form-label frmlabel" for="fechaCumplimiento">Fecha y hora de
                         cumplimiento</label>
                     <div class="input-icon-wrapper">
                         <i
@@ -134,7 +134,7 @@
                     </div>
                     <p *ngIf="documentoForm.get('esVolante')?.value && getValidationStatus('numeroVolante') == 'invalid'"
                         class="invalid-field">
-                        Este campo es obligatorio.
+                        Campo obligatorio.
                     </p>
                 </div>
 
@@ -150,7 +150,7 @@
                     </div>
                     <p *ngIf="documentoForm.get('esGuia')?.value && getValidationStatus('numeroGuia') == 'invalid'"
                         class="invalid-field">
-                        Este campo es obligatorio.
+                        Campo obligatorio.
                     </p>
                 </div>
             </div>
@@ -173,8 +173,8 @@
 
             <!-- Título: Datos de recepción -->
             <div class="row mt-4">
-                <div class="pb-2">
-                    <h3 class="p-2 frmlabel">Datos de recepción</h3>
+                <div class="">
+                    <h3 class="p-1 frmlabel">Datos de recepción</h3>
                 </div>
             </div>
 
@@ -285,7 +285,7 @@
                 </div> -->
             </div>
 
-            <p class="text-auxiliary text-muted">* Campos obligatorios</p>
+            <p class="text-auxiliary text-muted pt-4">* Campos obligatorios</p>
 
             <!-- Octava fila: Botones -->
             <div class="row pt-4">

@@ -1,0 +1,9 @@
+html, body, app-root {
+  height: 100%;
+  padding: 10px;
+}
+.panel-resistant {
+  flex: 0 0 50%; /* grow: 0, shrink: 0, basis: 50% */
+  min-width: 0;
+  
+}

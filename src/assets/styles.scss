@@ -756,6 +756,10 @@ input[type="checkbox"].form-check-input {
 
 
 // Estilos globales para tamaños personalizados
+.modal-width-mediano .modal-dialog {
+    width: 45%;
+    max-width: none;
+}
 .modal-width-400px .modal-dialog {
     width: 70%;
     max-width: none;
