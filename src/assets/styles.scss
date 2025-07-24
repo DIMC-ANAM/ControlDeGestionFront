@@ -363,11 +363,30 @@ p, .text-base {
     box-shadow: 0 0 0 3px rgba(159, 34, 65, 0.3);
 }
 
+
+
 /* Botón Primario */
 .btn-primary {
     background-color: var(--color-primary);
     color: var(--text-on-primary);
     border-color: var(--color-primary);
+}
+.btn-primary:focus, 
+.btn-primary.focus {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--text-on-primary) !important;
+  box-shadow: 0 0 0 3px rgba(159, 34, 65, 0.3); // o el que prefieras
+  outline: none !important;
+}
+
+.btn-primary:active,
+.btn-primary.active,
+.show > .btn-primary.dropdown-toggle {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary) !important;
+  color: var(--text-on-primary) !important;
+  box-shadow: none !important;
 }
 
 .btn-primary:hover:not(:disabled) {
@@ -552,7 +571,7 @@ select.form-control {
     width: 100%;
     padding: 12px;
     border: none;
-    box-shadow: 0 0 5px 1px gray;
+    box-shadow: 0 0 8px -3px gray;
     border-radius: 10px;
     font-family: var(--font-family-text);
     font-size: var(--font-size-base);
@@ -786,14 +805,14 @@ input[type="checkbox"].form-check-input {
 .tooltip-wrapper {
     display: inline-block;
     position: relative;
+    
 }
 
 .tooltip-wrapper::after {
     content: attr(data-tooltip);
     position: absolute;
     bottom: 100%;
-    left: 70%;
-    transform: translateX(-10%) translateY(30%);
+    left: 50%;
     background: rgba(0, 0, 0, 0.75);
     color: #fff;
     padding: 5px 8px;
@@ -805,6 +824,29 @@ input[type="checkbox"].form-check-input {
     transition: opacity 0.3s ease-in-out, visibility 0.2s ease-in-out;
     z-index: 10000;
 }
+.tooltip-wrapper.left::after {
+  left: 0;
+  transform: translateX(-100%) translateY(-8px);
+}
+.tooltip-wrapper.center::after {
+  left: 50%;
+  transform: translateX(-50%) translateY(-8px);
+}
+.tooltip-wrapper.end::after {
+  left: 100%;
+  transform: translateX(0) translateY(-8px);
+}
+.tooltip-wrapper.up::after {
+  bottom: 100%;
+  transform: translateX(-50%) translateY(-20%);
+}
+.tooltip-wrapper.down::after {
+  top: 100%;
+  bottom: auto;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+}
+
 
 .tooltip-wrapper:hover::after {
     opacity: 1;

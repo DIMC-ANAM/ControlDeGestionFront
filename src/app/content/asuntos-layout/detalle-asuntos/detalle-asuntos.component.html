@@ -8,13 +8,13 @@
                         <div class="text-muted small fw-bold ">
                             <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de registro'"><i
                                     class="fas fa-calendar-day text-primary"></i></span>
-                            {{ asuntoSeleccionado.fechaRegistro | fechaMexico}}
+                            Fecha de registro: {{ asuntoSeleccionado.fechaRegistro | fechaMexico}}
 
                         </div>
                         <div class="text-muted small fw-bold">
                             <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de cumplimiento'"><i
                                     class="fas fa-calendar-check text-success "></i></span>
-                            {{ asuntoSeleccionado.fechaCumplimiento | fechaMexico}}
+                            Fecha de cumplimiento {{ asuntoSeleccionado.fechaCumplimiento | fechaMexico}}
                         </div>
                     </div>
                     <div class="text-end flex-shrink-0">
@@ -292,7 +292,7 @@
                         <div class="mb-4">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="fw-bold mb-0">Documento Principal</h6>
-                                <button class="btn btn-sm btn-outline-primary">
+                                <button class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
                                     <i class="fas fa-upload me-2"></i> Reemplazar Documento
                                 </button>
                             </div>
@@ -301,7 +301,7 @@
                                 <div class="d-flex align-items-center gap-3">
                                     <i class="fas fa-file-alt fa-2x text-primary"></i>
                                     <div>
-                                        <div class="fw-semibold">{{ asuntoSeleccionado.documento.nombre }}</div>
+                                        <div class="fw-semibold">{{ asuntoSeleccionado.documento.name }}</div>
                                         <div class="text-muted small">
                                             {{ asuntoSeleccionado.documento.type }} • {{
                                             asuntoSeleccionado.documento.size
@@ -310,7 +310,8 @@
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-light">
+                                    <button class="btn btn-sm btn-light" (click)="openDocumentoVisor(asuntoSeleccionado.documento)">
+                                        
                                         <i class="fas fa-eye"></i>
                                     </button>
                                     <button class="btn btn-sm btn-light">
@@ -326,8 +327,8 @@
                         <div>
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <h6 class="fw-bold mb-0">Anexos</h6>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-plus me-2"></i> Agregar Anexo
+                                <button class="btn btn-sm btn-outline-success" (click)="openagregarAnexosModal()">
+                                    <i class="fas fa-plus me-2"></i> Agregar Anexos
                                 </button>
                             </div>
 
@@ -343,7 +344,7 @@
                                             </div>
                                         </div>
                                         <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-light">
+                                            <button class="btn btn-sm btn-light" (click)="openDocumentoVisor(anexo)">
                                                 <i class="fas fa-eye"></i>
                                             </button>
                                             <button class="btn btn-sm btn-light">
@@ -367,8 +368,8 @@
 
                         <div class="d-flex justify-content-between align-items-center mb-3 ">
                             <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
-                            <button class="btn btn-primary" (click)="openTurnarModal()">
-                                <i class="fas fa-users me-2"></i>Turnar
+                            <button class="btn btn-primary  tooltip-wrapper center up" [attr.data-tooltip]="'Turnar'" (click)="openTurnarModal()">
+                                <i class="fas fa-share "></i>
                             </button>
                         </div>
                     
@@ -431,14 +432,15 @@
 
 
 <ng-template #editarModal let-aceptar="aceptar" let-cancelar="cancelar">
-    
+    <!-- vacío por ahora -->
 </ng-template>
+
 <ng-template #turnarModal let-aceptar="aceptar" let-cancelar="cancelar">
-    <div class="container-fluid w-90  ">
+    <div class="container-fluid  ">
     <form [formGroup]="turnadoForm">
       <div class="row">
         <div class="col-md-12">
-          <label class="form-label frmlabel required" for="unidadResponsable">Unidad Responsable</label>
+          <label class="form-label frmlabel required" for="unidadResponsable"><i class="p-1 fas fa-building-columns"> </i>Unidad Responsable</label>
           <div class="input-icon-wrapper">
             <i
               [ngClass]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
@@ -458,7 +460,7 @@
         </div>
 
         <div class="col-md-6">
-          <label class="form-label frmlabel required" for="instruccion">Instrucción</label>
+          <label class="form-label frmlabel required" for="instruccion"><i class="p-1 fas fa-list-check"> </i>Instrucción</label>
           <div class="input-icon-wrapper">
             <i
               [ngClass]="getValidationStatus(turnadoForm,'instruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'instruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
@@ -485,13 +487,13 @@
       </div>
     </form>    
 
-    <div class="table-responsive w-90 mx-auto" >
+    <div class="table-responsive w-100 mx-auto" >
       <table class="table table-hover table-border-colapse ">
         <thead>
           <tr>
-            <th>Unidad Responsable</th>
-            <th>Instrucción</th>
-            <th>Opciones</th>
+            <th><i class="p-1 fas fa-building-columns"></i> Unidad Responsable</th>
+            <th><i class="p-1 fas fa-list-check"></i>Instrucción</th>
+            <th>Borrar</th>
           </tr>
         </thead>
         <tbody>
@@ -519,6 +521,66 @@
 </ng-template>
 
 <ng-template #agregarAnexosModal let-aceptar="aceptar" let-cancelar="cancelar">
+    <div class="container">
+       <form [formGroup]="agregarAnexoForm" (ngSubmit)="agregarAnexos()">
+        <div class="mb-3">
+            <div class="w-100">
+            <!-- <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Anexos del asunto</span> -->
+            <label class="text-center w-100">
+                <div
+                id="drop-zone"
+                class="drop-zone"
+                [class.drag-over]="isDragOver"
+                (dragover)="onDragOver($event)"
+                (dragleave)="onDragLeave($event)"
+                (drop)="onDrop(agregarAnexoForm, $event, true)"
+                >
+                <i class="fas fa-upload fa-3x"></i>
+                <p class="mt-3 mb-0 text-muted">Haz clic o arrastra varios  archivos aquí</p>
+                </div>
+
+                <input
+                multiple
+                type="file"
+                (change)="onFileSelectedAnexos(agregarAnexoForm, $event)"
+                id="documento"
+                class="hidden-input"
+                >
+            </label>
+            </div>
+
+            <p *ngIf="getValidationStatus(agregarAnexoForm,'documento') == 'invalid'" class="invalid-field">Debe adjuntar al menos un documento para continuar.</p>
+            
+        </div>
+        <div class="table-responsive w-100 mx-auto" >
+            <table class="table table-hover table-border-colapse ">
+                <thead>
+                <tr>
+                    <th><i class="p-1 fas fa-file-alt"></i> Nombre del documento</th>                    
+                    <th>Borrar</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngIf="anexosCargados.length === 0">
+                    <td colspan="3" class="text-center">No hay anexos agregados.</td>
+                </tr>
+                <tr *ngFor="let anexo of anexosCargados; let i = index">
+                    <td>{{ anexo.name }}</td>                    
+                    <td class="text-center">
+                    <i  role="button" class="fas fa-trash text-secondary" (click)="borrarAnexoAgregado(i)"></i>              
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div> 
+
+        <div class="d-flex justify-content-end mt-4">
+            <button type="submit" class="btn btn-success" [disabled]="anexosCargados.length == 0">
+            <i class="fas fa-upload m-2 "></i>Cargar anexos
+            </button>
+        </div>
+        </form>
+    </div>
 </ng-template>
 
 <ng-template #confirmModal let-aceptar="aceptar" let-cancelar="cancelar">
@@ -531,8 +593,8 @@
        <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
       <div class="mb-3">
         <div class="w-100">
-          <label for="documentoCierre" class="form-label frmlabel d-block text-center mt-0">
-            <span class="mb-2 d-block text-start">Documento de Cierre</span>
+            <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Documento de Cierre</span>
+          <label class="text-center w-100">
 
             <div
               id="drop-zone"
@@ -540,7 +602,7 @@
               [class.drag-over]="isDragOver"
               (dragover)="onDragOver($event)"
               (dragleave)="onDragLeave($event)"
-              (drop)="onDrop($event)"
+              (drop)="onDrop(conclusionForm, $event)"
             >
               <i class="fas fa-upload fa-3x"></i>
               <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
@@ -548,17 +610,17 @@
 
             <input
               type="file"
-              (change)="onFileSelected($event)"
+              (change)="onFileSelected(conclusionForm, $event)"
               id="documentoCierre"
               class="hidden-input"
             >
           </label>
         </div>
 
-        <p *ngIf="getValidationStatus(conclusionForm,'documentoCierre') == 'invalid'" class="invalid-field">Debe adjuntar un documento de cierre.</p>
+        <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe adjuntar un documento de cierre.</p>
         
-        <div *ngIf="selectedFileNameFinalizar" class="mt-2 text-muted text-center">
-          Archivo seleccionado: <strong>{{ selectedFileNameFinalizar }}</strong>
+        <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
+        Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
         </div>
       </div>
 
@@ -570,4 +632,86 @@
     </form>
 </div>
 
+</ng-template>
+<ng-template #reemplazarDocumentoModal let-aceptar="aceptar" let-cancelar="cancelar">
+
+    <div class="container">
+       <form [formGroup]="reemplazarDocumentoForm" (ngSubmit)="reemplazarDocumento()">
+      <div class="mb-3">
+        <div class="w-100">
+            <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Documento del asunto</span>
+          <label class="text-center w-100">
+
+            <div
+              id="drop-zone"
+              class="drop-zone"
+              [class.drag-over]="isDragOver"
+              (dragover)="onDragOver($event)"
+              (dragleave)="onDragLeave($event)"
+              (drop)="onDrop(reemplazarDocumentoForm, $event)"
+            >
+              <i class="fas fa-upload fa-3x"></i>
+              <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+            </div>
+
+            <input
+              type="file"
+              (change)="onFileSelected(reemplazarDocumentoForm, $event)"
+              id="documentoReemplazo"
+              class="hidden-input"
+            >
+          </label>
+        </div>
+
+       <p *ngIf="getValidationStatus(reemplazarDocumentoForm,'documento') == 'invalid'" class="invalid-field">
+            Debe adjuntar un documento para reemplazar.
+            </p>
+       <div *ngIf="getFileName('reemplazar')" class="mt-2 text-muted text-center">
+        Archivo seleccionado: <strong>{{ getFileName('reemplazar') }}</strong>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end mt-4">
+        <button type="submit" class="btn btn-success" [disabled]="reemplazarDocumentoForm.invalid">
+          Reemplazar
+        </button>
+      </div>
+    </form>
+</div>
+
+</ng-template>
+
+<ng-template #verDocumentoModal let-aceptar="aceptar" let-cancelar="cancelar">
+   <div class="visor">
+					<div class="pdf-container">
+        <div class="pdf-header p-2">
+            <p class="pdf-title"><i class="fas fa-file m-2"></i> {{documentoVisor.name}}</p>
+        </div>
+
+        <!-- Aquí va el PDF embebido -->
+        <embed 
+           [src]="documentVisorURL" 
+            type="application/pdf" 
+            class="pdf-viewer"
+            id="pdfViewer"
+            *ngIf="documentVisorURL"
+        />
+
+        <!-- Contenido alternativo si el PDF no se puede mostrar -->
+        <div class="pdf-fallback" style="display: none;" id="pdfFallback">
+            <h3>No se puede mostrar el PDF</h3>
+            <p>Tu navegador no soporta la visualización de archivos PDF integrados.</p>
+            <a href="ruta/al/archivo.pdf" class="download-link" download>
+                Descargar PDF
+            </a>
+        </div>
+
+        <div class="pdf-info">
+            <strong>Archivo:</strong> {{documentoVisor.name}} | 
+            <strong>Tamaño:</strong> {{documentoVisor.size}} bytes| 
+            <strong>Última modificación: </strong>{{documentoVisor.lastModified }} |
+            <strong>Tipo: </strong>{{documentoVisor.type}}
+        </div>
+    </div></div>
+            
 </ng-template>

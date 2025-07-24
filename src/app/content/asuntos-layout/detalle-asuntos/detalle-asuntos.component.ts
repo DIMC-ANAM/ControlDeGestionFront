@@ -1,47 +1,58 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
-import { Form, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-detalle-asuntos',
   standalone: false,
   templateUrl: './detalle-asuntos.component.html',
-  styleUrl: './detalle-asuntos.component.scss'
+  styleUrl: './detalle-asuntos.component.scss',
 })
 export class DetalleAsuntosComponent {
-  /* componentes que seran trackados para hacer los templaetesref de los modales */
   @ViewChild('editarModal', { static: true }) editarModal!: TemplateRef<any>;
   @ViewChild('turnarModal', { static: true }) turnarModal!: TemplateRef<any>;
-  @ViewChild('agregarAnexosModal', { static: true }) agregarAnexosModal!: TemplateRef<any>;
+  @ViewChild('agregarAnexosModal', { static: true })
+  agregarAnexosModal!: TemplateRef<any>;
   @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
-  @ViewChild('concluirModal', { static: true }) concluirModal!: TemplateRef<any>;
+  @ViewChild('concluirModal', { static: true })
+  concluirModal!: TemplateRef<any>;
+  @ViewChild('reemplazarDocumentoModal', { static: true })
+  reemplazarDocumentoModal!: TemplateRef<any>;
+  @ViewChild('verDocumentoModal', { static: true })
+  verDocumentoModal!: TemplateRef<any>;
+
   @Input() idAsunto: number | null = null;
-  turnadoForm!: FormGroup; // Formulario para agregar nuevos turnados
-  turnados: any = []; // Lista donde se almacenarán los turnados agregados
+
+  turnadoForm!: FormGroup;
+  conclusionForm!: FormGroup;
+  reemplazarDocumentoForm!: FormGroup;
+  agregarAnexoForm!: FormGroup;
 
   unidadesResponsablesDS: any[] = [
     { id: 1, nombre: 'Departamento de Recursos Humanos' },
     { id: 2, nombre: 'Dirección de Finanzas' },
-    { id: 3, nombre: 'Subsecretaría de Asuntos Legales' }
+    { id: 3, nombre: 'Subsecretaría de Asuntos Legales' },
   ];
 
   instruccionesDS: any[] = [
     { id: 1, descripcion: 'Para su conocimiento' },
     { id: 2, descripcion: 'Para su atención y respuesta' },
     { id: 3, descripcion: 'Para archivo' },
-    { id: 4, descripcion: 'Para elaboración de informe' }
+    { id: 4, descripcion: 'Para elaboración de informe' },
   ];
+  turnados: any[] = [];
 
-  conclusionForm!: FormGroup;
-  selectedFileFinalizar: File | null = null;
-  selectedFileNameFinalizar: string | null = null;
-   isDragOver: boolean = false;
-  constructor(
-    private fb: FormBuilder,
-    private modalManager: ModalManagerService,
-  ){}
+  anexosCargados: any[] = [];
+  fileState = new Map<string, { file: File | null; name: string | null }>();
 
-    asuntos = [
+  documentoVisor: any = null;
+  documentVisorURL: SafeResourceUrl | null = null;
+  documentoStringURL: string = '';
+
+  isDragOver: boolean = false;
+
+  asuntos = [
     {
       idAsunto: 1,
       idTipoDocumento: 101,
@@ -173,7 +184,7 @@ export class DetalleAsuntosComponent {
       },
       anexos: [
         { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
-        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
+        { name: 'anexo2.pdf', url: '#', size: '1MB', type: 'PDF' },
       ],
       asignaciones: [],
       observaciones: 'lorem ipsum dolor sit amet, cons... ',
@@ -181,14 +192,22 @@ export class DetalleAsuntosComponent {
   ];
   tabActiva = 'detalles';
   asuntoSeleccionado: any = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private modalManager: ModalManagerService,
+    private sanitizer: DomSanitizer
+  ) {}
+
   ngOnChanges() {
     if (this.idAsunto) {
       this.cargarDetalle(this.idAsunto);
     }
   }
+
   cargarDetalle(id: number) {
-    // Aquí podrías llamar a un servicio para obtener los detalles del asunto
-    this.asuntoSeleccionado = this.asuntos.find(a => a.idAsunto === id) || null;
+    this.asuntoSeleccionado =
+      this.asuntos.find((a) => a.idAsunto === id) || null;
   }
 
   getEstadoIcon(estado: string): string {
@@ -203,8 +222,9 @@ export class DetalleAsuntosComponent {
         return 'x-circle';
     }
   }
-      estadoColors: { [key: string]: string } = {
-    pendiente: 'bg-deep-blue  text-white',
+
+  estadoColors: { [key: string]: string } = {
+    pendiente: 'bg-deep-blue text-white',
     en_progreso: 'bg-purple text-white',
     Concluido: 'bg-success text-white',
   };
@@ -215,167 +235,135 @@ export class DetalleAsuntosComponent {
     baja: 'bg-secondary text-white',
   };
 
-  /* modales */
+  // Modal Abstraction
+  private openModal(options: {
+    title: string;
+    template: TemplateRef<any>;
+    onAccept: () => void;
+    onCancel?: () => void;
+    width?: string;
+  }) {
+    this.modalManager.openModal({
+      title: options.title,
+      template: options.template,
+      showFooter: false,
+      width: options.width ?? 'mediano',
+      onAccept: options.onAccept,
+      onCancel: options.onCancel,
+    });
+  }
 
-  openTurnarModal(){
-      this.initFormTurnado();
-       this.modalManager.openModal({
+  openTurnarModal() {
+    this.initFormTurnado();
+    this.openModal({
       title: 'Turnar asunto',
-      template: this.turnarModal,     
-      showFooter: false,
-      onAccept: () => this.finalizarTurnado(),         
+      template: this.turnarModal,
+      onAccept: () => this.finalizarTurnado(),
       onCancel: () => this.cancelarTurnado(),
-      width: 'mediano'
-      
     });
-
   }
-  openConcluirModal(){
-      this.initFormConcluir();
-       this.modalManager.openModal({
+
+  openConcluirModal() {
+    this.initFormConcluir();
+    this.openModal({
       title: 'Concluir asunto',
-      template: this.concluirModal,     
-      showFooter: false,
-      onAccept: () => this.finalizarAsunto(),         
-      /* limpiar variables!!! */
-      /* onCancel: () => , */
-      width: 'mediano'
-      
+      template: this.concluirModal,
+      onAccept: () => this.finalizarAsunto(),
+      onCancel: () => {
+        this.resetFormularioArchivo(this.conclusionForm);
+        this.clearFile('concluir');
+      },
     });
-
   }
-    /* turnar */
 
+  openReemplazarModal() {
+    this.initFormReemplazar();
+    this.openModal({
+      title: 'Reemplazar documento',
+      template: this.reemplazarDocumentoModal,
+      onAccept: () => this.reemplazarDocumento(),
+      onCancel: () => {
+        this.resetFormularioArchivo(this.reemplazarDocumentoForm);
+        this.clearFile('reemplazar');
+      },
+    });
+  }
 
-  // Inicializa el formulario reactivo
+  openagregarAnexosModal() {
+    this.initFormAnexos();
+    this.openModal({
+      title: '<i class="fas fa-folder-open m-2"></i> Agregar Anexos',
+      template: this.agregarAnexosModal,
+      onAccept: () => this.agregarAnexos(),
+      onCancel: () => this.resetFormularioArchivo(this.agregarAnexoForm),
+    });
+  }
+
+  openDocumentoVisor(file: any) {
+    if (!file) return;
+    this.documentoStringURL = file.url;
+    this.documentVisorURL = this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.documentoStringURL
+    );
+    this.documentoVisor = file;
+    this.modalManager.openModal({
+      title: '',
+      template: this.verDocumentoModal,
+      showFooter: false,
+      onAccept: () => {},
+      onCancel: () => URL.revokeObjectURL(this.documentoStringURL),
+      width: '400px',
+    });
+  }
+
   initFormTurnado(): void {
     this.turnadoForm = this.fb.group({
       unidadResponsable: [null, Validators.required],
-      instruccion: [null, Validators.required]
+      instruccion: [null, Validators.required],
     });
   }
 
-  // Método para agregar un turnado a la lista
-  addTurnado(): void {
-    if (this.turnadoForm.valid) {
-      console.log("entra");
-      console.log(this.turnadoForm.value);
-      
-      const selectedUnidadId = this.turnadoForm.get('unidadResponsable')?.value;
-      const selectedInstruccionId = this.turnadoForm.get('instruccion')?.value;
+  private createDocumentoForm(): FormGroup {
+    return this.fb.group({ documento: [null, Validators.required] });
+  }
 
-      // Encuentra el objeto completo de la unidad e instrucción seleccionadas
-      const unidad = this.unidadesResponsablesDS.find(u => u.id == selectedUnidadId);
-      const instruccion = this.instruccionesDS.find(i => i.id == selectedInstruccionId);
+  initFormConcluir() {
+    this.conclusionForm = this.createDocumentoForm();
+  }
+  initFormReemplazar() {
+    this.reemplazarDocumentoForm = this.createDocumentoForm();
+  }
+  initFormAnexos() {
+    this.agregarAnexoForm = this.createDocumentoForm();
+  }
 
-      console.log(unidad,instruccion);
-
-      if (unidad && instruccion) {
-        console.log("entra 2");
-        
-
-        // Verifica si el turnado ya existe para evitar duplicados (opcional)
-        const exists = this.turnados.some((t: any) =>
-          t.unidadResponsable.id === unidad.id && t.instruccion.id === instruccion.id
-        );
-
-        if (!exists) {
-
-          this.turnados.push({ unidadResponsable: unidad, instruccion: instruccion });
-          this.turnadoForm.reset({ unidadResponsable: null, instruccion: null }); // Resetea el formulario
-        } else {
-          alert('Este turnado (Unidad Responsable e Instrucción) ya ha sido agregado.');
-        }
-      }
+  finalizarAsunto(): void {
+    const estado = this.fileState.get('concluir');
+    if (this.conclusionForm.valid && estado?.file) {
+      alert(`¡Asunto finalizado con el documento: ${estado.name}! 🎉`);
+      this.resetFormularioArchivo(this.conclusionForm);
     } else {
-      // Marcar todos los campos como "touched" para que se muestren los mensajes de validación
-      this.turnadoForm.markAllAsTouched();
+      this.conclusionForm.markAllAsTouched();
     }
   }
 
-  // Método para eliminar un turnado de la lista
-  removeTurnado(index: number): void {
-    this.turnados.splice(index, 1);
-  }
-
-  // Método para obtener el estado de validación de un campo
-  getValidationStatus(form:FormGroup,controlName: string): 'valid' | 'invalid' | 'none' {
-    const control = form.get(controlName);
-    if (!control) {
-      return 'none';
-    }
-    return control.valid && (control.dirty || control.touched) ? 'valid' :
-           control.invalid && (control.dirty || control.touched) ? 'invalid' : 'none';
-  }
-
-  // Método para finalizar el proceso (ej. enviar datos al backend)
   finalizarTurnado(): void {
     console.log('Turnados a enviar:', this.turnados);
-        
-    // Aquí puedes emitir un evento, llamar a un servicio, etc.
   }
 
-  // Método para cancelar el proceso
   cancelarTurnado(): void {
-    this.turnados = []; // Limpia la lista de turnados
-    this.turnadoForm.reset({ unidadResponsable: null, instruccion: null }); // Resetea el formulario   
-    // Aquí puedes redirigir al usuario, cerrar un modal, etc.
+    this.turnados = [];
+    this.turnadoForm.reset();
   }
 
-  /* concluir modal */
-  initFormConcluir(): void {
-    this.conclusionForm = this.fb.group({
-      documentoCierre: [null, Validators.required] // El validador 'required' asegura que se seleccione un archivo
-    });
-  }
-
-   // Maneja la selección de un archivo
-  /* onFileSelected(event: Event): void {
+  onFileSelected(form: FormGroup, event: Event): void {
     const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.selectedFileFinalizar = input.files[0];
-      this.selectedFileNameFinalizar = this.selectedFileFinalizar.name;
-      // Actualiza el valor del FormControl para la validación
-      this.conclusionForm.get('documentoCierre')?.setValue(this.selectedFileFinalizar);
-    } else {
-      this.selectedFileFinalizar = null;
-      this.selectedFileNameFinalizar = null;
-      this.conclusionForm.get('documentoCierre')?.setValue(null); // Limpia el valor si no hay archivo
-    }
-  } */
-
-
-  // Función dummy para finalizar el asunto
-  finalizarAsunto(): void {
-    if (this.conclusionForm.valid && this.selectedFileFinalizar) {
-      console.log('Asunto listo para finalizar.');
-      console.log('Documento de cierre:', this.selectedFileFinalizar.name);
-
-      // Aquí iría la lógica para subir el archivo y concluir el asunto
-      // Por ejemplo, podrías llamar a un servicio:
-      // this.asuntoService.concluirAsunto(this.selectedFile).subscribe(response => {
-      //   console.log('Asunto finalizado con éxito', response);
-      //   alert(`Asunto finalizado. Documento: ${this.selectedFile?.name}`);
-      //   this.conclusionForm.reset();
-      //   this.selectedFile = null;
-      //   this.selectedFileNameFinalizar = null;
-      // }, error => {
-      //   console.error('Error al finalizar el asunto', error);
-      //   alert('Hubo un error al finalizar el asunto.');
-      // });
-
-      alert(`¡Asunto finalizado con el documento: ${this.selectedFileNameFinalizar}! 🎉`);
-      this.conclusionForm.reset();
-      this.selectedFileFinalizar = null;
-      this.selectedFileNameFinalizar = null;
-    } else {
-      console.error('Formulario inválido o archivo no seleccionado.');
-      this.conclusionForm.markAllAsTouched(); // Para mostrar los errores de validación
-    }
+    this.processFile(form, input.files);
   }
-   onFileSelected(event: Event): void {
+
+  onFileSelectedAnexos(form: FormGroup, event: Event): void {
     const input = event.target as HTMLInputElement;
-    this.processFile(input.files);
+    this.processFile(form, input.files, true);
   }
 
   onDragOver(event: DragEvent): void {
@@ -390,38 +378,125 @@ export class DetalleAsuntosComponent {
     this.isDragOver = false;
   }
 
-  onDrop(event: DragEvent): void {
+  onDrop(form: FormGroup, event: DragEvent, lista: boolean = false): void {
     event.preventDefault();
     event.stopPropagation();
     this.isDragOver = false;
-
-    const files = event.dataTransfer?.files;
-    this.processFile(files);
+    this.processFile(form, event.dataTransfer?.files, lista);
   }
 
-  private processFile(files: FileList | null | undefined): void {
-    if (files && files.length > 0) {
-      this.selectedFileFinalizar = files[0];
-      this.selectedFileNameFinalizar = this.selectedFileFinalizar.name;
-      
-      // *** MODIFICATION HERE ***
-      // Instead of setting the File object, set a placeholder value (e.g., true or the file name)
-      // to satisfy Validators.required for the form control.
-      this.conclusionForm.get('documentoCierre')?.setValue(this.selectedFileFinalizar.name); // Or true, or 1, etc.
-      
-      this.conclusionForm.get('documentoCierre')?.markAsTouched();
-      this.conclusionForm.get('documentoCierre')?.updateValueAndValidity();
+  private processFile( form: FormGroup, files: FileList | null | undefined, lista: boolean = false ): void {
+    const isReemplazo = form == this.reemplazarDocumentoForm;
+    
+    const controlName = 'documento';
+    const key = isReemplazo ? 'reemplazar' : 'concluir';
+
+
+    if (!files || files.length === 0) {
+      if (lista && this.anexosCargados.length > 0) {   
+        return;
+      }
+      // Si lista es true pero no hay archivos cargados, o si lista es false
+      this.updateDocumentoControl(form, null, controlName);
+      return;
+    }
+
+    if (lista) {
+      Array.from(files).forEach((file) => {
+        if (!this.anexosCargados.some((anexo) => anexo.name === file.name)) {
+          this.anexosCargados.push(file);
+        }
+      });
+      const first = this.anexosCargados[0].name ?? null;
+      this.updateDocumentoControl(form, first, controlName);
     } else {
-      this.selectedFileFinalizar = null;
-      this.selectedFileNameFinalizar = null;
-      
-      // *** MODIFICATION HERE ***
-      // Set the placeholder back to null if no file is selected
-      this.conclusionForm.get('documentoCierre')?.setValue(null);
-      
-      this.conclusionForm.get('documentoCierre')?.markAsTouched();
-      this.conclusionForm.get('documentoCierre')?.updateValueAndValidity();
+      const file = files[0];
+      this.fileState.set(key, { file, name: file.name });
+      this.updateDocumentoControl(form, file.name, controlName);
+    }
+  }
+  private updateDocumentoControl(
+    form: FormGroup,
+    value: string | null,
+    controlName: string
+  ): void {
+    const control = form.get(controlName);
+    if (control) {
+      control.setValue(value);
+      control.markAsDirty();
+      control.markAsTouched();
     }
   }
 
+  private resetFormularioArchivo(form: FormGroup): void {
+    form.reset();
+    this.fileState.set('concluir', { file: null, name: null });
+  }
+
+  reemplazarDocumento() {
+    console.log('Documento reemplazado');
+    this.resetFormularioArchivo(this.reemplazarDocumentoForm);
+  }
+
+  agregarAnexos() {
+    console.log('Anexos agregados');
+    this.resetFormularioArchivo(this.agregarAnexoForm);
+  }
+
+  getFileName(key: string): string | null {
+    const fileData = this.fileState.get(key);
+    return fileData?.name || null;
+  }
+
+  clearFile(key: string) {
+    this.fileState.set(key, { file: null, name: null });
+  }
+
+  borrarAnexoAgregado(index: number): void {
+    this.anexosCargados.splice(index, 1);
+  }
+
+  getValidationStatus(
+    form: FormGroup,
+    controlName: string
+  ): 'valid' | 'invalid' | 'none' {
+    const control = form.get(controlName);
+    if (!control) return 'none';
+    return control.valid && (control.dirty || control.touched)
+      ? 'valid'
+      : control.invalid && (control.dirty || control.touched)
+      ? 'invalid'
+      : 'none';
+  }
+
+  addTurnado(): void {
+    if (this.turnadoForm.valid) {
+      const unidadId = this.turnadoForm.get('unidadResponsable')?.value;
+      const instruccionId = this.turnadoForm.get('instruccion')?.value;
+      const unidad = this.unidadesResponsablesDS.find((u) => u.id == unidadId);
+      const instruccion = this.instruccionesDS.find(
+        (i) => i.id == instruccionId
+      );
+      if (
+        unidad &&
+        instruccion &&
+        !this.turnados.some(
+          (t) =>
+            t.unidadResponsable.id === unidad.id &&
+            t.instruccion.id === instruccion.id
+        )
+      ) {
+        this.turnados.push({ unidadResponsable: unidad, instruccion });
+        this.turnadoForm.reset();
+      } else {
+        alert('Este turnado ya ha sido agregado.');
+      }
+    } else {
+      this.turnadoForm.markAllAsTouched();
+    }
+  }
+
+  removeTurnado(index: number): void {
+    this.turnados.splice(index, 1);
+  }
 }
