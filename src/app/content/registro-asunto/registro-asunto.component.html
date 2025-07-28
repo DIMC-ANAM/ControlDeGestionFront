@@ -13,7 +13,7 @@
         </div>
 
         <!-- Formulario de registro de asunto -->
-        <form [formGroup]="documentoForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="documentoForm">
 
             <!-- Primera fila: Tipo documento, Número oficio, Tema -->
             <div class="row">
@@ -26,7 +26,7 @@
                             [class.invalid]="getValidationStatus('idTipoDocumento') == 'invalid'"
                             [class.valid]="getValidationStatus('idTipoDocumento') == 'valid'">
                             <option value="null" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of tipoDocumentoDS" [value]="t">{{ t }}</option>
+                            <option *ngFor="let t of tipoDocumentoDS" [value]="t.id">{{ t.tipoDocumento }}</option>
                         </select>
                     </div>
                     <p *ngIf="getValidationStatus('idTipoDocumento') == 'invalid'" class="invalid-field">Campo
@@ -47,18 +47,18 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label frmlabel required" for="tema">Tema</label>
+                    <label class="form-label frmlabel required" for="idTema">Tema</label>
                     <div class="input-icon-wrapper">
                         <i
-                            [ngClass]="getValidationStatus('tema') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('tema') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <select id="tema" class="form-control" formControlName="tema"
-                            [class.invalid]="getValidationStatus('tema') == 'invalid'"
-                            [class.valid]="getValidationStatus('tema') == 'valid'">
+                            [ngClass]="getValidationStatus('idTema') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idTema') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idTema" class="form-control" formControlName="idTema"
+                            [class.invalid]="getValidationStatus('idTema') == 'invalid'"
+                            [class.valid]="getValidationStatus('idTema') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of temas" [value]="t">{{ t }}</option>
+                            <option *ngFor="let t of temas" [value]="t.idTema">{{ t.tema}}</option>
                         </select>
                     </div>
-                    <p *ngIf="getValidationStatus('tema') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+                    <p *ngIf="getValidationStatus('idTema') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
                 </div>
             </div>
 
@@ -107,15 +107,15 @@
                     <label class="form-label frmlabel required" for="prioridad">Prioridad</label>
                     <div class="input-icon-wrapper">
                         <i
-                            [ngClass]="getValidationStatus('prioridad') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('prioridad') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <select id="prioridad" class="form-control" formControlName="prioridad"
-                            [class.invalid]="getValidationStatus('prioridad') == 'invalid'"
-                            [class.valid]="getValidationStatus('prioridad') == 'valid'">
+                            [ngClass]="getValidationStatus('idPrioridad') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idPrioridad') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idPrioridad" class="form-control" formControlName="idPrioridad"
+                            [class.invalid]="getValidationStatus('idPrioridad') == 'invalid'"
+                            [class.valid]="getValidationStatus('idPrioridad') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
                             <option *ngFor="let t of opciones['prioridad']" [value]="t.id">{{ t.nombre }}</option>
                         </select>
                     </div>
-                    <p *ngIf="getValidationStatus('prioridad') == 'invalid'" class="invalid-field">Campo obligatorio.
+                    <p *ngIf="getValidationStatus('idPrioridad') == 'invalid'" class="invalid-field">Campo obligatorio.
                     </p>
                 </div>
             </div>
@@ -257,15 +257,15 @@
                     <label class="form-label frmlabel required" for="medio">Medio de recepción</label>
                     <div class="input-icon-wrapper">
                         <i
-                            [ngClass]="getValidationStatus('medio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('medio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <select id="medio" class="form-control" formControlName="medio"
-                            [class.invalid]="getValidationStatus('medio') == 'invalid'"
-                            [class.valid]="getValidationStatus('medio') == 'valid'">
+                            [ngClass]="getValidationStatus('idMedio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idMedio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idMedio" class="form-control" formControlName="idMedio"
+                            [class.invalid]="getValidationStatus('idMedio') == 'invalid'"
+                            [class.valid]="getValidationStatus('idMedio') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
                             <option *ngFor="let t of opciones['medio']" [value]="t.id">{{ t.nombre }}</option>
                         </select>
                     </div>
-                    <p *ngIf="getValidationStatus('medio') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+                    <p *ngIf="getValidationStatus('idMedio') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
                 </div>
 
                 <!-- <div class="col-md-3">
@@ -292,7 +292,7 @@
                 <div class="col-12">
                     <div class="text-center">
                         <button type="button" class="m-2 btn btn-secondary" (click)="openModalPrev()">Previsualizar</button>
-                        <button type="submit" class="m-2 btn btn-primary">Guardar</button>
+                        <button  class="m-2 btn btn-primary" (click)="registrarAsunto()">Guardar</button>
                     </div>
                 </div>
             </div>

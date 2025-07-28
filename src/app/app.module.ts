@@ -15,7 +15,9 @@ import { ConsultarTurnadosComponent } from './content/consultar-turnados/consult
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
-
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,14 @@ import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar
     SharedModule,
     CuentaModule,
     AppRoutingModule,
-    NgbModule,    
+    NgbModule,  
+     BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      timeOut: 3000,
+      positionClass: 'toast-bottom-right',
+      preventDuplicates: true,
+    }), 
+    HttpClientModule 
   ],
   providers: [],
   bootstrap: [AppComponent],

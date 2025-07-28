@@ -1,0 +1,19 @@
+import { Injectable } from '@angular/core';
+import { environment } from '../../environments/environment';
+import { HttpClient } from '@angular/common/http';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AsuntoService {
+  urlBase: String = environment.baseurl + 'asunto/';
+
+  constructor(private http: HttpClient) {}
+
+  registrarAsunto(data:any) {
+    return this.http.post(this.urlBase + 'registrarAsunto', data);
+  }
+  consultarAsuntosUR(data:any) {
+    return this.http.post(this.urlBase + 'consultarAsuntosUR', data);
+  }
+}
