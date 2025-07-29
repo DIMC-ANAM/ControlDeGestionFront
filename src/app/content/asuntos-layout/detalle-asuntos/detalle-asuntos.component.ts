@@ -2,6 +2,10 @@ import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ColorsEnum } from '../../../entidades/colors.enum';
+import { AsuntoService } from '../../../../api/asunto/asunto.service';
+import { UtilsService } from '../../../services/utils.service';
+import { TipoToast } from '../../../../api/entidades/enumeraciones';
 
 @Component({
   selector: 'app-detalle-asuntos',
@@ -192,48 +196,29 @@ export class DetalleAsuntosComponent {
   ];
   tabActiva = 'detalles';
   asuntoSeleccionado: any = null;
-
+  
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
-    private sanitizer: DomSanitizer
+    private sanitizer: DomSanitizer,
+    public colors: ColorsEnum,
+    private asuntoApi: AsuntoService, 
+    private utils: UtilsService
   ) {}
 
   ngOnChanges() {
     if (this.idAsunto) {
-      this.cargarDetalle(this.idAsunto);
+      this.consultarDetallesAsunto(this.idAsunto);
+      /* this.cargarDetalle(this.idAsunto); */
     }
   }
 
-  cargarDetalle(id: number) {
+  /*  */
+
+/*  cargarDetalle(id: number) {
     this.asuntoSeleccionado =
       this.asuntos.find((a) => a.idAsunto === id) || null;
-  }
-
-  getEstadoIcon(estado: string): string {
-    switch (estado) {
-      case 'pendiente':
-        return 'fas fa-clock';
-      case 'en_progreso':
-        return 'fas fa-edit';
-      case 'Concluido':
-        return 'fas fa-check';
-      default:
-        return 'x-circle';
-    }
-  }
-
-  estadoColors: { [key: string]: string } = {
-    pendiente: 'bg-deep-blue text-white',
-    en_progreso: 'bg-purple text-white',
-    Concluido: 'bg-success text-white',
-  };
-
-  prioridadColors: { [key: string]: string } = {
-    alta: 'bg-primary text-white',
-    media: 'bg-gold text-white',
-    baja: 'bg-secondary text-white',
-  };
+  } */
 
   // Modal Abstraction
   private openModal(options: {
@@ -499,4 +484,87 @@ export class DetalleAsuntosComponent {
   removeTurnado(index: number): void {
     this.turnados.splice(index, 1);
   }
+
+
+
+  /* ENDPOINTS */
+    consultarDetallesAsunto(id:number) {
+
+        this.asuntoApi.consultarDetallesAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarDetallesAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarDetallesAsunto(data: any) {
+      console.log(data);
+      if (data.status == 200) {
+        
+        this.asuntoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarExpedienteAsunto(id:number) {
+
+        this.asuntoApi.consultarExpedienteAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarExpedienteAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarExpedienteAsunto(data: any) {
+      if (data.status == 200) {
+        this.asuntoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarTurnadosAsunto(id:number) {
+
+        this.asuntoApi.consultarTurnadosAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarTurnadosAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarTurnadosAsunto(data: any) {
+      if (data.status == 200) {
+        this.asuntoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarHistorialAsunto(id:number) {
+
+        this.asuntoApi.consultarHistorialAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarHistorialAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarHistorialAsunto(data: any) {
+      if (data.status == 200) {
+        this.asuntoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+
 }

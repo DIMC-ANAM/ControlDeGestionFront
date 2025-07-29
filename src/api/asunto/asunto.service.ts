@@ -16,4 +16,22 @@ export class AsuntoService {
   consultarAsuntosUR(data:any) {
     return this.http.post(this.urlBase + 'consultarAsuntosUR', data);
   }
+
+  /* pendientes  */
+  
+  consultarDetallesAsunto(data:any) {
+    return this.http.post(this.urlBase + 'consultarDetalleAsuntos', data);
+  }
+  
+  consultarExpedienteAsunto(data:any) {
+    return this.http.post(this.urlBase + 'consultarExpedienteAsunto', data);
+  }
+  
+  consultarTurnadosAsunto(data:any) {
+    return this.http.post(this.urlBase + 'consultarTurnadosAsunto', data);
+  }
+  
+  consultarHistorialAsunto(data:any) {
+    return this.http.post(this.urlBase + 'consultarHistorialAsunto', data);
+  }
 }

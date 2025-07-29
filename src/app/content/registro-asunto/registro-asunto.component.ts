@@ -15,6 +15,7 @@ export class RegistroAsuntoComponent {
   @ViewChild('modalPrevisualizar', { static: true })
   modalPrevisualizar!: TemplateRef<any>;
   @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
+  @ViewChild('respuestaRegistroModal', { static: true }) respuestaRegistroModal!: TemplateRef<any>;
 
   documentoForm!: FormGroup;
   temas = [
@@ -58,6 +59,12 @@ export class RegistroAsuntoComponent {
   documento: { file: File; nombre: string } | null = null;
   nombreDocumento: string = '';
   anexos: File[] = [];
+
+  /* respuesta del registro de asunto */
+
+  response:any = null; 
+  today = new Date().toISOString().split('T')[0];
+
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -66,8 +73,17 @@ export class RegistroAsuntoComponent {
   ) {}
 
   ngOnInit(): void {
-    const today = new Date().toISOString().split('T')[0];
+    /* session stuff */
+    /* roles stuff */
 
+    this.initFormAsunto();
+    this.validaCheckbox();
+  }
+
+  /* inicialización */
+
+  initFormAsunto(){
+    
     this.documentoForm = this.fb.group({
       idTipoDocumento: [null, Validators.required],
       noOficio: ['', Validators.required],
@@ -76,7 +92,7 @@ export class RegistroAsuntoComponent {
       esGuia: [false],
       numeroGuia: ['', Validators.maxLength(255)],
       fechaDocumento: ['', [Validators.required, this.fechaMaximaValidator()]],
-      fechaRecepcion: [today, Validators.required],
+      fechaRecepcion: [this.today, Validators.required],
       remitenteNombre: ['', [Validators.required, Validators.maxLength(255)]],
       remitenteCargo: ['', [Validators.required, Validators.maxLength(255)]],
       remitenteDependencia: [
@@ -94,7 +110,7 @@ export class RegistroAsuntoComponent {
         [Validators.required, Validators.maxLength(1000)],
       ],
       idTema: ['', Validators.required],
-      fechaCumplimiento: ['', [, this.fechaMinimaValidator()]],
+      fechaCumplimiento: [null, [, this.fechaMinimaValidator()]],
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
@@ -104,7 +120,6 @@ export class RegistroAsuntoComponent {
       unidadAdministrativa: 'Recursos Humanos',
       observaciones: '',
     });
-    this.validaCheckbox();
   }
 
   validaCheckbox() {
@@ -239,15 +254,20 @@ export class RegistroAsuntoComponent {
       title: 'Confirmar',
       template: this.confirmModal,
       showFooter: true,
+      onAccept: () => this.registrarAsunto()
+    });
+  }
+  openrespuestaRegistroModal() {
+    this.modalManager.openModal({
+      title: '<i class="fas fa-check m-2"></i> ¡Registro exitoso!',
+      template: this.respuestaRegistroModal,
+      showFooter: false,
+      /* onAccept: () => this.documentoForm.reset() */
     });
   }
 
   /* web services */
   registrarAsunto() {
-    /* preparar payload */
-
-    /* suscribirnos al servicio */
-    
     this.construirPayload().then(payload => {
       console.log(payload);
       
@@ -264,7 +284,8 @@ export class RegistroAsuntoComponent {
   }
   onSuccessregistrarAsunto(data: any) {
     if (data.status == 200) {
-      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.response  = data;
+      this.openrespuestaRegistroModal();
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }

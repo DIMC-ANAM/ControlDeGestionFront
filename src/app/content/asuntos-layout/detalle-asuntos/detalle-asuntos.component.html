@@ -19,13 +19,13 @@
                     </div>
                     <div class="text-end flex-shrink-0">
                         <div class="d-flex flex-column gap-1">
-                            <span class="badge" [ngClass]="estadoColors[asuntoSeleccionado.statusAsunto]">
-                                <i class="fas" [ngClass]="getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
+                            <span class="badge" [ngClass]="this.colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)">
+                                <i class="fas" [ngClass]="this.colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
                                 <span class="ms-1 text-capitalize">{{ asuntoSeleccionado.statusAsunto.replace('_', '
                                     ')
                                     }}</span>
                             </span>
-                            <span class="badge" [ngClass]="prioridadColors[asuntoSeleccionado.prioridad]">
+                            <span class="badge" [ngClass]="this.colors.getPrioridadColor(asuntoSeleccionado.prioridad)">
                                 <i class="fas fa-star me-1 small"></i>
                                 {{ asuntoSeleccionado.prioridad }}
                             </span>
@@ -45,25 +45,25 @@
             <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
-            (click)="tabActiva = 'detalles'">
+            (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
             <i class="fas fa-file-alt me-2"></i> Detalles
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
-            (click)="tabActiva = 'expediente'">
+            (click)="tabActiva = 'expediente'; consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);">
             <i class="fas fa-folder-open me-2"></i> Expediente
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
-            (click)="tabActiva = 'turnados'">
+            (click)="tabActiva = 'turnados'; consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto);">
             <i class="fas fa-sync me-2"></i> Turnados
         </button>
     </li>
     <li class="nav-item" role="presentation">
         <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
-            (click)="tabActiva = 'historial'">
+            (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
             <i class="fas fa-clock me-2"></i> Historial
         </button>
     </li>

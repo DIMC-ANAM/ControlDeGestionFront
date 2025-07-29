@@ -2,6 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { AsuntoService } from '../../../../api/asunto/asunto.service';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
+import { ColorsEnum } from '../../../entidades/colors.enum';
 
 @Component({
   selector: 'app-lista-asuntos',
@@ -37,7 +38,8 @@ export class ListaAsuntosComponent {
 
   constructor(
     private asuntoApi: AsuntoService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    public colors: ColorsEnum
   ){}
 
   ngOnInit(): void {

@@ -11,46 +11,17 @@ export class CatalogoService {
 
   constructor(private http: HttpClient) { }
 
-  consultarTiposContrato() {
-    return this.http.get(this.urlBase + "consultarTiposContrato");
+  consultarTipoDocumento(data:any) {
+    return this.http.post(this.urlBase + 'consultarTipoDocumento', data);
   }
-
-  consultarUnidadesAdministrativas() {
-    return this.http.get(this.urlBase + "consultarUnidadesAdministrativas");
+  consultarTema(data:any) {
+    return this.http.post(this.urlBase + 'consultarTema', data);
   }
-
-  consultarNivelDePuesto() {
-    return this.http.get(this.urlBase + "consultarNivelDePuesto");
+  consultarPrioridad(data:any) {
+    return this.http.post(this.urlBase + 'consultarPrioridad', data);
   }
-
-  /*
-  function ejemplo(){
-
-    var ejempl= 2;
-    var b = 4;
-    var c;
-
-    $.ajax({
-      url: "",
-      data:"",
-      method: "",
-      datype: "json",
-      async: "false"
-      success: function(data){
-          c= data; 
-      },
-      error: function(data){
-
-      }
-
-    });
-
-    alert(jemplo);
-    alert(b);
-    alert(c);
-
-}
-
-  */
+  consultarMedioRecepcion(data:any) {
+    return this.http.post(this.urlBase + 'consultarMedioRecepcion', data);
+  }
 }
 

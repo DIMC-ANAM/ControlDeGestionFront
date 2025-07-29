@@ -292,7 +292,7 @@
                 <div class="col-12">
                     <div class="text-center">
                         <button type="button" class="m-2 btn btn-secondary" (click)="openModalPrev()">Previsualizar</button>
-                        <button  class="m-2 btn btn-primary" (click)="registrarAsunto()">Guardar</button>
+                        <button  class="m-2 btn btn-primary" (click)="openConfirmModal()" [disabled]="documentoForm.invalid || documento == null || documento == undefined">Guardar</button>
                     </div>
                 </div>
             </div>
@@ -300,7 +300,7 @@
     </div>
 </div>
 
-<!-- template paara abrir un modal-->
+<!-- template modal-->
 <ng-template #modalPrevisualizar let-acepar = 'cerrar'>
 <div class="container mt-4">
   <h4 class="mb-4">Previsualización del documento</h4>
@@ -378,3 +378,18 @@
 </div>
 
 </ng-template>
+
+
+<ng-template #respuestaRegistroModal>
+    <h3>{{response.message}}</h3>    
+    <h4 class="frmlabel">Folio: <strong>{{response.model.folio}}</strong></h4>
+    <small class="text-muted">Este folio ha sido generado automáticamente por el sistema</small>
+    <!-- footer -->
+    <div class="footer d-flex justify-content-end align-items-center">    
+    </div>
+</ng-template>
+
+<ng-template #confirmModal >
+    <p><strong>¿Está seguro de enviar la información del asunto al sistema?</strong></p>
+</ng-template>
+
