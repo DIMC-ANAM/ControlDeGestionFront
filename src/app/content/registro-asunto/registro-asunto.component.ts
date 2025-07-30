@@ -412,6 +412,6 @@ export class RegistroAsuntoComponent {
   }
 
    encontrarPorId(lista: any[], campo: string, valor: number,target:string): string | undefined {
-      return lista.find(item => item[campo] == valor)[target];
+      return lista.find(item => item[campo] == valor)?.[target] as string | undefined;
     }
 }

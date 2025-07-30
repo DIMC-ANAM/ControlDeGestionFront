@@ -318,7 +318,7 @@
     </div>
 
     <div class="col-md-6">
-      <p><strong>Medio de recepción:</strong> {{ encontrarPorId(medio, 'idMedioRecepcion', documentoForm.value.idMedio,'medioRecepcion') || 'asdasd'}}</p>      
+      <p><strong>Medio de recepción:</strong> {{ encontrarPorId(medio, 'idMedioRecepcion', documentoForm.value.idMedio,'medioRecepcion') || ''}}</p>      
       <p><strong>Es volante:</strong> {{ documentoForm.value.esVolante ? 'Sí' : 'No' }}</p>
       <p *ngIf="documentoForm.value.esVolante"><strong>Número de volante:</strong> {{ documentoForm.value.numeroVolante }}</p>
       <p><strong>Es guía:</strong> {{ documentoForm.value.esGuia ? 'Sí' : 'No' }}</p>
