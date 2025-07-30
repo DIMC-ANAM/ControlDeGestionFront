@@ -51,7 +51,7 @@ export class UtilsService {
       });
     } else {
       this.toastService.error(
-        ex.error.message || 'Ocurrio un error, intente mas tarde.', '', {
+        ex.error.message || 'Ocurrió un error interno, contactar a soporte técnico.', '', {
         closeButton: true,
         progressBar: true
       });

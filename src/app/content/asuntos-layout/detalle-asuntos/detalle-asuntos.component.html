@@ -19,12 +19,12 @@
                     </div>
                     <div class="text-end flex-shrink-0">
                         <div class="d-flex flex-column gap-1">
-                            <span class="badge" [ngClass]="this.colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)">
-                                <i class="fas" [ngClass]="this.colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
-                                <span class="ms-1 text-capitalize">{{ asuntoSeleccionado.statusAsunto.replace('_', '
-                                    ')
-                                    }}</span>
-                            </span>
+                            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asuntoSeleccionado.statusAsunto)">
+                                <i class="fas" [ngClass]="colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
+                                <span class="ms-1 ">
+                                    {{ asuntoSeleccionado.statusAsunto }}
+                                </span>
+                                </span>
                             <span class="badge" [ngClass]="this.colors.getPrioridadColor(asuntoSeleccionado.prioridad)">
                                 <i class="fas fa-star me-1 small"></i>
                                 {{ asuntoSeleccionado.prioridad }}
@@ -37,37 +37,35 @@
                     <button class="btn btn-primary btn-sm" (click)="openConcluirModal()">
                         <i class="fas fa-check-double me-2"></i> Concluir
                     </button>
-                    <button class="btn btn-outline-secondary btn-sm">
-                        <i class="fas fa-edit me-2"></i> Editar
-                    </button>
+                    
                 </div>
             </div>
             <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill" role="tablist">
-    <li class="nav-item" role="presentation">
-        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
-            (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
-            <i class="fas fa-file-alt me-2"></i> Detalles
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
-            (click)="tabActiva = 'expediente'; consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);">
-            <i class="fas fa-folder-open me-2"></i> Expediente
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
-            (click)="tabActiva = 'turnados'; consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto);">
-            <i class="fas fa-sync me-2"></i> Turnados
-        </button>
-    </li>
-    <li class="nav-item" role="presentation">
-        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
-            (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
-            <i class="fas fa-clock me-2"></i> Historial
-        </button>
-    </li>
-</ul>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
+                        (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
+                        <i class="fas fa-file-alt me-2"></i> Detalles
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
+                        (click)="tabActiva = 'expediente'; consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);">
+                        <i class="fas fa-folder-open me-2"></i> Expediente
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
+                        (click)="tabActiva = 'turnados'; consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto);">
+                        <i class="fas fa-sync me-2"></i> Turnados
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
+                        (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
+                        <i class="fas fa-clock me-2"></i> Historial
+                    </button>
+                </li>
+            </ul>
 
             <!-- Contenido de tabs con scroll -->
             <div class="flex-grow-1 p-4 overflow-auto">
@@ -75,23 +73,41 @@
                 <div *ngIf="tabActiva === 'detalles'">
                     <!-- Información General -->
                     <div class="section">
-                        <div class="section-header">
+                        <div class="section-header d-flex ">
                             <i class="fas fa-file-alt"></i>
                             <h6 class="fw-bold mb-0">Información General</h6>
+                            <div class="btn btn-outline-secondary btn-sm" (click)="editar= !editar">
+                                <i class="fas fa-edit me-2"></i> Editar
+                            </div>
+
+                            <i style="left: 2px;" class="text-success fas fa-save  fa-2x me-2"*ngIf="asuntoSeleccionadoModificado" (click)="asuntoSeleccionadoModificado= !asuntoSeleccionadoModificado"></i> <!-- y guardar -->
+                            
                         </div>
 
                         <div class="row">
-                            <div class="col-md-4">
+                            <div class="col-md-4 ">
                                 <div class="field">
                                     <label>Tipo de Documento:</label>
-                                    <div>{{ asuntoSeleccionado.tipoDocumento }}</div>
+                                    <ng-container *ngIf="editar; else tipoDocumentoView">
+                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.tipoDocumento" class="editControl">
+                                            <option *ngFor="let tipo of ['Carta']" [value]="tipo">{{ tipo }}</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-template #tipoDocumentoView>
+                                        <div>{{ asuntoSeleccionado.tipoDocumento }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>No. de Oficio:</label>
-                                    <div>{{ asuntoSeleccionado.noOficio }}</div>
+                                    <ng-container *ngIf="editar; else noOficioView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.noOficio" class="editControl" />
+                                    </ng-container>
+                                    <ng-template #noOficioView>
+                                        <div>{{ asuntoSeleccionado.noOficio }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
 
@@ -103,14 +119,14 @@
                             </div>
                         </div>
 
-                        <div class="row" *ngIf="asuntoSeleccionado?.esVolante">
-                            <div class="col-md-4">
+                        <div class="row">
+                            <div class="col-md-4" *ngIf="asuntoSeleccionado?.esVolante">
                                 <div class="field">
                                     <label>Número de Volante:</label>
                                     <div>{{ asuntoSeleccionado.numeroVolante }}</div>
                                 </div>
                             </div>
-                        
+
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Es Guía:</label>
@@ -128,7 +144,14 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Tema:</label>
-                                    <div>{{ asuntoSeleccionado.Tema }}</div>
+                                    <ng-container *ngIf="editar; else temaView">
+                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.Tema" class="editControl">
+                                            <option *ngFor="let tema of ['tema']" [value]="tema">{{ tema }}</option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-template #temaView>
+                                        <div>{{ asuntoSeleccionado.Tema }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
                         </div>
@@ -183,7 +206,13 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha del Documento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaDocumento | date }}</div>
+                                    <ng-container *ngIf="editar; else fechaDocumentoView">
+                                        <input type="date" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.fechaDocumento"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #fechaDocumentoView>
+                                        <div>{{ asuntoSeleccionado.fechaDocumento | date: 'longDate' }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
                         </div>
@@ -191,8 +220,15 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="field">
-                                    <label>Descripción:</label>
-                                    <div>{{ asuntoSeleccionado.descripcionAsunto }}</div>
+                                    <label>Descripción del Asunto:</label>
+                                    <ng-container *ngIf="editar; else descripcionView">
+                                        <textarea (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.descripcionAsunto"
+                                            class="editControl" rows="4"></textarea>
+                                    </ng-container>
+                                    <ng-template #descripcionView>
+                                        <div style="white-space: pre-line;">{{ asuntoSeleccionado.descripcionAsunto }}
+                                        </div>
+                                    </ng-template>
                                 </div>
                             </div>
                         </div>
@@ -215,54 +251,100 @@
 
                             <div class="col-md-4">
                                 <div class="field">
-                                    <label>Remitente:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteNombre }}</div>
+                                    <label>Remitente - Nombre:</label>
+                                    <ng-container *ngIf="editar; else remitenteNombreView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.remitenteNombre"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #remitenteNombreView>
+                                        <div>{{ asuntoSeleccionado.remitenteNombre }}</div>
+                                    </ng-template>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Remitente - Cargo:</label>
+                                    <ng-container *ngIf="editar; else remitenteCargoView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.remitenteCargo"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #remitenteCargoView>
+                                        <div>{{ asuntoSeleccionado.remitenteCargo }}</div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Remitente - Dependencia:</label>
+                                    <ng-container *ngIf="editar; else remitenteDepView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.remitenteDependencia"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #remitenteDepView>
+                                        <div>{{ asuntoSeleccionado.remitenteDependencia }}</div>
+                                    </ng-template>
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-4">
+                                <div class="field">
+                                    <label>Dirigido a:</label>
+                                    <ng-container *ngIf="editar; else dirigidoAView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.dirigidoA"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #dirigidoAView>
+                                        <div>{{ asuntoSeleccionado.dirigidoA }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Cargo:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteCargo }}</div>
+                                    <ng-container *ngIf="editar; else dirigidoCargoView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.dirigidoACargo"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #dirigidoCargoView>
+                                        <div>{{ asuntoSeleccionado.dirigidoACargo }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
+                            <!-- Dependencia Dirigido A -->
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Dependencia:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteDependencia }}</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="field">
-                                    <label>Dirigido a:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoA }}</div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-4">
-                                <div class="field">
-                                    <label>Cargo Dirigido a:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoACargo }}</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="field">
-                                    <label>Dependencia Destino:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoADependencia }}</div>
+                                    <ng-container *ngIf="editar; else dirigidoDepView">
+                                        <input type="text" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.dirigidoADependencia"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #dirigidoDepView>
+                                        <div>{{ asuntoSeleccionado.dirigidoADependencia }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Medio:</label>
-                                    <div>{{ asuntoSeleccionado.medio }}</div>
+                                    <ng-container *ngIf="editar; else medioView">
+                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.medio" class="editControl">
+                                            <option *ngFor="let medio of ['medios']" [value]="medio">{{ medio }}
+                                            </option>
+                                        </select>
+                                    </ng-container>
+                                    <ng-template #medioView>
+                                        <div>{{ asuntoSeleccionado.medio }}</div>
+                                    </ng-template>
                                 </div>
                             </div>
                         </div>
@@ -274,153 +356,169 @@
                             <i class="fas fa-comment-alt"></i>
                             <h6 class="fw-bold mb-0">Observaciones</h6>
                         </div>
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="field">
-                                    <div>{{ asuntoSeleccionado.observaciones || 'Sin observaciones' }}</div>
-                                </div>
+                        <div class="field">
+                            <div class="row">
+                                <ng-container *ngIf="editar; else observacionesView">
+                                    <textarea (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.observaciones" class="editControl"
+                                        rows="3"></textarea>
+                                </ng-container>
+
+                                <ng-template #observacionesView>
+                                    <div class="col-12">
+                                        <div class="field">
+                                            <div>{{ asuntoSeleccionado.observaciones || 'Sin observaciones' }}</div>
+                                        </div>
+                                    </div>
+                                </ng-template>
+
                             </div>
                         </div>
                     </div>
                 </div>
 
 
-                <!-- Expediente -->
-                <div *ngIf="tabActiva === 'expediente'">
-                    <div class="p-4">
-                        <!-- Documento principal -->
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0">Documento Principal</h6>
-                                <button class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
-                                    <i class="fas fa-upload me-2"></i> Reemplazar Documento
-                                </button>
-                            </div>
-
-                            <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-3">
-                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
-                                    <div>
-                                        <div class="fw-semibold">{{ asuntoSeleccionado.documento.name }}</div>
-                                        <div class="text-muted small">
-                                            {{ asuntoSeleccionado.documento.type }} • {{
-                                            asuntoSeleccionado.documento.size
-                                            }}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-light" (click)="openDocumentoVisor(asuntoSeleccionado.documento)">
-                                        
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-light">
-                                        <i class="fas fa-download"></i>
+                    <!-- Expediente -->
+                    <div *ngIf="tabActiva === 'expediente'">
+                        <div class="p-4">
+                            <!-- Documento principal -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Documento Principal</h6>
+                                    <button class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
+                                        <i class="fas fa-upload me-2"></i> Reemplazar Documento
                                     </button>
                                 </div>
-                            </div>
-                        </div>
 
-                        <hr />
-
-                        <!-- Anexos -->
-                        <div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0">Anexos</h6>
-                                <button class="btn btn-sm btn-outline-success" (click)="openagregarAnexosModal()">
-                                    <i class="fas fa-plus me-2"></i> Agregar Anexos
-                                </button>
-                            </div>
-
-                            <div *ngIf="asuntoSeleccionado.anexos.length > 0; else sinAnexos">
-                                <div class="card mb-2 p-3" *ngFor="let anexo of asuntoSeleccionado.anexos">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="fas fa-paperclip fa-lg text-secondary"></i>
-                                            <div>
-                                                <div class="fw-semibold">{{ anexo.name }}</div>
-                                                <div class="text-muted small">{{ anexo.type }} • {{ anexo.size }}
-                                                </div>
+                                <div class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                        <div>
+                                            <div class="fw-semibold">{{ documentoPrincipal.nombre }}</div>
+                                            <div class="text-muted small">
+                                                {{ documentoPrincipal.type }} • {{
+                                                documentoPrincipal.size
+                                                }}
                                             </div>
                                         </div>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-light" (click)="openDocumentoVisor(anexo)">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-light">
-                                                <i class="fas fa-download"></i>
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light"
+                                            (click)="openDocumentoVisor(documentoPrincipal)">
+
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light">
+                                            <i class="fas fa-download"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <ng-template #sinAnexos>
-                                <p class="text-muted">No hay anexos disponibles para este asunto.</p>
-                            </ng-template>
-                        </div>
-                    </div>
-                </div>
+                            <hr />
 
-                <!-- Asignaciones -->
-                <div *ngIf="tabActiva === 'turnados'">
-                    <div class="p-4">
+                            <!-- Anexos -->
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Anexos</h6>
+                                    <button class="btn btn-sm btn-outline-success" (click)="openagregarAnexosModal()">
+                                        <i class="fas fa-plus me-2"></i> Agregar Anexos
+                                    </button>
+                                </div>
 
-                        <div class="d-flex justify-content-between align-items-center mb-3 ">
-                            <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
-                            <button class="btn btn-primary  tooltip-wrapper center up" [attr.data-tooltip]="'Turnar'" (click)="openTurnarModal()">
-                                <i class="fas fa-share "></i>
-                            </button>
-                        </div>
-                    
-                    <div *ngFor="let asignacion of turnados" class="card p-3 mb-2">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-              <div class="icon-circle"><i class="fas fa-share"></i></div>
-              <div>
-                <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable.nombre }}</p>
-                <small class="text-muted">{{ asignacion.instruccion.descripcion }}</small><br />
-                <small class="text-muted">Asignado: {{ '2025-07-22 00:00'  | fechaMexico}}</small>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-2">              
-              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
-            </div>
-          </div>
-        </div>
-                </div>
-                </div>
+                                <div *ngIf="anexos.length > 0; else sinAnexos">
+                                    <div class="card mb-2 p-3" *ngFor="let anexo of anexos">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <i class="fas fa-paperclip fa-lg text-secondary"></i>
+                                                <div>
+                                                    <div class="fw-semibold">{{ anexo.nombre }}</div>
+                                                    <div class="text-muted small">{{ anexo.type  || "PDF" }} • {{ anexo.size }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-light"
+                                                    (click)="openDocumentoVisor(anexo)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-light">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
 
-                <!-- Historial -->
-                <div *ngIf="tabActiva === 'historial'">
-                    <h6 class="fw-bold mb-3">Historial de Actividades</h6>
-                    <div class="d-flex gap-3 align-items-start mb-3">
-                        <div class="icon-circle bg-primary"></div>
-                        <div>
-                            <p class="mb-0 fw-semibold">Asunto creado</p>
-                            <small class="text-muted">Por {{ asuntoSeleccionado.unidadAdministrativa }} • {{
-                                asuntoSeleccionado.fechaRegistro }}</small>
+                                <ng-template #sinAnexos>
+                                    <p class="text-muted">No hay anexos disponibles para este asunto.</p>
+                                </ng-template>
+                            </div>
                         </div>
                     </div>
-                    <div class="d-flex gap-3 align-items-start mb-3">
-                        <div class="icon-circle bg-success"></div>
-                        <div>
-                            <p class="mb-0 fw-semibold">Documentos agregados</p>
-                            <small class="text-muted">{{ asuntoSeleccionado.anexos.length }} documentos • {{
-                                asuntoSeleccionado.fechaRegistro }}</small>
+
+                    <!-- Asignaciones -->
+                    <div *ngIf="tabActiva === 'turnados'">
+                        <div class="p-4">
+
+                            <div class="d-flex justify-content-between align-items-center mb-3 ">
+                                <h6 class="fw-bold mb-0">Turnados del Asunto</h6>
+                                <button class="btn btn-primary  tooltip-wrapper center up"
+                                    [attr.data-tooltip]="'Turnar'" (click)="openTurnarModal()">
+                                    <i class="fas fa-share "></i>
+                                </button>
+                            </div>
+
+                            <div *ngFor="let asignacion of turnados" class="card p-3 mb-2">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="icon-circle"><i class="fas fa-share"></i></div>
+                                        <div>
+                                            <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable.nombre }}</p>
+                                            <small class="text-muted">{{ asignacion.instruccion.descripcion
+                                                }}</small><br />
+                                            <small class="text-muted">Asignado: {{ '2025-07-22 00:00' |
+                                                fechaMexico}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <button class="btn btn-sm btn-outline-secondary"><i
+                                                class="fas fa-edit"></i></button>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="d-flex gap-3 align-items-start">
-                        <div class="icon-circle bg-warning"></div>
-                        <div>
-                            <p class="mb-0 fw-semibold">Estado actualizado</p>
-                            <small class="text-muted">Cambiado a {{ asuntoSeleccionado.statusAsunto }} • Hace 2
-                                días</small>
+
+                    <!-- Historial -->
+                    <div *ngIf="tabActiva === 'historial'">
+                        <h6 class="fw-bold mb-3">Historial de Actividades</h6>
+                        <div class="d-flex gap-3 align-items-start mb-3">
+                            <div class="icon-circle bg-primary"></div>
+                            <div>
+                                <p class="mb-0 fw-semibold">Asunto creado</p>
+                                <small class="text-muted">Por {{ asuntoSeleccionado.unidadAdministrativa }} • {{
+                                    asuntoSeleccionado.fechaRegistro }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 align-items-start mb-3">
+                            <div class="icon-circle bg-success"></div>
+                            <div>
+                                <p class="mb-0 fw-semibold">Documentos agregados</p>
+                                <small class="text-muted">{{ asuntoSeleccionado.anexos.length }} documentos • {{
+                                    asuntoSeleccionado.fechaRegistro }}</small>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-3 align-items-start">
+                            <div class="icon-circle bg-warning"></div>
+                            <div>
+                                <p class="mb-0 fw-semibold">Estado actualizado</p>
+                                <small class="text-muted">Cambiado a {{ asuntoSeleccionado.statusAsunto }} • Hace 2
+                                    días</small>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     </ng-container>
     <ng-template #elseTemplate>
         <div class="d-flex align-items-center justify-content-center h-100">
@@ -437,148 +535,139 @@
 
 <ng-template #turnarModal let-aceptar="aceptar" let-cancelar="cancelar">
     <div class="container-fluid  ">
-    <form [formGroup]="turnadoForm">
-      <div class="row">
-        <div class="col-md-12">
-          <label class="form-label frmlabel required" for="unidadResponsable"><i class="p-1 fas fa-building-columns"> </i>Unidad Responsable</label>
-          <div class="input-icon-wrapper">
-            <i
-              [ngClass]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <select
-              id="unidadResponsable"
-              class="form-control"
-              formControlName="unidadResponsable"
-              [class.invalid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'"
-              [class.valid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid'"
-            >
-              <option [value]="null" disabled selected>Seleccione una unidad</option>
-              <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.id">{{ unidad.nombre }}</option>
-            </select>
-          </div>
-          <p *ngIf="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'" class="invalid-field">Este campo es
-            obligatorio.</p>
+        <form [formGroup]="turnadoForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label frmlabel required" for="unidadResponsable"><i
+                            class="p-1 fas fa-building-columns"> </i>Unidad Responsable</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="unidadResponsable" class="form-control" formControlName="unidadResponsable"
+                            [class.invalid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid'">
+                            <option [value]="null" disabled selected>Seleccione una unidad</option>
+                            <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.id">{{ unidad.nombre
+                                }}</option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'" class="invalid-field">
+                        Este campo es
+                        obligatorio.</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label frmlabel required" for="instruccion"><i class="p-1 fas fa-list-check">
+                        </i>Instrucción</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus(turnadoForm,'instruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'instruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="instruccion" class="form-control" formControlName="instruccion"
+                            [class.invalid]="getValidationStatus(turnadoForm,'instruccion') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'instruccion') == 'valid'">
+                            <option [value]="null" disabled selected>Seleccione una instrucción</option>
+                            <option *ngFor="let instr of instruccionesDS" [value]="instr.id">{{ instr.descripcion }}
+                            </option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus(turnadoForm,'instruccion') == 'invalid'" class="invalid-field">Este
+                        campo es
+                        obligatorio.</p>
+                </div>
+
+                <div
+                    class="col-md-6 d-flex flex-v-center align-items-center mt-5 align-content-center justify-content-center">
+                    <button class="btn btn-success" [disabled]="turnadoForm.invalid" (click)="addTurnado()">
+                        <i class="fas fa-plus fw-bold"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive w-100 mx-auto">
+            <table class="table table-hover table-border-colapse ">
+                <thead>
+                    <tr>
+                        <th><i class="p-1 fas fa-building-columns"></i> Unidad Responsable</th>
+                        <th><i class="p-1 fas fa-list-check"></i>Instrucción</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="turnados.length === 0">
+                        <td colspan="3" class="text-center">No hay turnados agregados.</td>
+                    </tr>
+                    <tr *ngFor="let turnado of turnados; let i = index">
+                        <td>{{ turnado.unidadResponsable.nombre }}</td>
+                        <td>{{ turnado.instruccion.descripcion }}</td>
+                        <td class="text-center">
+                            <i role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
 
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="instruccion"><i class="p-1 fas fa-list-check"> </i>Instrucción</label>
-          <div class="input-icon-wrapper">
-            <i
-              [ngClass]="getValidationStatus(turnadoForm,'instruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'instruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <select
-              id="instruccion"
-              class="form-control"
-              formControlName="instruccion"
-              [class.invalid]="getValidationStatus(turnadoForm,'instruccion') == 'invalid'"
-              [class.valid]="getValidationStatus(turnadoForm,'instruccion') == 'valid'"
-            >
-              <option [value]="null" disabled selected>Seleccione una instrucción</option>
-              <option *ngFor="let instr of instruccionesDS" [value]="instr.id">{{ instr.descripcion }}</option>
-            </select>
-          </div>
-          <p *ngIf="getValidationStatus(turnadoForm,'instruccion') == 'invalid'" class="invalid-field">Este campo es
-            obligatorio.</p>
+
+        <div class="w-100 d-flex justify-content-end">
+            <button class="btn btn-outline-dark m-2" (click)="cancelar()">Cancelar</button>
+            <button class="btn btn-primary m-2" (click)="aceptar()"> <i class="fas fa-share m-2"></i>Turnar </button>
         </div>
 
-        <div class="col-md-6 d-flex flex-v-center align-items-center mt-5 align-content-center justify-content-center">
-          <button class="btn btn-success" [disabled]="turnadoForm.invalid" (click)="addTurnado()">
-            <i class="fas fa-plus fw-bold"></i>
-          </button>
-        </div>
-      </div>
-    </form>    
-
-    <div class="table-responsive w-100 mx-auto" >
-      <table class="table table-hover table-border-colapse ">
-        <thead>
-          <tr>
-            <th><i class="p-1 fas fa-building-columns"></i> Unidad Responsable</th>
-            <th><i class="p-1 fas fa-list-check"></i>Instrucción</th>
-            <th>Borrar</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngIf="turnados.length === 0">
-            <td colspan="3" class="text-center">No hay turnados agregados.</td>
-          </tr>
-          <tr *ngFor="let turnado of turnados; let i = index">
-            <td>{{ turnado.unidadResponsable.nombre }}</td>
-            <td>{{ turnado.instruccion.descripcion }}</td>
-            <td class="text-center">
-              <i  role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>              
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>    
-
-    
-    <div class="w-100 d-flex justify-content-end">
-        <button class="btn btn-outline-dark m-2" (click)="cancelar()">Cancelar</button>
-        <button class="btn btn-primary m-2" (click)="aceptar()">   <i class="fas fa-share m-2"></i>Turnar </button>
     </div>
-
-  </div>
 </ng-template>
 
 <ng-template #agregarAnexosModal let-aceptar="aceptar" let-cancelar="cancelar">
     <div class="container">
-       <form [formGroup]="agregarAnexoForm" (ngSubmit)="agregarAnexos()">
-        <div class="mb-3">
-            <div class="w-100">
-            <!-- <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Anexos del asunto</span> -->
-            <label class="text-center w-100">
-                <div
-                id="drop-zone"
-                class="drop-zone"
-                [class.drag-over]="isDragOver"
-                (dragover)="onDragOver($event)"
-                (dragleave)="onDragLeave($event)"
-                (drop)="onDrop(agregarAnexoForm, $event, true)"
-                >
-                <i class="fas fa-upload fa-3x"></i>
-                <p class="mt-3 mb-0 text-muted">Haz clic o arrastra varios  archivos aquí</p>
+        <form [formGroup]="agregarAnexoForm" (ngSubmit)="agregarAnexos()">
+            <div class="mb-3">
+                <div class="w-100">
+                    <!-- <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Anexos del asunto</span> -->
+                    <label class="text-center w-100">
+                        <div id="drop-zone" class="drop-zone" [class.drag-over]="isDragOver"
+                            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop(agregarAnexoForm, $event, true)">
+                            <i class="fas fa-upload fa-3x"></i>
+                            <p class="mt-3 mb-0 text-muted">Haz clic o arrastra varios archivos aquí</p>
+                        </div>
+
+                        <input multiple type="file" (change)="onFileSelectedAnexos(agregarAnexoForm, $event)"
+                            id="documento" class="hidden-input">
+                    </label>
                 </div>
 
-                <input
-                multiple
-                type="file"
-                (change)="onFileSelectedAnexos(agregarAnexoForm, $event)"
-                id="documento"
-                class="hidden-input"
-                >
-            </label>
+                <p *ngIf="getValidationStatus(agregarAnexoForm,'documento') == 'invalid'" class="invalid-field">Debe
+                    adjuntar al menos un documento para continuar.</p>
+
+            </div>
+            <div class="table-responsive w-100 mx-auto">
+                <table class="table table-hover table-border-colapse ">
+                    <thead>
+                        <tr>
+                            <th><i class="p-1 fas fa-file-alt"></i> Nombre del documento</th>
+                            <th>Borrar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngIf="anexosCargados.length === 0">
+                            <td colspan="3" class="text-center">No hay anexos agregados.</td>
+                        </tr>
+                        <tr *ngFor="let anexo of anexosCargados; let i = index">
+                            <td>{{ anexo.name }}</td>
+                            <td class="text-center">
+                                <i role="button" class="fas fa-trash text-secondary"
+                                    (click)="borrarAnexoAgregado(i)"></i>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
-            <p *ngIf="getValidationStatus(agregarAnexoForm,'documento') == 'invalid'" class="invalid-field">Debe adjuntar al menos un documento para continuar.</p>
-            
-        </div>
-        <div class="table-responsive w-100 mx-auto" >
-            <table class="table table-hover table-border-colapse ">
-                <thead>
-                <tr>
-                    <th><i class="p-1 fas fa-file-alt"></i> Nombre del documento</th>                    
-                    <th>Borrar</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr *ngIf="anexosCargados.length === 0">
-                    <td colspan="3" class="text-center">No hay anexos agregados.</td>
-                </tr>
-                <tr *ngFor="let anexo of anexosCargados; let i = index">
-                    <td>{{ anexo.name }}</td>                    
-                    <td class="text-center">
-                    <i  role="button" class="fas fa-trash text-secondary" (click)="borrarAnexoAgregado(i)"></i>              
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div> 
-
-        <div class="d-flex justify-content-end mt-4">
-            <button type="submit" class="btn btn-success" [disabled]="anexosCargados.length == 0">
-            <i class="fas fa-upload m-2 "></i>Cargar anexos
-            </button>
-        </div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success" [disabled]="anexosCargados.length == 0">
+                    <i class="fas fa-upload m-2 "></i>Cargar anexos
+                </button>
+            </div>
         </form>
     </div>
 </ng-template>
@@ -590,128 +679,109 @@
 <ng-template #concluirModal let-aceptar="aceptar" let-cancelar="cancelar">
 
     <div class="container">
-       <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
-      <div class="mb-3">
-        <div class="w-100">
-            <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Documento de Cierre</span>
-          <label class="text-center w-100">
+        <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
+            <div class="mb-3">
+                <div class="w-100">
+                    <span class="mb-2 d-block text-start frmlabel pt-0"><i
+                            class="fas fa-file-arrow-up p-2 "></i>Documento de Cierre</span>
+                    <label class="text-center w-100">
 
-            <div
-              id="drop-zone"
-              class="drop-zone"
-              [class.drag-over]="isDragOver"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop(conclusionForm, $event)"
-            >
-              <i class="fas fa-upload fa-3x"></i>
-              <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+                        <div id="drop-zone" class="drop-zone" [class.drag-over]="isDragOver"
+                            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop(conclusionForm, $event)">
+                            <i class="fas fa-upload fa-3x"></i>
+                            <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+                        </div>
+
+                        <input type="file" (change)="onFileSelected(conclusionForm, $event)" id="documentoCierre"
+                            class="hidden-input">
+                    </label>
+                </div>
+
+                <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe
+                    adjuntar un documento de cierre.</p>
+
+                <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
+                    Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
+                </div>
             </div>
 
-            <input
-              type="file"
-              (change)="onFileSelected(conclusionForm, $event)"
-              id="documentoCierre"
-              class="hidden-input"
-            >
-          </label>
-        </div>
-
-        <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe adjuntar un documento de cierre.</p>
-        
-        <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
-        Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end mt-4">
-        <button type="submit" class="btn btn-success" [disabled]="conclusionForm.invalid">
-          Concluir
-        </button>
-      </div>
-    </form>
-</div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success" [disabled]="conclusionForm.invalid">
+                    Concluir
+                </button>
+            </div>
+        </form>
+    </div>
 
 </ng-template>
 <ng-template #reemplazarDocumentoModal let-aceptar="aceptar" let-cancelar="cancelar">
 
     <div class="container">
-       <form [formGroup]="reemplazarDocumentoForm" (ngSubmit)="reemplazarDocumento()">
-      <div class="mb-3">
-        <div class="w-100">
-            <span class="mb-2 d-block text-start frmlabel pt-0"><i class="fas fa-file-arrow-up p-2 "></i>Documento del asunto</span>
-          <label class="text-center w-100">
+        <form [formGroup]="reemplazarDocumentoForm" (ngSubmit)="reemplazarDocumento()">
+            <div class="mb-3">
+                <div class="w-100">
+                    <span class="mb-2 d-block text-start frmlabel pt-0"><i
+                            class="fas fa-file-arrow-up p-2 "></i>Documento del asunto</span>
+                    <label class="text-center w-100">
 
-            <div
-              id="drop-zone"
-              class="drop-zone"
-              [class.drag-over]="isDragOver"
-              (dragover)="onDragOver($event)"
-              (dragleave)="onDragLeave($event)"
-              (drop)="onDrop(reemplazarDocumentoForm, $event)"
-            >
-              <i class="fas fa-upload fa-3x"></i>
-              <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+                        <div id="drop-zone" class="drop-zone" [class.drag-over]="isDragOver"
+                            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop(reemplazarDocumentoForm, $event)">
+                            <i class="fas fa-upload fa-3x"></i>
+                            <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+                        </div>
+
+                        <input type="file" (change)="onFileSelected(reemplazarDocumentoForm, $event)"
+                            id="documentoReemplazo" class="hidden-input">
+                    </label>
+                </div>
+
+                <p *ngIf="getValidationStatus(reemplazarDocumentoForm,'documento') == 'invalid'" class="invalid-field">
+                    Debe adjuntar un documento para reemplazar.
+                </p>
+                <div *ngIf="getFileName('reemplazar')" class="mt-2 text-muted text-center">
+                    Archivo seleccionado: <strong>{{ getFileName('reemplazar') }}</strong>
+                </div>
             </div>
 
-            <input
-              type="file"
-              (change)="onFileSelected(reemplazarDocumentoForm, $event)"
-              id="documentoReemplazo"
-              class="hidden-input"
-            >
-          </label>
-        </div>
-
-       <p *ngIf="getValidationStatus(reemplazarDocumentoForm,'documento') == 'invalid'" class="invalid-field">
-            Debe adjuntar un documento para reemplazar.
-            </p>
-       <div *ngIf="getFileName('reemplazar')" class="mt-2 text-muted text-center">
-        Archivo seleccionado: <strong>{{ getFileName('reemplazar') }}</strong>
-        </div>
-      </div>
-
-      <div class="d-flex justify-content-end mt-4">
-        <button type="submit" class="btn btn-success" [disabled]="reemplazarDocumentoForm.invalid">
-          Reemplazar
-        </button>
-      </div>
-    </form>
-</div>
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success" [disabled]="reemplazarDocumentoForm.invalid">
+                    Reemplazar
+                </button>
+            </div>
+        </form>
+    </div>
 
 </ng-template>
 
 <ng-template #verDocumentoModal let-aceptar="aceptar" let-cancelar="cancelar">
-   <div class="visor">
-					<div class="pdf-container">
-        <div class="pdf-header p-2">
-            <p class="pdf-title"><i class="fas fa-file m-2"></i> {{documentoVisor.name}}</p>
-        </div>
+    <div class="visor">
+        <div class="pdf-container">
+            <div class="pdf-header p-2">
+                <p class="pdf-title"><i class="fas fa-file m-2"></i> {{documentoVisor.nombre}}</p>
+            </div>
 
-        <!-- Aquí va el PDF embebido -->
-        <embed 
-           [src]="documentVisorURL" 
-            type="application/pdf" 
-            class="pdf-viewer"
-            id="pdfViewer"
-            *ngIf="documentVisorURL"
-        />
+            <!-- Aquí va el PDF embebido -->
+            <embed [src]="documentVisorURL" type="application/pdf" class="pdf-viewer" id="pdfViewer"
+                *ngIf="documentVisorURL" />
 
-        <!-- Contenido alternativo si el PDF no se puede mostrar -->
-        <div class="pdf-fallback" style="display: none;" id="pdfFallback">
-            <h3>No se puede mostrar el PDF</h3>
-            <p>Tu navegador no soporta la visualización de archivos PDF integrados.</p>
-            <a href="ruta/al/archivo.pdf" class="download-link" download>
-                Descargar PDF
-            </a>
-        </div>
+            <!-- Contenido alternativo si el PDF no se puede mostrar -->
+            <div class="pdf-fallback" style="display: none;" id="pdfFallback">
+                <h3>No se puede mostrar el PDF</h3>
+                <p>Tu navegador no soporta la visualización de archivos PDF integrados.</p>
+                <a href="ruta/al/archivo.pdf" class="download-link" download>
+                    Descargar PDF
+                </a>
+            </div>
 
-        <div class="pdf-info">
-            <strong>Archivo:</strong> {{documentoVisor.name}} | 
-            <strong>Tamaño:</strong> {{documentoVisor.size}} bytes| 
-            <strong>Última modificación: </strong>{{documentoVisor.lastModified }} |
-            <strong>Tipo: </strong>{{documentoVisor.type}}
+            <div class="pdf-info">
+                <strong>Archivo:</strong> {{documentoVisor.nombre}} |
+                <strong>Tamaño:</strong> {{documentoVisor.size}} bytes|
+                <strong>Última modificación: </strong>{{documentoVisor.fechaRegistro }} |
+                <strong>Tipo: </strong>{{documentoVisor.type || null }}
+            </div>
         </div>
-    </div></div>
-            
+    </div>
+
 </ng-template>

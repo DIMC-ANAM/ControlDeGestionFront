@@ -8,6 +8,7 @@ import { FechaMexicoPipe } from '../../pipes/date-mx-format';
 /* local mx date */
 import localeEsMx from '@angular/common/locales/es-MX';
 import { GraficasComponent } from './graficas/graficas.component';
+import { LoaderComponent } from './loader/loader.component';
 registerLocaleData(localeEsMx, 'es-MX');
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ registerLocaleData(localeEsMx, 'es-MX');
     SidebarComponent,
     ModalComponent,
     FechaMexicoPipe,
-    GraficasComponent
+    GraficasComponent,
+    LoaderComponent
   ],
   imports: [
     CommonModule,
@@ -26,7 +28,8 @@ registerLocaleData(localeEsMx, 'es-MX');
     SidebarComponent,
     ModalComponent,
     FechaMexicoPipe,
-    GraficasComponent
+    GraficasComponent,
+    LoaderComponent
   ],
 })
 export class SharedModule { }

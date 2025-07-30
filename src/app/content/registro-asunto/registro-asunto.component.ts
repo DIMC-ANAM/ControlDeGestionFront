@@ -153,12 +153,24 @@ export class RegistroAsuntoComponent {
   }
 
   fechaMinimaValidator() {
-    return (control: any) => {
-      const inputDate = new Date(control.value);
-      const today = new Date();
-      return inputDate < today ? { minDate: true } : null;
-    };
-  }
+  return (control: any) => {
+    const value = control.value;
+
+    // Si el valor es nulo, undefined o cadena vacía, no hay error
+    if (value === null || value === undefined || value === '') {
+      return null;
+    }
+
+    const inputDate = new Date(value);
+    const today = new Date();
+    
+    // Normalizar la fecha de hoy quitando la hora
+    today.setHours(0, 0, 0, 0);
+    inputDate.setHours(0, 0, 0, 0);
+
+    return inputDate < today ? { minDate: true } : null;
+  };
+}
 
   onSubmit(): void {
     if (this.documentoForm.valid) {
@@ -335,11 +347,19 @@ export class RegistroAsuntoComponent {
 
   const anexosPayload = await this.convertirAnexos();
 
+  this.documentoForm.get('fechaCompromiso')?.valueChanges.subscribe(value => {
+    if (value === '') {
+      this.documentoForm.get('fechaCompromiso')?.setValue(null, { emitEvent: false });
+    }
+  });
+
   const payload = {
     documento: documentoPayload,
     ...this.documentoForm.value,
     anexos: anexosPayload
   };
+
+
 
   return payload;
 }

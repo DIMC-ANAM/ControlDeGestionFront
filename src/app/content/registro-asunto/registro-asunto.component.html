@@ -381,11 +381,12 @@
 
 
 <ng-template #respuestaRegistroModal>
-    <h3>{{response.message}}</h3>    
-    <h4 class="frmlabel">Folio: <strong>{{response.model.folio}}</strong></h4>
+    <div class="p-2">
+    <h4 class="frmlabel text-center p-3">Folio: <strong class="text-success">{{response.model.folio}}</strong></h4>
     <small class="text-muted">Este folio ha sido generado automáticamente por el sistema</small>
     <!-- footer -->
     <div class="footer d-flex justify-content-end align-items-center">    
+    </div>
     </div>
 </ng-template>
 

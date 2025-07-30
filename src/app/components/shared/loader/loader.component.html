@@ -1,0 +1,6 @@
+<div *ngIf="isLoading" [ngClass]="{ 'loader-overlay': fullscreen, 'loader-local': !fullscreen }">
+  <div class="loader-spinner">
+    <!-- Puedes usar un GIF o spinner SVG/CSS -->
+    <img src="/img/loader.gif" alt="Cargando..." />
+  </div>
+</div>

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
 
 export enum EstadoAsunto {
-  Pendiente = 'pendiente',
-  EnProgreso = 'en_progreso',
+  Registrado = 'Registrado',
+  EnCurso = 'En curso',
   Concluido = 'Concluido'
 }
 
 export enum PrioridadAsunto {
-  Alta = 'alta',
-  Media = 'media',
-  Baja = 'baja'
+  Alta = 'Alta',
+  Media = 'Media',
+  Baja = 'Baja'
 }
 
 @Injectable({
@@ -17,12 +17,12 @@ export enum PrioridadAsunto {
 })
 export class ColorsEnum {
   private readonly estadoStyles: Record<EstadoAsunto, { icon: string; colorClass: string }> = {
-    [EstadoAsunto.Pendiente]: {
-      icon: 'fas fa-clock',
+    [EstadoAsunto.Registrado]: {
+      icon: 'fas fa-file',
       colorClass: 'bg-deep-blue text-white'
     },
-    [EstadoAsunto.EnProgreso]: {
-      icon: 'fas fa-edit',
+    [EstadoAsunto.EnCurso]: {
+      icon: 'fas fa-clock',
       colorClass: 'bg-purple text-white'
     },
     [EstadoAsunto.Concluido]: {

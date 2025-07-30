@@ -18,6 +18,9 @@ import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { LoaderInterceptor } from './components/shared/interceptors/loader.interceptor';
+
 
 @NgModule({
   declarations: [
@@ -48,9 +51,15 @@ import { HttpClientModule } from '@angular/common/http';
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }), 
-    HttpClientModule 
+    HttpClientModule     
   ],
-  providers: [],
+  providers: [
+      {
+      provide: HTTP_INTERCEPTORS,
+      useClass: LoaderInterceptor,
+      multi: true
+    }
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
