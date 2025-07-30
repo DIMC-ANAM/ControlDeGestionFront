@@ -79,8 +79,8 @@ export class DetalleAsuntosComponent {
     if (this.idAsunto) {
       this.consultarDetallesAsunto(this.idAsunto);
       this.consultarExpedienteAsunto(this.idAsunto);
-      this.consultarTurnadosAsunto(this.idAsunto);
-      this.consultarHistorialAsunto(this.idAsunto);
+/*       this.consultarTurnadosAsunto(this.idAsunto);
+      this.consultarHistorialAsunto(this.idAsunto); */
       /* this.cargarDetalle(this.idAsunto); */
     }
   }
