@@ -379,24 +379,29 @@ export class DetalleAsuntosComponent {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
     }
-    consultarExpedienteAsunto(id:number) {
+    consultarExpedienteAsunto(id:number,muestraToast:boolean = false) {
 
         this.asuntoApi.consultarExpedienteAsunto({idAsunto: id}).subscribe(
           (data) => {
-            this.onSuccessconsultarExpedienteAsunto(data);
+            this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
           },
           (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarExpedienteAsunto(data: any) {
-      if (data.status == 200) {
-        this.documentoPrincipal = data.model.documento
-        this.anexos = data.model.anexos
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            this.documentoPrincipal = null;
+            this.anexos =[];
+           if  (muestraToast ) this.utils.MuestraErrorInterno(ex);
+          } 
+        );
+        
+      }
+      onSuccessconsultarExpedienteAsunto(data: any, muestraToast:boolean) {
+        if (data.status == 200) {
+          this.documentoPrincipal = data.model.documento
+          this.anexos = data.model.anexos
+        } else {
+          this.documentoPrincipal = null;
+          this.anexos =[];
+          if  (muestraToast )this.utils.MuestrasToast(TipoToast.Warning, data.message);
+        
       }
     }
     consultarTurnadosAsunto(id:number) {
