@@ -11,17 +11,17 @@ export class CatalogoService {
 
   constructor(private http: HttpClient) { }
 
-  consultarTipoDocumento(data:any) {
-    return this.http.post(this.urlBase + 'consultarTipoDocumento', data);
+  consultarTipoDocumento() {
+    return this.http.get(this.urlBase + 'consultarTipoDocumento');
   }
-  consultarTema(data:any) {
-    return this.http.post(this.urlBase + 'consultarTema', data);
+  consultarTema() {
+    return this.http.get(this.urlBase + 'consultarTema');
   }
-  consultarPrioridad(data:any) {
-    return this.http.post(this.urlBase + 'consultarPrioridad', data);
+  consultarPrioridad() {
+    return this.http.get(this.urlBase + 'consultarPrioridad');
   }
-  consultarMedioRecepcion(data:any) {
-    return this.http.post(this.urlBase + 'consultarMedioRecepcion', data);
+  consultarMedioRecepcion() {
+    return this.http.get(this.urlBase + 'consultarMedioRecepcion');
   }
 }
 

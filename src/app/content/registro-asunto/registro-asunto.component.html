@@ -26,7 +26,7 @@
                             [class.invalid]="getValidationStatus('idTipoDocumento') == 'invalid'"
                             [class.valid]="getValidationStatus('idTipoDocumento') == 'valid'">
                             <option value="null" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of tipoDocumentoDS" [value]="t.id">{{ t.tipoDocumento }}</option>
+                            <option *ngFor="let t of tipoDocumentoDS" [value]="t.idTipoDocumento">{{ t.tipoDocumento }}</option>
                         </select>
                     </div>
                     <p *ngIf="getValidationStatus('idTipoDocumento') == 'invalid'" class="invalid-field">Campo
@@ -112,7 +112,7 @@
                             [class.invalid]="getValidationStatus('idPrioridad') == 'invalid'"
                             [class.valid]="getValidationStatus('idPrioridad') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of opciones['prioridad']" [value]="t.id">{{ t.nombre }}</option>
+                            <option *ngFor="let t of prioridad" [value]="t.idPrioridad">{{ t.prioridad }}</option>
                         </select>
                     </div>
                     <p *ngIf="getValidationStatus('idPrioridad') == 'invalid'" class="invalid-field">Campo obligatorio.
@@ -262,7 +262,7 @@
                             [class.invalid]="getValidationStatus('idMedio') == 'invalid'"
                             [class.valid]="getValidationStatus('idMedio') == 'valid'">
                             <option value="" disabled selected>Seleccione</option>
-                            <option *ngFor="let t of opciones['medio']" [value]="t.id">{{ t.nombre }}</option>
+                            <option *ngFor="let t of medio" [value]="t.idMedioRecepcion">{{ t.medioRecepcion }}</option>
                         </select>
                     </div>
                     <p *ngIf="getValidationStatus('idMedio') == 'invalid'" class="invalid-field">Campo obligatorio.</p>

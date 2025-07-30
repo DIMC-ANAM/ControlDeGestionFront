@@ -4,6 +4,7 @@ import { ModalManagerService } from '../../components/shared/modal-manager.servi
 import { AsuntoService } from '../../../api/asunto/asunto.service';
 import { UtilsService } from '../../services/utils.service';
 import { TipoToast } from '../../../api/entidades/enumeraciones';
+import { CatalogoService } from '../../../api/catalogo/catalogo.service';
 
 @Component({
   selector: 'app-registro-asunto',
@@ -15,37 +16,18 @@ export class RegistroAsuntoComponent {
   @ViewChild('modalPrevisualizar', { static: true })
   modalPrevisualizar!: TemplateRef<any>;
   @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
-  @ViewChild('respuestaRegistroModal', { static: true }) respuestaRegistroModal!: TemplateRef<any>;
+  @ViewChild('respuestaRegistroModal', { static: true })
+  respuestaRegistroModal!: TemplateRef<any>;
 
   documentoForm!: FormGroup;
-  temas = [
-    { idTema: 1, tema: 'Tema A' },
-    { idTema: 2, tema: 'Tema B' },
-    { idTema: 3, tema: 'Tema C' },
-  ];
-  tipoDocumentoDS = [
-    { id: 1, tipoDocumento: 'Oficio' },
-    { id: 2, tipoDocumento: 'Circular' },
-    { id: 3, tipoDocumento: 'Nota' },
-  ];
+  temas:any[] = [];
+
+  tipoDocumentoDS:any[] = [];
 
   selectFields: any = ['medio', 'recepcion'];
-
-  opciones: any[any] = {
-    medio: [
-      { id: '1', nombre: 'Email' },
-      { id: '2', nombre: 'Físico' },
-    ],
-    recepcion: [
-      { id: '1', nombre: 'Presencial' },
-      { id: '2', nombre: 'Digital' },
-    ],
-    prioridad: [
-      { id: '1', nombre: 'Alta' },
-      { id: '2', nombre: 'Media' },
-      { id: '3', nombre: 'Baja' },
-    ],
-  };
+  medio:any[] = [];
+  recepcion:any[] = [];
+  prioridad:any[] = [];
 
   remitenteFields = [
     { name: 'remitenteNombre', label: 'Nombre del remitente' },
@@ -62,13 +44,15 @@ export class RegistroAsuntoComponent {
 
   /* respuesta del registro de asunto */
 
-  response:any = null; 
+  response: any = null;
   today = new Date().toISOString().split('T')[0];
 
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
     private asuntoApi: AsuntoService,
+    private catalogoApi: CatalogoService,
+
     private utils: UtilsService
   ) {}
 
@@ -76,14 +60,18 @@ export class RegistroAsuntoComponent {
     /* session stuff */
     /* roles stuff */
 
+    this.consultarTipoDocumento();
+    this.consultarTema();
+    this.consultarPrioridad();
+    this.consultarMedioRecepcion();
+
     this.initFormAsunto();
     this.validaCheckbox();
   }
 
   /* inicialización */
 
-  initFormAsunto(){
-    
+  initFormAsunto() {
     this.documentoForm = this.fb.group({
       idTipoDocumento: [null, Validators.required],
       noOficio: ['', Validators.required],
@@ -153,24 +141,24 @@ export class RegistroAsuntoComponent {
   }
 
   fechaMinimaValidator() {
-  return (control: any) => {
-    const value = control.value;
+    return (control: any) => {
+      const value = control.value;
 
-    // Si el valor es nulo, undefined o cadena vacía, no hay error
-    if (value === null || value === undefined || value === '') {
-      return null;
-    }
+      // Si el valor es nulo, undefined o cadena vacía, no hay error
+      if (value === null || value === undefined || value === '') {
+        return null;
+      }
 
-    const inputDate = new Date(value);
-    const today = new Date();
-    
-    // Normalizar la fecha de hoy quitando la hora
-    today.setHours(0, 0, 0, 0);
-    inputDate.setHours(0, 0, 0, 0);
+      const inputDate = new Date(value);
+      const today = new Date();
 
-    return inputDate < today ? { minDate: true } : null;
-  };
-}
+      // Normalizar la fecha de hoy quitando la hora
+      today.setHours(0, 0, 0, 0);
+      inputDate.setHours(0, 0, 0, 0);
+
+      return inputDate < today ? { minDate: true } : null;
+    };
+  }
 
   onSubmit(): void {
     if (this.documentoForm.valid) {
@@ -196,22 +184,22 @@ export class RegistroAsuntoComponent {
   }
 
   onDocumentoSeleccionado(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    const file = input.files[0];
-    const originalName = file.name;
-    const extension = originalName.substring(originalName.lastIndexOf('.')); // incluye el punto, ej: '.pdf'
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
+      const originalName = file.name;
+      const extension = originalName.substring(originalName.lastIndexOf('.')); // incluye el punto, ej: '.pdf'
 
-    const nombreFinal = this.nombreDocumento.trim()
-      ? this.nombreDocumento.trim() + extension
-      : originalName;
+      const nombreFinal = this.nombreDocumento.trim()
+        ? this.nombreDocumento.trim() + extension
+        : originalName;
 
-    this.documento = {
-      file: file,
-      nombre: nombreFinal
-    };
+      this.documento = {
+        file: file,
+        nombre: nombreFinal,
+      };
+    }
   }
-}
 
   borrarDocumento(): void {
     this.documento = null;
@@ -266,7 +254,7 @@ export class RegistroAsuntoComponent {
       title: 'Confirmar',
       template: this.confirmModal,
       showFooter: true,
-      onAccept: () => this.registrarAsunto()
+      onAccept: () => this.registrarAsunto(),
     });
   }
   openrespuestaRegistroModal() {
@@ -279,24 +267,81 @@ export class RegistroAsuntoComponent {
   }
 
   /* web services */
+  consultarTema() {
+      this.catalogoApi.consultarTema().subscribe(
+        (data:any) => {
+          if(data.status == 200){
+            this.temas = data.model
+          }else{
+           this.utils.MuestrasToast(TipoToast.Warning, data.message)
+          }
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  consultarPrioridad() {
+      this.catalogoApi.consultarPrioridad().subscribe(
+        (data:any) => {
+          if(data.status == 200){
+            this.prioridad = data.model
+          }else{
+           this.utils.MuestrasToast(TipoToast.Warning, data.message)
+          }
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  consultarTipoDocumento() {
+      this.catalogoApi.consultarTipoDocumento().subscribe(
+        (data:any) => {
+          if(data.status == 200){
+            this.tipoDocumentoDS = data.model
+          }else{
+           this.utils.MuestrasToast(TipoToast.Warning, data.message)
+          }
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  consultarMedioRecepcion() {
+      this.catalogoApi.consultarMedioRecepcion().subscribe(
+        (data:any) => {
+          if(data.status == 200){
+            this.medio = data.model
+          }else{
+           this.utils.MuestrasToast(TipoToast.Warning, data.message)
+          }
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+
+  /* catalogos
+   */
   registrarAsunto() {
-    this.construirPayload().then(payload => {
-      console.log(payload);
-      
+    this.construirPayload().then((payload) => {      
+
       this.asuntoApi.registrarAsunto(payload).subscribe(
         (data) => {
           this.onSuccessregistrarAsunto(data);
         },
-      (ex) => {
-        this.utils.MuestraErrorInterno(ex);
-      } 
-  );
-});
-
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+    });
   }
   onSuccessregistrarAsunto(data: any) {
     if (data.status == 200) {
-      this.response  = data;
+      this.response = data;
       this.openrespuestaRegistroModal();
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
@@ -318,49 +363,51 @@ export class RegistroAsuntoComponent {
     });
   }
   private async convertirAnexos(): Promise<any[]> {
-  if (!this.anexos || this.anexos.length === 0) return [];
+    if (!this.anexos || this.anexos.length === 0) return [];
 
-  return Promise.all(
-    this.anexos.map(async (file: File) => {
-      const base64 = await this.fileToBase64(file);
-      return {
-        fileName: file.name,
-        fileEncode64: base64,
-        size: file.size,
-        tipoDocumento: 'Anexo'
-      };
-    })
-  );
-}
-  async construirPayload(): Promise<any> {
-  let documentoPayload = null;
-
-  if (this.documento && this.documento.file) {
-    const base64 = await this.fileToBase64(this.documento.file);
-    documentoPayload = {
-      fileName: this.documento.nombre,
-      fileEncode64: base64,
-      size: this.documento.file.size,
-      tipoDocumento: 'Documento principal'
-    };
+    return Promise.all(
+      this.anexos.map(async (file: File) => {
+        const base64 = await this.fileToBase64(file);
+        return {
+          fileName: file.name,
+          fileEncode64: base64,
+          size: file.size,
+          tipoDocumento: 'Anexo',
+        };
+      })
+    );
   }
+  async construirPayload(): Promise<any> {
+    let documentoPayload = null;
 
-  const anexosPayload = await this.convertirAnexos();
-
-  this.documentoForm.get('fechaCompromiso')?.valueChanges.subscribe(value => {
-    if (value === '') {
-      this.documentoForm.get('fechaCompromiso')?.setValue(null, { emitEvent: false });
+    if (this.documento && this.documento.file) {
+      const base64 = await this.fileToBase64(this.documento.file);
+      documentoPayload = {
+        fileName: this.documento.nombre,
+        fileEncode64: base64,
+        size: this.documento.file.size,
+        tipoDocumento: 'Documento principal',
+      };
     }
-  });
 
-  const payload = {
-    documento: documentoPayload,
-    ...this.documentoForm.value,
-    anexos: anexosPayload
-  };
+    const anexosPayload = await this.convertirAnexos();
 
+    this.documentoForm
+      .get('fechaCompromiso')
+      ?.valueChanges.subscribe((value) => {
+        if (value === '') {
+          this.documentoForm
+            .get('fechaCompromiso')
+            ?.setValue(null, { emitEvent: false });
+        }
+      });
 
+    const payload = {
+      documento: documentoPayload,
+      ...this.documentoForm.value,
+      anexos: anexosPayload,
+    };
 
-  return payload;
-}
+    return payload;
+  }
 }
