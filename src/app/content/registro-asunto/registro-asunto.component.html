@@ -308,18 +308,17 @@
   <!-- Datos generales -->
   <div class="row mb-3">
     <div class="col-md-6">
-      <p><strong>Tipo de documento:</strong> {{ documentoForm.value.idTipoDocumento }}</p>
+      <p><strong>Tipo de documento:</strong> {{encontrarPorId(tipoDocumentoDS, 'idTipoDocumento', documentoForm.value.idTipoDocumento,'tipoDocumento') || ''}}</p>
       <p><strong>Número de oficio:</strong> {{ documentoForm.value.noOficio }}</p>
-      <p><strong>Tema:</strong> {{ documentoForm.value.tema }}</p>
+      <p><strong>Tema:</strong> {{ encontrarPorId(temas, 'idTema', documentoForm.value.idTema, 'tema') || ''}}</p>
       <p><strong>Fecha del documento:</strong> {{ documentoForm.value.fechaDocumento | fechaMexico }}</p>
       <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico }}</p>
       <p><strong>Fecha de cumplimiento:</strong> {{ documentoForm.value.fechaCumplimiento | fechaMexico }} </p>
-      <p><strong>Prioridad:</strong> {{ documentoForm.value.prioridad }}</p>
+      <p><strong>Prioridad:</strong> {{ encontrarPorId(prioridad, 'idPrioridad', documentoForm.value.idPrioridad,'prioridad') || ''}}</p>
     </div>
 
     <div class="col-md-6">
-      <p><strong>Medio de recepción:</strong> {{ documentoForm.value.medio }}</p>
-      <p><strong>Recepción:</strong> {{ documentoForm.value.recepcion }}</p>
+      <p><strong>Medio de recepción:</strong> {{ encontrarPorId(medio, 'idMedioRecepcion', documentoForm.value.idMedio,'medioRecepcion') || 'asdasd'}}</p>      
       <p><strong>Es volante:</strong> {{ documentoForm.value.esVolante ? 'Sí' : 'No' }}</p>
       <p *ngIf="documentoForm.value.esVolante"><strong>Número de volante:</strong> {{ documentoForm.value.numeroVolante }}</p>
       <p><strong>Es guía:</strong> {{ documentoForm.value.esGuia ? 'Sí' : 'No' }}</p>

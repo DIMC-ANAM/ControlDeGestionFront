@@ -410,4 +410,8 @@ export class RegistroAsuntoComponent {
 
     return payload;
   }
+
+   encontrarPorId(lista: any[], campo: string, valor: number,target:string): string | undefined {
+      return lista.find(item => item[campo] == valor)[target];
+    }
 }
