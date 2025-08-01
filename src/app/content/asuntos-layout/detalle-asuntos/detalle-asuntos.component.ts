@@ -7,6 +7,7 @@ import { AsuntoService } from '../../../../api/asunto/asunto.service';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { environment } from '../../../../environments/environment';
+import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 
 @Component({
   selector: 'app-detalle-asuntos',
@@ -34,19 +35,11 @@ export class DetalleAsuntosComponent {
   reemplazarDocumentoForm!: FormGroup;
   agregarAnexoForm!: FormGroup;
 
-  unidadesResponsablesDS: any[] = [
-    { id: 1, nombre: 'Departamento de Recursos Humanos' },
-    { id: 2, nombre: 'Dirección de Finanzas' },
-    { id: 3, nombre: 'Subsecretaría de Asuntos Legales' },
-  ];
+  unidadesResponsablesDS: any[] = [];
 
-  instruccionesDS: any[] = [
-    { id: 1, descripcion: 'Para su conocimiento' },
-    { id: 2, descripcion: 'Para su atención y respuesta' },
-    { id: 3, descripcion: 'Para archivo' },
-    { id: 4, descripcion: 'Para elaboración de informe' },
-  ];
-  turnados: any[] = [];
+  instruccionesDS: any[] = [  ];
+  turnados: any[] = []; /* turnados por cargar */
+  turnadosAsunto: any[] = []; 
 
   anexosCargados: any[] = [];
   fileState = new Map<string, { file: File | null; name: string | null }>();
@@ -61,6 +54,7 @@ export class DetalleAsuntosComponent {
   asuntoSeleccionadoModificado:Boolean = false;
 
   tabActiva = 'detalles';
+  idUsuario = 1;
   asuntoSeleccionado: any = null;
 
   documentoPrincipal: any = null;
@@ -72,16 +66,24 @@ export class DetalleAsuntosComponent {
     private sanitizer: DomSanitizer,
     public colors: ColorsEnum,
     private asuntoApi: AsuntoService, 
-    private utils: UtilsService
+    private utils: UtilsService,
+    private catalogoApi: CatalogoService
+
   ) {}
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+    this.consultarUnidadAdministrativa();
+    this.consultarInstruccion();
+  }
 
   ngOnChanges() {
     if (this.idAsunto) {
       this.consultarDetallesAsunto(this.idAsunto);
       this.consultarExpedienteAsunto(this.idAsunto);
-/*       this.consultarTurnadosAsunto(this.idAsunto);
-      this.consultarHistorialAsunto(this.idAsunto); */
-      /* this.cargarDetalle(this.idAsunto); */
+      this.consultarTurnadosAsunto(this.idAsunto);
+      /*this.consultarHistorialAsunto(this.idAsunto); */      
     }
   }
 
@@ -112,6 +114,7 @@ export class DetalleAsuntosComponent {
 
   openTurnarModal() {
     this.initFormTurnado();
+    this.turnados = [...this.turnadosAsunto];
     this.openModal({
       title: 'Turnar asunto',
       template: this.turnarModal,
@@ -175,8 +178,8 @@ export class DetalleAsuntosComponent {
 
   initFormTurnado(): void {
     this.turnadoForm = this.fb.group({
-      unidadResponsable: [null, Validators.required],
-      instruccion: [null, Validators.required],
+      idUnidadResponsable: [null, Validators.required],
+      idInstruccion: [null, Validators.required],
     });
   }
 
@@ -205,7 +208,7 @@ export class DetalleAsuntosComponent {
   }
 
   finalizarTurnado(): void {
-    console.log('Turnados a enviar:', this.turnados);
+    this.turnarAsunto();
   }
 
   cancelarTurnado(): void {
@@ -326,32 +329,45 @@ export class DetalleAsuntosComponent {
       : 'none';
   }
 
-  addTurnado(): void {
-    if (this.turnadoForm.valid) {
-      const unidadId = this.turnadoForm.get('unidadResponsable')?.value;
-      const instruccionId = this.turnadoForm.get('instruccion')?.value;
-      const unidad = this.unidadesResponsablesDS.find((u) => u.id == unidadId);
-      const instruccion = this.instruccionesDS.find(
-        (i) => i.id == instruccionId
-      );
-      if (
-        unidad &&
-        instruccion &&
-        !this.turnados.some(
-          (t) =>
-            t.unidadResponsable.id === unidad.id &&
-            t.instruccion.id === instruccion.id
-        )
-      ) {
-        this.turnados.push({ unidadResponsable: unidad, instruccion });
-        this.turnadoForm.reset();
-      } else {
-        alert('Este turnado ya ha sido agregado.');
-      }
+addTurnado(): void {
+  if (this.turnadoForm.valid) {
+    const unidad = this.unidadesResponsablesDS.find(
+      (u) => u.idUnidadResponsable == this.turnadoForm.get('idUnidadResponsable')?.value
+    );
+    const instruccion = this.instruccionesDS.find(
+      (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
+    );
+
+    
+    const nuevoTurnado = {
+      idUnidadResponsable: unidad?.idUnidadResponsable,
+      idInstruccion: instruccion?.idInstruccion,
+    };
+    console.log(nuevoTurnado);
+
+    if (unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))) {
+      this.turnados.push({
+        unidadResponsable: unidad.unidadResponsable,
+        instruccion: instruccion.instruccion,
+        idAsunto: this.idAsunto,
+        idUnidadResponsable: unidad.idUnidadResponsable,
+        idInstruccion: instruccion.idInstruccion,
+        idUsuarioAsigna: this.idUsuario,
+      });
+      this.turnadoForm.reset();
     } else {
-      this.turnadoForm.markAllAsTouched();
+      this.utils.MuestrasToast(TipoToast.Warning, 'Este turnado ya ha sido agregado.');
     }
+  } else {
+    this.turnadoForm.markAllAsTouched();
   }
+}
+private esTurnadoIgual(a: any, b: any): boolean {
+  return (
+    a.idUnidadResponsable == b.idUnidadResponsable &&
+    a.idInstruccion == b.idInstruccion
+  );
+}
 
   removeTurnado(index: number): void {
     this.turnados.splice(index, 1);
@@ -404,9 +420,9 @@ export class DetalleAsuntosComponent {
         
       }
     }
-    consultarTurnadosAsunto(id:number) {
+    consultarTurnadosAsunto(id:number | any) {
 
-        this.asuntoApi.consultarTurnadosAsunto({idAsunto: id}).subscribe(
+        this.asuntoApi.consultarTurnados({idAsunto: id}).subscribe(
           (data) => {
             this.onSuccessconsultarTurnadosAsunto(data);
           },
@@ -418,8 +434,7 @@ export class DetalleAsuntosComponent {
     }
     onSuccessconsultarTurnadosAsunto(data: any) {
       if (data.status == 200) {
-        /* this.asuntoSeleccionado = data.model */
-        /* lista de turnados  */
+        this.turnadosAsunto = data.model;        
       } else {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
@@ -444,5 +459,98 @@ export class DetalleAsuntosComponent {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
     }
+    consultarUnidadAdministrativa() {
+
+        this.catalogoApi.consultarUnidadAdministrativa({esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 }).subscribe(
+          (data) => {
+            this.onSuccessconsultarUnidadAdministrativa(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarUnidadAdministrativa(data: any) {
+      if (data.status == 200) {
+       this.unidadesResponsablesDS = data.model;
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarInstruccion() {
+
+        this.catalogoApi.consultarInstruccion({esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 }).subscribe(
+          (data) => {
+            this.onSuccessconsultarInstruccion(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarInstruccion(data: any) {
+      if (data.status == 200) {
+       this.instruccionesDS = data.model;
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    turnarAsunto() {
+
+        this.asuntoApi.turnarAsunto({listaTurnados: this.turnados}).subscribe(
+          (data) => {
+            this.onSuccessturnarAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessturnarAsunto(data: any) {
+      if (data.status == 200) {
+       this.consultarTurnadosAsunto(this.idAsunto);
+       this.utils.MuestrasToast(TipoToast.Success, data.message);
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+      this.turnados=[]
+    }
+
+    /* auxiliares turnado  */
+    /**
+ * Compara si la lista temporal de turnados es diferente de los turnados reales del asunto.
+ * @returns boolean
+ */
+hayCambiosEnTurnados(): boolean {
+  if (this.turnados.length !== this.turnadosAsunto.length) return true;
+
+  const sortedTurnados = [...this.turnados].sort(this.comparadorTurnado);
+  const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
+
+  for (let i = 0; i < sortedTurnados.length; i++) {
+    if (
+      sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable ||
+      sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Función auxiliar para ordenar turnados por unidad e instrucción.
+ */
+private comparadorTurnado(a: any, b: any): number {
+  if (a.idUnidadResponsable !== b.idUnidadResponsable) {
+    return a.idUnidadResponsable - b.idUnidadResponsable;
+  }
+  return a.idInstruccion - b.idInstruccion;
+}
+
+    /* end auxiliares turnado  */
 
 }

@@ -468,15 +468,15 @@
                                 </button>
                             </div>
 
-                            <div *ngFor="let asignacion of turnados" class="card p-3 mb-2">
+                            <div *ngFor="let asignacion of turnadosAsunto" class="card p-3 mb-2">
                                 <div class="d-flex justify-content-between align-items-center">
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="icon-circle"><i class="fas fa-share"></i></div>
                                         <div>
-                                            <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable.nombre }}</p>
-                                            <small class="text-muted">{{ asignacion.instruccion.descripcion
+                                            <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable }}</p>
+                                            <small class="text-muted">{{ asignacion.instruccion
                                                 }}</small><br />
-                                            <small class="text-muted">Asignado: {{ '2025-07-22 00:00' |
+                                            <small class="text-muted">Asignado: {{ asignacion.fechaRegistro |
                                                 fechaMexico}}</small>
                                         </div>
                                     </div>
@@ -538,16 +538,16 @@
         <form [formGroup]="turnadoForm">
             <div class="row">
                 <div class="col-md-12">
-                    <label class="form-label frmlabel required" for="unidadResponsable"><i
+                    <label class="form-label frmlabel required" for="idUnidadResponsable"><i
                             class="p-1 fas fa-building-columns"> </i>Unidad Responsable</label>
                     <div class="input-icon-wrapper">
                         <i
-                            [ngClass]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <select id="unidadResponsable" class="form-control" formControlName="unidadResponsable"
-                            [class.invalid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'"
-                            [class.valid]="getValidationStatus(turnadoForm,'unidadResponsable') == 'valid'">
+                            [ngClass]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'idUnidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idUnidadResponsable" class="form-control" formControlName="idUnidadResponsable"
+                            [class.invalid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'valid'">
                             <option [value]="null" disabled selected>Seleccione una unidad</option>
-                            <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.id">{{ unidad.nombre
+                            <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.idUnidadResponsable">{{ unidad.unidadResponsable
                                 }}</option>
                         </select>
                     </div>
@@ -561,18 +561,17 @@
                         </i>Instrucción</label>
                     <div class="input-icon-wrapper">
                         <i
-                            [ngClass]="getValidationStatus(turnadoForm,'instruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'instruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <select id="instruccion" class="form-control" formControlName="instruccion"
-                            [class.invalid]="getValidationStatus(turnadoForm,'instruccion') == 'invalid'"
-                            [class.valid]="getValidationStatus(turnadoForm,'instruccion') == 'valid'">
+                            [ngClass]="getValidationStatus(turnadoForm,'idInstruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'idInstruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idInstruccion" class="form-control" formControlName="idInstruccion"
+                            [class.invalid]="getValidationStatus(turnadoForm,'idInstruccion') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'idInstruccion') == 'valid'">
                             <option [value]="null" disabled selected>Seleccione una instrucción</option>
-                            <option *ngFor="let instr of instruccionesDS" [value]="instr.id">{{ instr.descripcion }}
+                            <option *ngFor="let instr of instruccionesDS" [value]="instr.idInstruccion">{{ instr.instruccion }}
                             </option>
                         </select>
                     </div>
-                    <p *ngIf="getValidationStatus(turnadoForm,'instruccion') == 'invalid'" class="invalid-field">Este
-                        campo es
-                        obligatorio.</p>
+                    <p *ngIf="getValidationStatus(turnadoForm,'idInstruccion') == 'invalid'" class="invalid-field">Este
+                        campo es obligatorio.</p>
                 </div>
 
                 <div
@@ -598,8 +597,8 @@
                         <td colspan="3" class="text-center">No hay turnados agregados.</td>
                     </tr>
                     <tr *ngFor="let turnado of turnados; let i = index">
-                        <td>{{ turnado.unidadResponsable.nombre }}</td>
-                        <td>{{ turnado.instruccion.descripcion }}</td>
+                        <td>{{ turnado.unidadResponsable }}</td>
+                        <td>{{ turnado.instruccion }}</td>
                         <td class="text-center">
                             <i role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>
                         </td>
@@ -611,7 +610,7 @@
 
         <div class="w-100 d-flex justify-content-end">
             <button class="btn btn-outline-dark m-2" (click)="cancelar()">Cancelar</button>
-            <button class="btn btn-primary m-2" (click)="aceptar()"> <i class="fas fa-share m-2"></i>Turnar </button>
+            <button class="btn btn-primary m-2" [disabled]="!hayCambiosEnTurnados() || turnados.length == 0" (click)="aceptar()"> <i class="fas fa-share m-2"></i>Turnar </button>
         </div>
 
     </div>

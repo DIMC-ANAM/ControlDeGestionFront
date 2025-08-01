@@ -35,11 +35,14 @@ export class AsuntoService {
     return this.http.post(this.urlBase + 'consultarExpedienteAsunto', data);
   }
   
-  consultarTurnadosAsunto(data:any) {
-    return this.http.post(this.urlBase + 'consultarTurnadosAsunto', data);
+  consultarTurnados(data:any) {
+    return this.http.post(this.urlBase + 'consultarTurnados', data);
   }
   
   consultarHistorialAsunto(data:any) {
     return this.http.post(this.urlBase + 'consultarHistorialAsunto', data);
+  }
+  turnarAsunto(data:any) {
+    return this.http.post(this.urlBase + 'turnarAsunto', data);
   }
 }

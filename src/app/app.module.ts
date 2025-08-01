@@ -48,7 +48,7 @@ import { LoaderInterceptor } from './components/shared/interceptors/loader.inter
      BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
-      positionClass: 'toast-bottom-right',
+      positionClass: 'toast-top-right',
       preventDuplicates: true,
     }), 
     HttpClientModule     

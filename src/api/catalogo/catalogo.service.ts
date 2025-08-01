@@ -23,5 +23,11 @@ export class CatalogoService {
   consultarMedioRecepcion() {
     return this.http.get(this.urlBase + 'consultarMedioRecepcion');
   }
+  consultarUnidadAdministrativa(data:any) {
+    return this.http.post(this.urlBase + 'consultarUnidadAdministrativa', data);
+  }
+  consultarInstruccion(data:any) {
+    return this.http.post(this.urlBase + 'consultarInstruccion', data);
+  }
 }
 
