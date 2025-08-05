@@ -12,18 +12,6 @@ import { ColorsEnum } from '../../../entidades/colors.enum';
 })
 export class ListaAsuntosComponent {
     @Output() asuntoSeleccionado = new EventEmitter<number>();
-
-    estadoColors: { [key: string]: string } = {
-    pendiente: 'bg-deep-blue  text-white',
-    en_progreso: 'bg-purple text-white',
-    Concluido: 'bg-success text-white',
-  };
-
-  prioridadColors: { [key: string]: string } = {
-    ALTA: 'bg-primary text-white',
-    MEDIA: 'bg-gold text-white',
-    BAJA: 'bg-secondary text-white',
-  };
   
   filtroTexto = '';
   filtroEstado = '';
@@ -84,21 +72,6 @@ export class ListaAsuntosComponent {
         coincideFecha
       );
     });
-  }
-  /* seleccionarAsunto(asunto: any) {
-    this.asuntoSeleccionado = asunto;
-  } */
-  getEstadoIcon(estado: string): string {
-    switch (estado) {
-      case 'pendiente':
-        return 'fas fa-clock';
-      case 'en_progreso':
-        return 'fas fa-edit';
-      case 'Concluido':
-        return 'fas fa-check';
-      default:
-        return 'x-circle';
-    }
   }
 
   /* web services */

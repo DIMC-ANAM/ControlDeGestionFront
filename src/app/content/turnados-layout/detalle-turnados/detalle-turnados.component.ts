@@ -1,5 +1,16 @@
 import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalManagerService } from '../../../components/shared/modal-manager.service';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ColorsEnum } from '../../../entidades/colors.enum';
+import { AsuntoService } from '../../../../api/asunto/asunto.service';
+import { TurnadoService } from '../../../../api/turnado/turnado.service';
+import { UtilsService } from '../../../services/utils.service';
+import { TipoToast } from '../../../../api/entidades/enumeraciones';
+import { environment } from '../../../../environments/environment';
+import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
+
+
 @Component({
   selector: 'app-detalle-turnados',
   standalone: false,
@@ -7,198 +18,295 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrl: './detalle-turnados.component.scss'
 })
 export class DetalleTurnadosComponent {
-@Input() idAsunto: number | null = null;
+  
+@Input() asuntoInput: any | null = null;
 
+  @ViewChild('responderModal', { static: true }) responderModal!: TemplateRef<any>;
+  @ViewChild('rechazarModal', { static: true }) rechazarModal!: TemplateRef<any>;
+  @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
+  @ViewChild('verDocumentoModal', { static: true }) verDocumentoModal!: TemplateRef<any>;
 
-  constructor(private fb: FormBuilder){}
+  turnados: any[] = []; /* turnados por cargar */
+  conclusionForm!: FormGroup;
+  reemplazarDocumentoForm!: FormGroup;
+  rechazarForm!: FormGroup;
 
-   turnadoForm!: FormGroup; // Formulario para agregar nuevos turnados
-  turnados: any = []; // Lista donde se almacenarán los turnados agregados
+  anexosCargados: any[] = [];
+  fileState = new Map<string, { file: File | null; name: string | null }>();
 
-  unidadesResponsablesDS: any[] = [
-    { id: 1, nombre: 'Departamento de Recursos Humanos' },
-    { id: 2, nombre: 'Dirección de Finanzas' },
-    { id: 3, nombre: 'Subsecretaría de Asuntos Legales' }
-  ];
+  documentoVisor: any = null;
+  documentVisorURL: SafeResourceUrl | null = null;
+  documentoStringURL: string = '';
 
-  instruccionesDS: any[] = [
-    { id: 1, descripcion: 'Para su conocimiento' },
-    { id: 2, descripcion: 'Para su atención y respuesta' },
-    { id: 3, descripcion: 'Para archivo' },
-    { id: 4, descripcion: 'Para elaboración de informe' }
-  ];
-    asuntos = [
-    {
-      idAsunto: 1,
-      idTipoDocumento: 101,
-      tipoDocumento: 'Oficio',
-      noOficio: 'GOB-2024-001',
-      esVolante: true,
-      numeroVolante: 'VOL-9876',
-      esGuia: false,
-      numeroGuia: '',
-      fechaDocumento: '2024-06-01',
-      fechaRecepcion: '2024-06-03',
-      remitenteNombre: 'Juan Alberto Maldonado Hérnandez',
-      remitenteCargo: 'Director General',
-      remitenteDependencia: 'Secretaría de Finanzas',
-      dirigidoA: 'María López',
-      dirigidoACargo: 'Jefa de Unidad',
-      dirigidoADependencia: 'Unidad de Administración y Finanzas',
-      descripcionAsunto:
-        'Solicitud de validación presupuestal para elvSolicitud de validación presupuestal para el ejercicio fiscal 2024.Solicitud de validación presupuestal para el ejercicio fiscal 2024.   ejercicio fiscal 2024.Solicitud de validación presupuestal para el ejercicio fiscal 2024.',
-      idTema: 1,
-      Tema: 'Presupuesto',
-      fechaCumplimiento: '2024-06-10',
-      idMedio: 1,
-      medio: 'Correo Electrónico',
-      idPrioridad: 1,
-      prioridad: 'alta',
-      idStatusAsunto: 1,
-      statusAsunto: 'pendiente',
-      idUsuarioRegistra: 1,
-      usuarioRegistra: 'Carlos Gómez',
-      idUnidadAdministrativa: 1,
-      unidadAdministrativa: 'UAF',
-      fechaRegistro: '2024-06-03',
-      documento: {
-        name: 'oficio_validacion.pdf',
-        url: '#',
-        size: '1.2MB',
-        type: 'PDF',
-      },
-      anexos: [
-        { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
-        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
-      ],
-      asignaciones: [],
-      observaciones: 'lorem ipsum dolor sit amet, cons... ',
-    },
-    {
-      idAsunto: 2,
-      idTipoDocumento: 102,
-      tipoDocumento: 'Circular',
-      noOficio: 'CIRC-2024-015',
-      esVolante: false,
-      numeroVolante: '',
-      esGuia: true,
-      numeroGuia: 'GUI-1234',
-      fechaDocumento: '2024-06-05',
-      fechaRecepcion: '2024-06-06',
-      remitenteNombre: 'Lucía Ramírez',
-      remitenteCargo: 'Subdirectora',
-      remitenteDependencia: 'Recursos Humanos',
-      dirigidoA: 'Dirección General',
-      dirigidoACargo: 'Director',
-      dirigidoADependencia: 'Oficina Central',
-      descripcionAsunto: 'Notificación de cambios en política interna.',
-      idTema: 2,
-      Tema: 'Políticas Internas',
-      fechaCumplimiento: '2024-06-15',
-      idMedio: 2,
-      medio: 'Físico',
-      idPrioridad: 2,
-      prioridad: 'media',
-      idStatusAsunto: 2,
-      statusAsunto: 'en_progreso',
-      idUsuarioRegistra: 2,
-      usuarioRegistra: 'Laura Méndez',
-      idUnidadAdministrativa: 2,
-      unidadAdministrativa: 'RH',
-      fechaRegistro: '2024-06-06',
-      documento: {
-        name: 'circular_cambios.pdf',
-        url: '#',
-        size: '950KB',
-        type: 'PDF',
-      },
-      anexos: [
-        { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
-        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
-      ],
-      asignaciones: [],
-      observaciones: 'lorem ipsum dolor sit amet, cons... ',
-    },
-    {
-      idAsunto: 3,
-      idTipoDocumento: 103,
-      tipoDocumento: 'Memorándum',
-      noOficio: 'MEM-2024-789',
-      esVolante: false,
-      numeroVolante: '',
-      esGuia: false,
-      numeroGuia: '',
-      fechaDocumento: '2024-05-20',
-      fechaRecepcion: '2024-05-21',
-      remitenteNombre: 'Andrés Herrera',
-      remitenteCargo: 'Analista',
-      remitenteDependencia: 'Planeación',
-      dirigidoA: 'Coordinador General',
-      dirigidoACargo: 'Coordinador',
-      dirigidoADependencia: 'Dirección de Planeación',
-      descripcionAsunto: 'Seguimiento a metas institucionales.',
-      idTema: 3,
-      Tema: 'Planeación Estratégica',
-      fechaCumplimiento: '2024-06-01',
-      idMedio: 3,
-      medio: 'Mensajería',
-      idPrioridad: 3,
-      prioridad: 'baja',
-      idStatusAsunto: 3,
-      statusAsunto: 'completado',
-      idUsuarioRegistra: 3,
-      usuarioRegistra: 'Marco Salas',
-      idUnidadAdministrativa: 3,
-      unidadAdministrativa: 'Planeación',
-      fechaRegistro: '2024-05-21',
-      documento: {
-        name: 'memorandum_metas.pdf',
-        url: '#',
-        size: '600KB',
-        type: 'PDF',
-      },
-      anexos: [
-        { name: 'anexo1.pdf', url: '#', size: '800KB', type: 'PDF' },
-        { name: 'anexo2.docx', url: '#', size: '1MB', type: 'Word' },
-      ],
-      asignaciones: [],
-      observaciones: 'lorem ipsum dolor sit amet, cons... ',
-    },
-  ];
+  isDragOver: boolean = false;
+
   tabActiva = 'detalles';
-  asuntoSeleccionado: any = null;
-  ngOnChanges() {
-    if (this.idAsunto) {
-      this.cargarDetalle(this.idAsunto);
-    }
-  }
-  cargarDetalle(id: number) {
-    // Aquí podrías llamar a un servicio para obtener los detalles del asunto
-    this.asuntoSeleccionado = this.asuntos.find(a => a.idAsunto === id) || null;
+  idUsuario = 1;
+  turnadoSeleccionado: any = null;
+
+  documentoPrincipal: any = null;
+  anexos: any[] = [];
+
+
+    constructor(
+    private fb: FormBuilder,
+    private modalManager: ModalManagerService,
+    private sanitizer: DomSanitizer,
+    public colors: ColorsEnum,
+    private asuntoApi: AsuntoService, 
+    private utils: UtilsService,
+    private catalogoApi: CatalogoService
+
+  ) {}
+
+   ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
   }
 
-  getEstadoIcon(estado: string): string {
-    switch (estado) {
-      case 'pendiente':
-        return 'fas fa-clock';
-      case 'en_progreso':
-        return 'fas fa-edit';
-      case 'Concluido':
-        return 'fas fa-check';
-      default:
-        return 'x-circle';
+
+    ngOnChanges() {
+    if (this.asuntoInput) {
+      this.consultarDetallesAsunto(this.asuntoInput.idAsunto);
+      /* entra */
+      this.consultarExpedienteAsunto(this.asuntoInput.idAsunto);
+      /*this.consultarHistorialAsunto(this.idAsunto); */      
     }
   }
-  estadoColors: { [key: string]: string } = {
-  pendiente: 'bg-deep-blue  text-white',
-  en_progreso: 'bg-purple text-white',
-  Concluido: 'bg-success text-white',
-  };
+   private createDocumentoForm(): FormGroup {
+    return this.fb.group({ documento: [null, Validators.required] });
+  }
+  initFormConcluir() {
+    this.conclusionForm = this.createDocumentoForm();
+  }
+  initFormRechazar() {
+    this.rechazarForm = this.fb.group({
+        motivoRechazo: [null, [Validators.required]]
+    });
+  }
+  initFormReemplazar() {
+    this.reemplazarDocumentoForm = this.createDocumentoForm();
+  }
 
-  prioridadColors: { [key: string]: string } = {
-    alta: 'bg-primary text-white',
-    media: 'bg-gold text-white',
-    baja: 'bg-secondary text-white',
-  };
+
+   openDocumentoVisor(file: any) {
+    if (!file) return;
+    this.documentoStringURL = environment.baseurl + file.ruta;
+    this.documentVisorURL = this.sanitizer.bypassSecurityTrustResourceUrl(
+      this.documentoStringURL
+    );
+    this.documentoVisor = file;
+    this.modalManager.openModal({
+      title: '',
+      template: this.verDocumentoModal,
+      showFooter: false,
+      onAccept: () => {},
+      onCancel: () => URL.revokeObjectURL(this.documentoStringURL),
+      width: '400px',
+    });
+  }
+    getValidationStatus(
+    form: FormGroup,
+    controlName: string
+  ): 'valid' | 'invalid' | 'none' {
+    const control = form.get(controlName);
+    if (!control) return 'none';
+    return control.valid && (control.dirty || control.touched)
+      ? 'valid'
+      : control.invalid && (control.dirty || control.touched)
+      ? 'invalid'
+      : 'none';
+  }
+
+    getFileName(key: string): string | null {
+    const fileData = this.fileState.get(key);
+    return fileData?.name || null;
+  }
+
+  clearFile(key: string) {
+    this.fileState.set(key, { file: null, name: null });
+  }
+
+  openResponderModal() {
+    this.initFormConcluir();
+    this.modalManager.openModal({
+      title: '<i class ="fas fa-share m-2"> </i> Dar respuesta al turnado',
+      template: this.responderModal,
+      showFooter: false,
+      onAccept: () => {},
+      onCancel: () => URL.revokeObjectURL(this.documentoStringURL),
+      width: '',
+    });
+  }
+  openRechazarTurnado() {
+    this.initFormRechazar();
+    this.modalManager.openModal({
+      title: '<i class ="fas fa-times-circle m-2"> </i> Rechazar turnado',
+      template: this.rechazarModal,
+      showFooter: false,
+      onAccept: () => {},
+      onCancel: () => null,
+      width: '',
+    });
+  }
+
+  finalizarAsunto(): void {
+    const estado = this.fileState.get('concluir');
+    if (this.conclusionForm.valid && estado?.file) {
+      alert(`¡Asunto finalizado con el documento: ${estado.name}! 🎉`);
+      this.resetFormularioArchivo(this.conclusionForm);
+    } else {
+      this.conclusionForm.markAllAsTouched();
+    }
+  }
+
+
+
+
+  /* ENDPOINTS */
+    consultarDetallesAsunto(id:number) {
+
+        this.asuntoApi.consultarDetallesAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarDetallesAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarDetallesAsunto(data: any) {
+      if (data.status == 200) {
+        this.turnadoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarExpedienteAsunto(id:number,muestraToast:boolean = false) {
+
+        this.asuntoApi.consultarExpedienteAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
+          },
+          (ex) => {
+            this.documentoPrincipal = null;
+            this.anexos =[];
+           if  (muestraToast ) this.utils.MuestraErrorInterno(ex);
+          } 
+        );
+        
+      }
+      onSuccessconsultarExpedienteAsunto(data: any, muestraToast:boolean) {
+        if (data.status == 200) {
+          this.documentoPrincipal = data.model.documento
+          this.anexos = data.model.anexos
+        } else {
+          this.documentoPrincipal = null;
+          this.anexos =[];
+          if  (muestraToast )this.utils.MuestrasToast(TipoToast.Warning, data.message);
+        
+      }
+    }
+
+    consultarHistorialAsunto(id:number) {
+
+        this.asuntoApi.consultarHistorialAsunto({idAsunto: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarHistorialAsunto(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarHistorialAsunto(data: any) {
+      if (data.status == 200) {
+        /* this.turnadoSeleccionado = data.model */
+        /* objeto historial */
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+
+    /* documentosRespuesta */
+    
+  onFileSelected(form: FormGroup, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.processFile(form, input.files);
+  }
+
+  onFileSelectedAnexos(form: FormGroup, event: Event): void {
+    const input = event.target as HTMLInputElement;
+    this.processFile(form, input.files, true);
+  }
+
+  onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = true;
+  }
+
+  onDragLeave(event: DragEvent): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+  }
+
+  onDrop(form: FormGroup, event: DragEvent, lista: boolean = false): void {
+    event.preventDefault();
+    event.stopPropagation();
+    this.isDragOver = false;
+    this.processFile(form, event.dataTransfer?.files, lista);
+  }
+
+  private processFile( form: FormGroup, files: FileList | null | undefined, lista: boolean = false ): void {
+    const isReemplazo = form == this.reemplazarDocumentoForm;
+    
+    const controlName = 'documento';
+    const key = isReemplazo ? 'reemplazar' : 'concluir';
+
+
+    if (!files || files.length === 0) {
+      if (lista && this.anexosCargados.length > 0) {   
+        return;
+      }
+      // Si lista es true pero no hay archivos cargados, o si lista es false
+      this.updateDocumentoControl(form, null, controlName);
+      return;
+    }
+
+    if (lista) {
+      Array.from(files).forEach((file) => {
+        if (!this.anexosCargados.some((anexo) => anexo.name === file.name)) {
+          this.anexosCargados.push(file);
+        }
+      });
+      const first = this.anexosCargados[0].name ?? null;
+      this.updateDocumentoControl(form, first, controlName);
+    } else {
+      const file = files[0];
+      this.fileState.set(key, { file, name: file.name });
+      this.updateDocumentoControl(form, file.name, controlName);
+    }
+  }
+  private updateDocumentoControl(
+    form: FormGroup,
+    value: string | null,
+    controlName: string
+  ): void {
+    const control = form.get(controlName);
+    if (control) {
+      control.setValue(value);
+      control.markAsDirty();
+      control.markAsTouched();
+    }
+  }
+
+  private resetFormularioArchivo(form: FormGroup): void {
+    form.reset();
+    this.fileState.set('concluir', { file: null, name: null });
+  }
 
 }

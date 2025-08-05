@@ -2,12 +2,12 @@
   <div class="d-flex h-100 overflow-hidden">
     <!-- Panel izquierdo - Lista de asuntos -->
     <div class="panel-resistant h-100 border-end">
-      <app-lista-turnados (asuntoSeleccionado)="recibirAsunto($event)"></app-lista-turnados>
+      <app-lista-turnados (turnadoSeleccionado)="recibirAsunto($event)"></app-lista-turnados>
     </div>
     
     <!-- Panel derecho - Detalle de asuntos -->
     <div class="panel-resistant h-100">
-      <app-detalle-turnados [idAsunto]="idTurnadoSelecccionado"></app-detalle-turnados>
+      <app-detalle-turnados [asuntoInput]="turnadoSeleccionado"></app-detalle-turnados>
     </div>
   </div>
 </div>

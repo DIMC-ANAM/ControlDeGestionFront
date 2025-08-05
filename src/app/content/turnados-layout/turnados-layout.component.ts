@@ -7,9 +7,9 @@ import { Component } from '@angular/core';
   styleUrl: './turnados-layout.component.scss'
 })
 export class TurnadosLayoutComponent {
-  idTurnadoSelecccionado: number | null = null;
+  turnadoSeleccionado: any | null = null;
 
-  recibirAsunto(id: number) {
-    this.idTurnadoSelecccionado = id;
+  recibirAsunto(turnado: any) {
+    this.turnadoSeleccionado = turnado;
   }
 }

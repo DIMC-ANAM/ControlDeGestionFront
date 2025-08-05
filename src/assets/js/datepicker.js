@@ -8,7 +8,7 @@ function initDatePicker() {
                 let fecha
                 try {
                     fecha = $.datepicker.parseDate("dd/mm/yy", dateText);    
-                    console.log(fecha)
+                    
                     window.angularComponentReference.zone.run(() => {
                         window.angularComponentReference.setFechaIngreso(dateText);
                     });

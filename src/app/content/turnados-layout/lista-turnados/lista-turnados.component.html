@@ -38,7 +38,7 @@
         <div class="col-md-4">
           <select class="form-control" [(ngModel)]="filtroTema">
             <option value="">Todos los Temas</option>
-            <option *ngFor="let asunto of asuntos" [value]="asunto.Tema">{{ asunto.Tema }}</option>
+            <option *ngFor="let asunto of turnados" [value]="asunto.Tema">{{ asunto.Tema }}</option>
           </select>
         </div>
 
@@ -63,37 +63,44 @@
   <!-- Lista de tarjetas -->
   <div class="p-4 overflow-auto">
     <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
-      [ngClass]="{'seleccionado': asuntoSeleccionadoItem?.idAsunto === asunto.idAsunto}"
-      (click)="seleccionarAsunto(asunto.idAsunto)">
+      [ngClass]="{'seleccionado': turnadoSeleccionadoItem?.idTurnado === asunto.idTurnado}"
+      (click)="seleccionarTurnado(asunto)">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div class="asunto-info">
           <h6 class="card-title mb-1 fw-bold text-truncate">{{ asunto.noOficio }}</h6>
 
           <p class="card-text text-muted mb-2 small text-ellipsis text-truncate">
-            {{ asunto.descripcionAsunto }}
+            {{ asunto.folio }}
           </p>
 
-          <div class="d-flex align-items-center text-muted small">
-            <i class="fas fa-building-columns me-2 text-secondary"></i>
-            <span class="text-truncate">{{ asunto.unidadAdministrativa }}</span>
+           <div class="d-flex align-items-center  text-muted small">
+            <i class="fas fa-layer-group me-2 text-secondary"></i>
+            <span class="text-truncate">{{ asunto.Tema }}</span>
           </div>
 
-          <div class="d-flex align-items-center text-muted small mt-1">
+          <div class="d-flex align-items-center  text-muted small">
+            <i class="fas fa-file-alt me-2 text-secondary"></i>
+            <span class="text-truncate">{{ asunto.tipoDocumento }}</span>
+          </div>
+
+          
+          <div class="d-flex align-items-center  text-muted small mt-1">
             <i class="fas fa-calendar-alt me-2 text-secondary"></i>
-            <span>{{ asunto.fechaRegistro | fechaMexico }}</span>
+            <span>{{ asunto.fechaTurnado | fechaMexico }}</span>
           </div>
+         
         </div>
-
+        
           <div class="text-end">
-            <span class="badge me-1" [ngClass]="estadoColors[asunto.statusAsunto]">
-              <i class="fas" [ngClass]="getEstadoIcon(asunto.statusAsunto)"></i>
-              <span class="ms-1 text-capitalize">
+            <!-- <span class="badge me-1" [ngClass]="colors.getEstadoColor(asunto.statusAsunto)">
+              <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.statusAsunto)"></i>
+              <span class="ms-1 ">
                 {{ asunto.statusAsunto.replace('_', ' ') }}
               </span>
-            </span>
+            </span> -->
 
-            <span class="badge" [ngClass]="prioridadColors[asunto.prioridad]">
+            <span class="badge" [ngClass]="colors.getPrioridadColor(asunto.prioridad)">
               <i class="fas fa-star me-1 small"></i>
               {{ asunto.prioridad }}
             </span>

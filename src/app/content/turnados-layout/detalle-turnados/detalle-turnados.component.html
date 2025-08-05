@@ -1,46 +1,41 @@
 <div class="d-flex flex-column h-100">
-    <ng-container *ngIf="asuntoSeleccionado; else elseTemplate">
+    <ng-container *ngIf="turnadoSeleccionado; else elseTemplate">
         <div class="d-flex flex-column h-100">
             <div class="p-3 border-bottom bg-white w-100 flex-shrink-0">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="flex-grow-1 me-3" style="min-width: 0">
-                        <h2 class="fw-bold text-truncate">{{ asuntoSeleccionado.noOficio }}</h2>
+                        <h2 class="fw-bold text-truncate">{{ turnadoSeleccionado.noOficio }}</h2>
                         <div class="text-muted small fw-bold ">
                             <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de registro'"><i
                                     class="fas fa-calendar-day text-primary"></i></span>
-                            {{ asuntoSeleccionado.fechaRegistro | fechaMexico}}
+                            {{ turnadoSeleccionado.fechaRegistro | fechaMexico}}
 
                         </div>
                         <div class="text-muted small fw-bold">
                             <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de cumplimiento'"><i
                                     class="fas fa-calendar-check text-success "></i></span>
-                            {{ asuntoSeleccionado.fechaCumplimiento | fechaMexico}}
+                            {{ turnadoSeleccionado.fechaCumplimiento | fechaMexico}}
                         </div>
                     </div>
                     <div class="text-end flex-shrink-0">
                         <div class="d-flex flex-column gap-1">
-                            <span class="badge" [ngClass]="estadoColors[asuntoSeleccionado.statusAsunto]">
-                                <i class="fas" [ngClass]="getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
-                                <span class="ms-1 text-capitalize">{{ asuntoSeleccionado.statusAsunto.replace('_', '
-                                    ')
-                                    }}</span>
-                            </span>
-                            <span class="badge" [ngClass]="prioridadColors[asuntoSeleccionado.prioridad]">
+                            
+                            <span class="badge" [ngClass]="this.colors.getPrioridadColor(turnadoSeleccionado.prioridad)">
                                 <i class="fas fa-star me-1 small"></i>
-                                {{ asuntoSeleccionado.prioridad }}
+                                {{ turnadoSeleccionado.prioridad }}
                             </span>
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm">
+                    <button class="btn btn-primary btn-sm" (click)="openResponderModal()">
                         <i class="fas fa-share me-2"></i> Dar respuesta
                     </button>
                     
-                    <button class="btn btn-outline-secondary btn-sm">
+                    <div role="button" class="btn btn-outline-secondary btn-sm" (click)="openRechazarTurnado()">
                         <i class="fas fa-times me-2 fw-bold fa-"></i> Rechazar
-                    </button>
+                    </div>
                 </div>
             </div>
             <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill" role="tablist">
@@ -85,51 +80,51 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Tipo de Documento:</label>
-                                    <div>{{ asuntoSeleccionado.tipoDocumento }}</div>
+                                    <div>{{ turnadoSeleccionado.tipoDocumento }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>No. de Oficio:</label>
-                                    <div>{{ asuntoSeleccionado.noOficio }}</div>
+                                    <div>{{ turnadoSeleccionado.noOficio }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Es Volante:</label>
-                                    <div>{{ asuntoSeleccionado.esVolante ? 'Sí' : 'No' }}</div>
+                                    <div>{{ turnadoSeleccionado.esVolante ? 'Sí' : 'No' }}</div>
                                 </div>
                             </div>
                         </div>
 
-                        <div class="row" *ngIf="asuntoSeleccionado?.esVolante">
+                        <div class="row" *ngIf="turnadoSeleccionado?.esVolante">
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Número de Volante:</label>
-                                    <div>{{ asuntoSeleccionado.numeroVolante }}</div>
+                                    <div>{{ turnadoSeleccionado.numeroVolante }}</div>
                                 </div>
                             </div>
                         
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Es Guía:</label>
-                                    <div>{{ asuntoSeleccionado.esGuia ? 'Sí' : 'No' }}</div>
+                                    <div>{{ turnadoSeleccionado.esGuia ? 'Sí' : 'No' }}</div>
                                 </div>
                             </div>
 
-                            <div class="col-md-4" *ngIf="asuntoSeleccionado?.esGuia">
+                            <div class="col-md-4" *ngIf="turnadoSeleccionado?.esGuia">
                                 <div class="field">
                                     <label>Número de Guía:</label>
-                                    <div>{{ asuntoSeleccionado.numeroGuia }}</div>
+                                    <div>{{ turnadoSeleccionado.numeroGuia }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Tema:</label>
-                                    <div>{{ asuntoSeleccionado.Tema }}</div>
+                                    <div>{{ turnadoSeleccionado.Tema }}</div>
                                 </div>
                             </div>
                         </div>
@@ -138,21 +133,21 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Cumplimiento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaCumplimiento | fechaMexico }}</div>
+                                    <div>{{ turnadoSeleccionado.fechaCumplimiento | fechaMexico }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Prioridad:</label>
-                                    <div>{{ asuntoSeleccionado.prioridad }}</div>
+                                    <div>{{ turnadoSeleccionado.prioridad }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Estatus:</label>
-                                    <div>{{ asuntoSeleccionado.statusAsunto }}</div>
+                                    <div>{{ turnadoSeleccionado.statusAsunto }}</div>
                                 </div>
                             </div>
                         </div>
@@ -161,21 +156,21 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Usuario que registra:</label>
-                                    <div>{{ asuntoSeleccionado.usuarioRegistra }}</div>
+                                    <div>{{ turnadoSeleccionado.usuarioRegistra }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Unidad Administrativa:</label>
-                                    <div>{{ asuntoSeleccionado.unidadAdministrativa }}</div>
+                                    <div>{{ turnadoSeleccionado.unidadAdministrativa }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Registro:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRegistro | fechaMexico }}</div>
+                                    <div>{{ turnadoSeleccionado.fechaRegistro | fechaMexico }}</div>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +179,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha del Documento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaDocumento | fechaMexico }}</div>
+                                    <div>{{ turnadoSeleccionado.fechaDocumento | fechaMexico }}</div>
                                 </div>
                             </div>
                         </div>
@@ -193,7 +188,7 @@
                             <div class="col-12">
                                 <div class="field">
                                     <label>Descripción:</label>
-                                    <div>{{ asuntoSeleccionado.descripcionAsunto }}</div>
+                                    <div>{{ turnadoSeleccionado.descripcionAsunto }}</div>
                                 </div>
                             </div>
                         </div>
@@ -210,21 +205,21 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Recepción:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRecepcion | fechaMexico }}</div>
+                                    <div>{{ turnadoSeleccionado.fechaRecepcion | fechaMexico }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Remitente:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteNombre }}</div>
+                                    <div>{{ turnadoSeleccionado.remitenteNombre }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Cargo:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteCargo }}</div>
+                                    <div>{{ turnadoSeleccionado.remitenteCargo }}</div>
                                 </div>
                             </div>
                         </div>
@@ -233,21 +228,21 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Dependencia:</label>
-                                    <div>{{ asuntoSeleccionado.remitenteDependencia }}</div>
+                                    <div>{{ turnadoSeleccionado.remitenteDependencia }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Dirigido a:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoA }}</div>
+                                    <div>{{ turnadoSeleccionado.dirigidoA }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Cargo Dirigido a:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoACargo }}</div>
+                                    <div>{{ turnadoSeleccionado.dirigidoACargo }}</div>
                                 </div>
                             </div>
                         </div>
@@ -256,14 +251,14 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Dependencia Destino:</label>
-                                    <div>{{ asuntoSeleccionado.dirigidoADependencia }}</div>
+                                    <div>{{ turnadoSeleccionado.dirigidoADependencia }}</div>
                                 </div>
                             </div>
 
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Medio:</label>
-                                    <div>{{ asuntoSeleccionado.medio }}</div>
+                                    <div>{{ turnadoSeleccionado.medio }}</div>
                                 </div>
                             </div>
                         </div>
@@ -278,7 +273,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="field">
-                                    <div>{{ asuntoSeleccionado.observaciones || 'Sin observaciones' }}</div>
+                                    <div>{{ turnadoSeleccionado.observaciones || 'Sin observaciones' }}</div>
                                 </div>
                             </div>
                         </div>
@@ -288,78 +283,81 @@
 
                 <!-- Expediente -->
                 <div *ngIf="tabActiva === 'expediente'">
-                    <div class="section">
-                        <!-- Documento principal -->
-                        <div class="mb-4">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0">Documento Principal</h6>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-upload me-2"></i> Reemplazar Documento
-                                </button>
-                            </div>
-
-                            <div class="card p-2 d-flex flex-row justify-content-between align-items-center">
-                                <div class="d-flex align-items-center gap-3">
-                                    <i class="fas fa-file-alt fa-2x text-primary"></i>
-                                    <div>
-                                        <div class="fw-semibold">{{ asuntoSeleccionado.documento.nombre }}</div>
-                                        <div class="text-muted small">
-                                            {{ asuntoSeleccionado.documento.type }} • {{
-                                            asuntoSeleccionado.documento.size
-                                            }}
-                                        </div>
-                                    </div>
+                    <div class="p-4">
+                            <!-- Documento principal -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Documento Principal</h6>
+                                    <!-- <button class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
+                                        <i class="fas fa-upload me-2"></i> Reemplazar Documento
+                                    </button> -->
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-light">
-                                        <i class="fas fa-eye"></i>
-                                    </button>
-                                    <button class="btn btn-sm btn-light">
-                                        <i class="fas fa-download"></i>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
 
-                        <hr />
-
-                        <!-- Anexos -->
-                        <div>
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <h6 class="fw-bold mb-0">Anexos</h6>
-                                <button class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-plus me-2"></i> Agregar Anexo
-                                </button>
-                            </div>
-
-                            <div *ngIf="asuntoSeleccionado.anexos.length > 0; else sinAnexos">
-                                <div class="card mb-2 p-3" *ngFor="let anexo of asuntoSeleccionado.anexos">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center gap-3">
-                                            <i class="fas fa-paperclip fa-lg text-secondary"></i>
-                                            <div>
-                                                <div class="fw-semibold">{{ anexo.name }}</div>
-                                                <div class="text-muted small">{{ anexo.type }} • {{ anexo.size }}
-                                                </div>
+                                <div *ngIf="documentoPrincipal!=null" class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                        <div>
+                                            <div class="fw-semibold">{{ documentoPrincipal.nombre }}</div>
+                                            <div class="text-muted small">
+                                                {{ documentoPrincipal.type }} • {{
+                                                documentoPrincipal.size
+                                                }}
                                             </div>
                                         </div>
-                                        <div class="d-flex gap-2">
-                                            <button class="btn btn-sm btn-light">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-light">
-                                                <i class="fas fa-download"></i>
-                                            </button>
-                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light"
+                                            (click)="openDocumentoVisor(documentoPrincipal)">
+
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-light">
+                                            <i class="fas fa-download"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <ng-template #sinAnexos>
-                                <p class="text-muted">No hay anexos disponibles para este asunto.</p>
-                            </ng-template>
+                            <hr />
+
+                            <!-- Anexos -->
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Anexos</h6>
+                                    <!-- <button class="btn btn-sm btn-outline-success" (click)="openagregarAnexosModal()">
+                                        <i class="fas fa-plus me-2"></i> Agregar Anexos
+                                    </button> -->
+                                </div>
+
+                                <div *ngIf="anexos.length > 0; else sinAnexos">
+                                    <div class="card mb-2 p-3" *ngFor="let anexo of anexos">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <i class="fas fa-paperclip fa-lg text-secondary"></i>
+                                                <div>
+                                                    <div class="fw-semibold">{{ anexo.nombre }}</div>
+                                                    <div class="text-muted small">{{ anexo.type  || "PDF" }} • {{ anexo.size }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-light"
+                                                    (click)="openDocumentoVisor(anexo)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <button class="btn btn-sm btn-light">
+                                                    <i class="fas fa-download"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #sinAnexos>
+                                    <p class="text-muted">No hay anexos disponibles para este asunto.</p>
+                                </ng-template>
+                            </div>
                         </div>
-                    </div>
                 </div>
 
                 <!-- Asignaciones -->
@@ -370,7 +368,7 @@
                             <i class="fas fa-user-check me-2"></i> Nuevo turnado
                         </button> -->
                     </div>
-                    <!-- <div *ngFor="let asignacion of asuntoSeleccionado.asignaciones" class="card p-3 mb-2">
+                    <!-- <div *ngFor="let asignacion of turnadoSeleccionado.asignaciones" class="card p-3 mb-2">
           <div class="d-flex justify-content-between align-items-center">
             <div class="d-flex align-items-center gap-3">
               <div class="icon-circle"><i class="fas fa-user"></i></div>
@@ -398,23 +396,23 @@
                         <div class="icon-circle bg-primary"></div>
                         <div>
                             <p class="mb-0 fw-semibold">Asunto creado</p>
-                            <small class="text-muted">Por {{ asuntoSeleccionado.unidadAdministrativa }} • {{
-                                asuntoSeleccionado.fechaRegistro }}</small>
+                            <small class="text-muted">Por {{ turnadoSeleccionado.unidadAdministrativa }} • {{
+                                turnadoSeleccionado.fechaRegistro }}</small>
                         </div>
                     </div>
                     <div class="d-flex gap-3 align-items-start mb-3">
                         <div class="icon-circle bg-success"></div>
                         <div>
                             <p class="mb-0 fw-semibold">Documentos agregados</p>
-                            <small class="text-muted">{{ asuntoSeleccionado.anexos.length }} documentos • {{
-                                asuntoSeleccionado.fechaRegistro }}</small>
+                            <small class="text-muted">{{ turnadoSeleccionado.anexos.length }} documentos • {{
+                                turnadoSeleccionado.fechaRegistro }}</small>
                         </div>
                     </div>
                     <div class="d-flex gap-3 align-items-start">
                         <div class="icon-circle bg-warning"></div>
                         <div>
                             <p class="mb-0 fw-semibold">Estado actualizado</p>
-                            <small class="text-muted">Cambiado a {{ asuntoSeleccionado.statusAsunto }} • Hace 2
+                            <small class="text-muted">Cambiado a {{ turnadoSeleccionado.statusAsunto }} • Hace 2
                                 días</small>
                         </div>
                     </div>
@@ -429,3 +427,92 @@
     </ng-template>
 </div>
 
+
+
+<ng-template #verDocumentoModal let-aceptar="aceptar" let-cancelar="cancelar">
+    <div class="visor">
+        <div class="pdf-container">
+            <div class="pdf-header p-2">
+                <p class="pdf-title"><i class="fas fa-file m-2"></i> {{documentoVisor.nombre}}</p>
+            </div>
+
+            <!-- Aquí va el PDF embebido -->
+            <embed [src]="documentVisorURL" type="application/pdf" class="pdf-viewer" id="pdfViewer"
+                *ngIf="documentVisorURL" />
+
+            <!-- Contenido alternativo si el PDF no se puede mostrar -->
+            <div class="pdf-fallback" style="display: none;" id="pdfFallback">
+                <h3>No se puede mostrar el PDF</h3>
+                <p>Tu navegador no soporta la visualización de archivos PDF integrados.</p>
+                <a href="ruta/al/archivo.pdf" class="download-link" download>
+                    Descargar PDF
+                </a>
+            </div>
+
+            <div class="pdf-info">
+                <strong>Archivo:</strong> {{documentoVisor.nombre}} |
+                <strong>Tamaño:</strong> {{documentoVisor.size}} bytes|
+                <strong>Última modificación: </strong>{{documentoVisor.fechaRegistro }} |
+                <strong>Tipo: </strong>{{documentoVisor.type || null }}
+            </div>
+        </div>
+    </div>
+
+</ng-template>
+
+<ng-template #responderModal let-aceptar="aceptar" let-cancelar="cancelar">
+     <div class="container">
+        <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
+            <div class="mb-3">
+                <div class="w-100">
+                    <span class="mb-2 d-block text-center frmlabel pt-0"><i
+                            class="fas fa-file-arrow-up p-2 "></i>Documento de respuesta</span>
+                    <label class="text-center w-100">
+
+                        <div id="drop-zone" class="drop-zone" [class.drag-over]="isDragOver"
+                            (dragover)="onDragOver($event)" (dragleave)="onDragLeave($event)"
+                            (drop)="onDrop(conclusionForm, $event)">
+                            <i class="fas fa-upload fa-3x"></i>
+                            <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
+                        </div>
+
+                        <input type="file" (change)="onFileSelected(conclusionForm, $event)" id="documentoCierre"
+                            class="hidden-input">
+                    </label>
+                </div>
+
+                <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe
+                    adjuntar un documento de cierre.</p>
+
+                <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
+                    Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4">
+                <button type="submit" class="btn btn-success" [disabled]="conclusionForm.invalid">
+                    Concluir
+                </button>
+            </div>
+        </form>
+    </div>
+</ng-template>
+<ng-template #rechazarModal let-aceptar="aceptar" let-cancelar="cancelar">
+<div class="container">
+    <form [formGroup]="rechazarForm">
+
+        <div class="section">
+            <label for="motivoRechazo" class="form-label frmlabel p-0">Motivo de rechazo</label>
+            <textarea placeholder="Escribe el motivo de rechazo de este asunto. " name="motivoRechazo" id="motivoRechazo" formControlName="motivoRechazo" class="form-control"[cols]="10"> </textarea>
+        </div>
+        
+        <div class="d-flex justify-content-center align-items-center">
+            <button class="btn btn-primary" [disabled]="rechazarForm.invalid"> Rechazar <i class="fas fa-times-circle m-2"></i></button>
+        </div>
+    </form>
+</div>
+</ng-template>
+
+<ng-template #confirmModal let-aceptar="aceptar" let-cancelar="cancelar">
+    ¿Está seguro de que desea continuar?
+</ng-template>

@@ -2,7 +2,7 @@
 .asunto-info {
   max-width: 75%;
   min-width: 200px;
-  overflow: hidden;
+ /*  overflow: hidden; */
 }
 
 .text-ellipsis {
@@ -24,7 +24,7 @@
   /* text overflow ellipsis */
     max-width: 100%;
     word-wrap: break-word;
-    overflow: hidden;
+    overflow: hidden; 
     cursor: pointer;
     
   &:hover {
@@ -32,7 +32,7 @@
   }
 
   &.seleccionado {
-    border: 2px solid var(--color-success);    
+    border: 3px solid var(--color-success);    
   }
 }
 

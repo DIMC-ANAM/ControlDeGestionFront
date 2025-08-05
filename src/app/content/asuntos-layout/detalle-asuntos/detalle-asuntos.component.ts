@@ -343,7 +343,6 @@ addTurnado(): void {
       idUnidadResponsable: unidad?.idUnidadResponsable,
       idInstruccion: instruccion?.idInstruccion,
     };
-    console.log(nuevoTurnado);
 
     if (unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))) {
       this.turnados.push({
