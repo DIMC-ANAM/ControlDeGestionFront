@@ -16,7 +16,6 @@ import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
   styleUrl: './detalle-asuntos.component.scss',
 })
 export class DetalleAsuntosComponent {
-  @ViewChild('editarModal', { static: true }) editarModal!: TemplateRef<any>;
   @ViewChild('turnarModal', { static: true }) turnarModal!: TemplateRef<any>;
   @ViewChild('agregarAnexosModal', { static: true })
   agregarAnexosModal!: TemplateRef<any>;
@@ -30,6 +29,7 @@ export class DetalleAsuntosComponent {
 
   @Input() idAsunto: number | null = null;
 
+  baseurl = environment.baseurl;
   turnadoForm!: FormGroup;
   conclusionForm!: FormGroup;
   reemplazarDocumentoForm!: FormGroup;
@@ -37,10 +37,11 @@ export class DetalleAsuntosComponent {
 
   unidadesResponsablesDS: any[] = [];
 
-  instruccionesDS: any[] = [  ];
+  instruccionesDS: any[] = [];
   turnados: any[] = []; /* turnados por cargar */
-  turnadosAsunto: any[] = []; 
+  turnadosAsunto: any[] = [];
 
+  documentoReemplazo:any = null;
   anexosCargados: any[] = [];
   fileState = new Map<string, { file: File | null; name: string | null }>();
 
@@ -50,8 +51,8 @@ export class DetalleAsuntosComponent {
 
   isDragOver: boolean = false;
 
-  editar:Boolean = false;
-  asuntoSeleccionadoModificado:Boolean = false;
+  editar: Boolean = false;
+  asuntoSeleccionadoModificado: Boolean = false;
 
   tabActiva = 'detalles';
   idUsuario = 1;
@@ -59,21 +60,18 @@ export class DetalleAsuntosComponent {
 
   documentoPrincipal: any = null;
   anexos: any[] = [];
-  
+
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
     private sanitizer: DomSanitizer,
     public colors: ColorsEnum,
-    private asuntoApi: AsuntoService, 
+    private asuntoApi: AsuntoService,
     private utils: UtilsService,
     private catalogoApi: CatalogoService
-
   ) {}
 
   ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();
   }
@@ -83,16 +81,11 @@ export class DetalleAsuntosComponent {
       this.consultarDetallesAsunto(this.idAsunto);
       this.consultarExpedienteAsunto(this.idAsunto);
       this.consultarTurnadosAsunto(this.idAsunto);
-      /*this.consultarHistorialAsunto(this.idAsunto); */      
+      /*this.consultarHistorialAsunto(this.idAsunto); */
     }
   }
 
   /*  */
-
-/*  cargarDetalle(id: number) {
-    this.asuntoSeleccionado =
-      this.asuntos.find((a) => a.idAsunto === id) || null;
-  } */
 
   // Modal Abstraction
   private openModal(options: {
@@ -118,7 +111,7 @@ export class DetalleAsuntosComponent {
     this.openModal({
       title: 'Turnar asunto',
       template: this.turnarModal,
-      onAccept: () => this.finalizarTurnado(),
+      onAccept: () => this.turnarAsunto(),
       onCancel: () => this.cancelarTurnado(),
     });
   }
@@ -154,8 +147,11 @@ export class DetalleAsuntosComponent {
     this.openModal({
       title: '<i class="fas fa-folder-open m-2"></i> Agregar Anexos',
       template: this.agregarAnexosModal,
-      onAccept: () => this.agregarAnexos(),
-      onCancel: () => this.resetFormularioArchivo(this.agregarAnexoForm),
+      onAccept: () => this.cargarAnexos(),
+      onCancel: () => {
+        this.resetFormularioArchivo(this.agregarAnexoForm);
+        this.anexosCargados = [];
+      },
     });
   }
 
@@ -207,10 +203,6 @@ export class DetalleAsuntosComponent {
     }
   }
 
-  finalizarTurnado(): void {
-    this.turnarAsunto();
-  }
-
   cancelarTurnado(): void {
     this.turnados = [];
     this.turnadoForm.reset();
@@ -245,15 +237,18 @@ export class DetalleAsuntosComponent {
     this.processFile(form, event.dataTransfer?.files, lista);
   }
 
-  private processFile( form: FormGroup, files: FileList | null | undefined, lista: boolean = false ): void {
+  private processFile(
+    form: FormGroup,
+    files: FileList | null | undefined,
+    lista: boolean = false
+  ): void {
     const isReemplazo = form == this.reemplazarDocumentoForm;
-    
+
     const controlName = 'documento';
     const key = isReemplazo ? 'reemplazar' : 'concluir';
 
-
     if (!files || files.length === 0) {
-      if (lista && this.anexosCargados.length > 0) {   
+      if (lista && this.anexosCargados.length > 0) {
         return;
       }
       // Si lista es true pero no hay archivos cargados, o si lista es false
@@ -293,16 +288,6 @@ export class DetalleAsuntosComponent {
     this.fileState.set('concluir', { file: null, name: null });
   }
 
-  reemplazarDocumento() {
-    console.log('Documento reemplazado');
-    this.resetFormularioArchivo(this.reemplazarDocumentoForm);
-  }
-
-  agregarAnexos() {
-    console.log('Anexos agregados');
-    this.resetFormularioArchivo(this.agregarAnexoForm);
-  }
-
   getFileName(key: string): string | null {
     const fileData = this.fileState.get(key);
     return fileData?.name || null;
@@ -322,234 +307,357 @@ export class DetalleAsuntosComponent {
   ): 'valid' | 'invalid' | 'none' {
     const control = form.get(controlName);
     if (!control) return 'none';
-    return control.valid && (control.dirty || control.touched)
-      ? 'valid'
-      : control.invalid && (control.dirty || control.touched)
-      ? 'invalid'
-      : 'none';
+    return control.valid && (control.dirty || control.touched) ? 'valid' : control.invalid && (control.dirty || control.touched) ? 'invalid' : 'none';
   }
 
-addTurnado(): void {
-  if (this.turnadoForm.valid) {
-    const unidad = this.unidadesResponsablesDS.find(
-      (u) => u.idUnidadResponsable == this.turnadoForm.get('idUnidadResponsable')?.value
-    );
-    const instruccion = this.instruccionesDS.find(
-      (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
-    );
+  addTurnado(): void {
+    if (this.turnadoForm.valid) {
+      const unidad = this.unidadesResponsablesDS.find(
+		(u) =>  u.idUnidadResponsable ==  this.turnadoForm.get('idUnidadResponsable')?.value
+      );
+      const instruccion = this.instruccionesDS.find(
+        (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
+      );
 
-    
-    const nuevoTurnado = {
-      idUnidadResponsable: unidad?.idUnidadResponsable,
-      idInstruccion: instruccion?.idInstruccion,
-    };
+      const nuevoTurnado = {
+        idUnidadResponsable: unidad?.idUnidadResponsable,
+        idInstruccion: instruccion?.idInstruccion,
+      };
 
-    if (unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))) {
-      this.turnados.push({
-        unidadResponsable: unidad.unidadResponsable,
-        instruccion: instruccion.instruccion,
-        idAsunto: this.idAsunto,
-        idUnidadResponsable: unidad.idUnidadResponsable,
-        idInstruccion: instruccion.idInstruccion,
-        idUsuarioAsigna: this.idUsuario,
-      });
-      this.turnadoForm.reset();
+      if ( unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
+      ) {
+        this.turnados.push({
+          unidadResponsable: unidad.unidadResponsable,
+          instruccion: instruccion.instruccion,
+          idAsunto: this.idAsunto,
+          idUnidadResponsable: unidad.idUnidadResponsable,
+          idInstruccion: instruccion.idInstruccion,
+          idUsuarioAsigna: this.idUsuario,
+        });
+        this.turnadoForm.reset();
+      } else {
+        this.utils.MuestrasToast(
+          TipoToast.Warning,
+          'Este turnado ya ha sido agregado.'
+        );
+      }
     } else {
-      this.utils.MuestrasToast(TipoToast.Warning, 'Este turnado ya ha sido agregado.');
+      this.turnadoForm.markAllAsTouched();
     }
-  } else {
-    this.turnadoForm.markAllAsTouched();
   }
-}
-private esTurnadoIgual(a: any, b: any): boolean {
-  return (
-    a.idUnidadResponsable == b.idUnidadResponsable &&
-    a.idInstruccion == b.idInstruccion
-  );
-}
+  private esTurnadoIgual(a: any, b: any): boolean {
+    return ( a.idUnidadResponsable == b.idUnidadResponsable && a.idInstruccion == b.idInstruccion
+    );
+  }
 
   removeTurnado(index: number): void {
     this.turnados.splice(index, 1);
   }
 
-
-
   /* ENDPOINTS */
-    consultarDetallesAsunto(id:number) {
-
-        this.asuntoApi.consultarDetallesAsunto({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarDetallesAsunto(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
+  consultarDetallesAsunto(id: number) {
+    this.asuntoApi.consultarDetallesAsunto({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarDetallesAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
     );
-
-    }
-    onSuccessconsultarDetallesAsunto(data: any) {
-      if (data.status == 200) {
-        this.asuntoSeleccionado = data.model
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-    }
-    consultarExpedienteAsunto(id:number,muestraToast:boolean = false) {
-
-        this.asuntoApi.consultarExpedienteAsunto({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
-          },
-          (ex) => {
-            this.documentoPrincipal = null;
-            this.anexos =[];
-           if  (muestraToast ) this.utils.MuestraErrorInterno(ex);
-          } 
-        );
-        
-      }
-      onSuccessconsultarExpedienteAsunto(data: any, muestraToast:boolean) {
-        if (data.status == 200) {
-          this.documentoPrincipal = data.model.documento
-          this.anexos = data.model.anexos
-        } else {
-          this.documentoPrincipal = null;
-          this.anexos =[];
-          if  (muestraToast )this.utils.MuestrasToast(TipoToast.Warning, data.message);
-        
-      }
-    }
-    consultarTurnadosAsunto(id:number | any) {
-
-        this.asuntoApi.consultarTurnados({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarTurnadosAsunto(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarTurnadosAsunto(data: any) {
-      if (data.status == 200) {
-        this.turnadosAsunto = data.model;        
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-    }
-    consultarHistorialAsunto(id:number) {
-
-        this.asuntoApi.consultarHistorialAsunto({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarHistorialAsunto(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarHistorialAsunto(data: any) {
-      if (data.status == 200) {
-        /* this.asuntoSeleccionado = data.model */
-        /* objeto historial */
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-    }
-    consultarUnidadAdministrativa() {
-
-        this.catalogoApi.consultarUnidadAdministrativa({esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 }).subscribe(
-          (data) => {
-            this.onSuccessconsultarUnidadAdministrativa(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarUnidadAdministrativa(data: any) {
-      if (data.status == 200) {
-       this.unidadesResponsablesDS = data.model;
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-    }
-    consultarInstruccion() {
-
-        this.catalogoApi.consultarInstruccion({esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 }).subscribe(
-          (data) => {
-            this.onSuccessconsultarInstruccion(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarInstruccion(data: any) {
-      if (data.status == 200) {
-       this.instruccionesDS = data.model;
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-    }
-    turnarAsunto() {
-
-        this.asuntoApi.turnarAsunto({listaTurnados: this.turnados}).subscribe(
-          (data) => {
-            this.onSuccessturnarAsunto(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessturnarAsunto(data: any) {
-      if (data.status == 200) {
-       this.consultarTurnadosAsunto(this.idAsunto);
-       this.utils.MuestrasToast(TipoToast.Success, data.message);
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
-      }
-      this.turnados=[]
-    }
-
-    /* auxiliares turnado  */
-    /**
- * Compara si la lista temporal de turnados es diferente de los turnados reales del asunto.
- * @returns boolean
- */
-hayCambiosEnTurnados(): boolean {
-  if (this.turnados.length !== this.turnadosAsunto.length) return true;
-
-  const sortedTurnados = [...this.turnados].sort(this.comparadorTurnado);
-  const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
-
-  for (let i = 0; i < sortedTurnados.length; i++) {
-    if (
-      sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable ||
-      sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
-    ) {
-      return true;
+  }
+  onSuccessconsultarDetallesAsunto(data: any) {
+    if (data.status == 200) {
+      this.asuntoSeleccionado = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
   }
-  return false;
-}
-
-/**
- * Función auxiliar para ordenar turnados por unidad e instrucción.
- */
-private comparadorTurnado(a: any, b: any): number {
-  if (a.idUnidadResponsable !== b.idUnidadResponsable) {
-    return a.idUnidadResponsable - b.idUnidadResponsable;
+  consultarExpedienteAsunto(id: number, muestraToast: boolean = false) {
+    this.asuntoApi.consultarExpedienteAsunto({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
+      },
+      (ex) => {
+        this.documentoPrincipal = null;
+        this.anexos = [];
+        if (muestraToast) this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
-  return a.idInstruccion - b.idInstruccion;
+  onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
+    if (data.status == 200) {
+      this.documentoPrincipal = data.model.documento;
+      this.anexos = data.model.anexos;
+    } else {
+      this.documentoPrincipal = null;
+      this.anexos = [];
+      if (muestraToast)
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarTurnadosAsunto(id: number | any) {
+    this.asuntoApi.consultarTurnados({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarTurnadosAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessconsultarTurnadosAsunto(data: any) {
+    if (data.status == 200) {
+      this.turnadosAsunto = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarHistorialAsunto(id: number) {
+    this.asuntoApi.consultarHistorialAsunto({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarHistorialAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessconsultarHistorialAsunto(data: any) {
+    if (data.status == 200) {
+      /* this.asuntoSeleccionado = data.model */
+      /* objeto historial */
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarUnidadAdministrativa() {
+    this.catalogoApi
+      .consultarUnidadAdministrativa({
+        esUnidadAdministrativa: 1,
+        esUnidadDeNegocio: 1,
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarUnidadAdministrativa(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarUnidadAdministrativa(data: any) {
+    if (data.status == 200) {
+      this.unidadesResponsablesDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarInstruccion() {
+    this.catalogoApi
+      .consultarInstruccion({ esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarInstruccion(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarInstruccion(data: any) {
+    if (data.status == 200) {
+      this.instruccionesDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  turnarAsunto() {
+    this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
+      (data) => {
+        this.onSuccessturnarAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessturnarAsunto(data: any) {
+    if (data.status == 200) {
+      this.consultarTurnadosAsunto(this.idAsunto);
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+    this.turnados = [];
+  }
+
+  reemplazarDocumento() {
+    this.construirPayloadReemplazoDocumento().then((payload) => {   
+      this.asuntoApi.reemplazarDocumento(payload).subscribe(
+        (data) => {
+          this.onSuccessreemplazarDocumento(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+    });
+  }
+  onSuccessreemplazarDocumento(data: any) {
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+    this.resetFormularioArchivo(this.reemplazarDocumentoForm);
+	this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
 }
 
-    /* end auxiliares turnado  */
+cargarAnexos() {
+	this.construirPayloadAnexo().then((payload) => {   
+		
+		this.asuntoApi.cargarAnexos(payload).subscribe(
+			(data) => {
+				this.onSuccesscargarAnexos(data);
+			},
+			(ex) => {
+				this.utils.MuestraErrorInterno(ex);
+			}
+		);
+    });
+}
+onSuccesscargarAnexos(data: any) {
+	if (data.status == 200) {
+		this.utils.MuestrasToast(TipoToast.Success, data.message);      
+    } else {
+		this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+	this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+	this.resetFormularioArchivo(this.agregarAnexoForm);
+	this.anexosCargados = [];
+  }
+
+
+    eliminarDocumento(idDocumento: number){
+	this.asuntoApi.eliminarDocumento({ idDocumentAsunto: idDocumento }).subscribe(
+      (data) => {
+        this.onSuccesseliminarDocumento(data);
+		},
+		(ex) => {
+			this.utils.MuestraErrorInterno(ex);
+		}
+		);
+	}
+	onSuccesseliminarDocumento(data: any) {
+		if (data.status == 200) {
+			this.utils.MuestrasToast(TipoToast.Success, data.message);			
+		} else {
+		this.utils.MuestrasToast(TipoToast.Warning, data.message);
+		}
+		this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+	}
+
+  /* auxiliares turnado  */
+  /**
+   * Compara si la lista temporal de turnados es diferente de los turnados reales del asunto.
+   * @returns boolean
+   */
+  hayCambiosEnTurnados(): boolean {
+    if (this.turnados.length !== this.turnadosAsunto.length) return true;
+
+    const sortedTurnados = [...this.turnados].sort(this.comparadorTurnado);
+    const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
+
+    for (let i = 0; i < sortedTurnados.length; i++) {
+      if ( sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable || sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Función auxiliar para ordenar turnados por unidad e instrucción.
+   */
+  private comparadorTurnado(a: any, b: any): number {
+    if (a.idUnidadResponsable !== b.idUnidadResponsable) {
+      return a.idUnidadResponsable - b.idUnidadResponsable;
+    }
+    return a.idInstruccion - b.idInstruccion;
+  }
+
+  private async convertirAnexos(): Promise<any[]> {
+    if (!this.anexosCargados || this.anexosCargados.length === 0) return [];
+
+    return Promise.all(
+      this.anexosCargados.map(async (file: File) => {
+        const base64 = await this.fileToBase64(file);
+        return {
+          fileName: file.name,
+          fileEncode64: base64,
+          size: file.size,
+          tipoDocumento: 'Anexo',
+        };
+      })
+    );
+  }
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // quitar encabezado
+        resolve(base64String);
+      };
+
+      reader.onerror = (error) => reject(error);
+
+      reader.readAsDataURL(file); // convierte a base64
+    });
+  }
+  /* end auxiliares turnado  */
+
+  async construirPayloadReemplazoDocumento(): Promise<any> {
+    let documentoPayload = null;
+	let documentoReemplazo = this.fileState.get('reemplazar');
+
+    if (documentoReemplazo?.file) {
+      const base64 = await this.fileToBase64(documentoReemplazo.file);
+      documentoPayload = {
+        fileName: documentoReemplazo.name,
+        fileEncode64: base64,
+        size: documentoReemplazo.file.size,
+        tipoDocumento: 'Documento principal',
+      };
+    }
+
+    const payload = {
+		idAsunto: this.asuntoSeleccionado.idAsunto,
+		folio: this.asuntoSeleccionado.folio,
+		idDocumentoReemplazo: this.documentoPrincipal.idDocumentoAsunto,   
+		documento: documentoPayload,
+		urlReemplazo: this.documentoPrincipal.ruta,	
+		idUsuarioRegistra: 1
+
+    };
+
+    return payload;
+  }
+  async construirPayloadAnexo(): Promise<any> {
+    let documentoPayload = null;
+
+    const anexosPayload = await this.convertirAnexos();
+
+    const payload = {
+		idAsunto: this.asuntoSeleccionado.idAsunto,
+		idUsuarioRegistra: 1,
+		anexos: anexosPayload
+
+    };
+
+    return payload;
+  }
+
 
 }

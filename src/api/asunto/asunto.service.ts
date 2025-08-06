@@ -45,4 +45,13 @@ export class AsuntoService {
   turnarAsunto(data:any) {
     return this.http.post(this.urlBase + 'turnarAsunto', data);
   }
+  reemplazarDocumento(data:any) {
+    return this.http.post(this.urlBase + 'reemplazarDocumento', data);
+  }
+  cargarAnexos(data:any) {
+    return this.http.post(this.urlBase + 'agregarAnexos', data);
+  }
+  eliminarDocumento(data:any) {
+    return this.http.post(this.urlBase + 'eliminarDocumento', data);
+  }
 }

@@ -1,32 +1,40 @@
-:host {
+/* :host {
   background: linear-gradient(90deg, rgba(151, 149, 149, 0.7), rgba(232, 232, 232, 0.5)),
               url('/img/aduanas.jpg') no-repeat center center;
   background-size: cover;
   display: block;
   min-height: 100vh;
+} */
+:host {
+  background: linear-gradient(90deg, var(--color-success), var(--color-success));
+  background-size: cover;
+  display: block;
+  min-height: 100vh;
 }
 .login-content{
-  width: 60%!important; 
+  width: fit-content!important; 
   border-radius: 1rem;
   backdrop-filter: blur(5px);
   background-color: rgba(255, 255, 255, 0.247);
 }
 .login-card {
+
   background-color: transparent;
-  border-left: ridge 10px rgba(167, 165, 165, 0.247);;
-  width: 100%;
+ /*  border-left: ridge 10px rgba(167, 165, 165, 0.247);; */
+  min-width: 400px;
+  width: 400px;
 }
 
 .optionsIcon {
   position: absolute;
   right: 20px;
-  top: 47px;
+  top: 50px;
   cursor: pointer;
 }
 
 .info-btn-login:hover {
   cursor: pointer;
-  filter: drop-shadow(0rem 0rem 1rem rgba(236, 116, 100, 0.8));
+  filter: drop-shadow(0rem 0rem 20px rgb(255, 255, 255));
 }
 
 @media (max-width: 768px) {
@@ -57,7 +65,7 @@
     bottom: 0;
     right: 0;
     width: 0;
-    height: 2px;
+    height: 3px;
     background-color: var(--color-primary);
     transition: width 0.2s ease;
 }

@@ -2,39 +2,39 @@
   <div class="login-content   row  justify-content-center align-items-center">
 
     <!-- Sección del logo e info del sistema (solo en desktop) -->
-    <div class="col-md-7 d-none d-md-flex flex-column align-items-center justify-content-center system-info">
+    <!-- <div class="col-md-7 d-none d-md-flex flex-column align-items-center justify-content-center system-info">
       <img src="img/anam.png" alt="ANAM Logo" class="img-fluid mb-3" style="max-width: 200px;">
       <h1 class="display-4 fw-bold mb-3">SCG</h1>
       
       <p class="lead text-muted fw-bold text-center w-75">
         Sistema de Monitoreo de Correspondencia Digital 
       </p>
-    </div>
+    </div> -->
     
     <!-- Columna derecha: Card de login -->
-    <div class=" col-md-5 h-100">
+    <div class="h-100">
       <!-- Solo visible en móvil -->
-      <div class="d-md-none text-center mb-3">
+<!--       <div class="d-md-none text-center mb-3">
         <h1 class="fw-bold">SCG</h1>
         <p class="small text-muted fw-bold text-center px-3">
           Sistema de Monitoreo de Correspondencia Digital 
         </p>
-      </div>
+      </div> -->
 
       <div class=" p-4 login-card">
-        <h2 class="text-center mb-3 text-primary">Iniciar sesión</h2>
+        <h1 class="text-center mb-3 text-white">Iniciar sesión</h1>
 
         <form (ngSubmit)="login()">
           <div class="mb-3 position-relative">
             <label for="username" class="form-label fw-bold">Usuario</label>
-            <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" placeholder="Usuario" required />
+            <input type="text" id="username" class="form-control" [(ngModel)]="username" name="username" placeholder="tu_correo@anam.gob.mx" required />
           </div>
 
           <div class="mb-3 position-relative">
             <label for="password" class="form-label fw-bold">Contraseña</label>
             <i [ngClass]="hiddenPassw ? 'fas fa-eye-slash optionsIcon' : 'fas fa-eye optionsIcon'"
                (click)="sethidden()" id="password"></i>
-            <input [type]="hiddenPassw ? 'text' : 'password'" class="form-control" placeholder="Contraseña" maxlength="255">
+            <input [type]="hiddenPassw ? 'text' : 'password'" [(ngModel)]="password" name="password"  class="form-control" placeholder="Contraseña" maxlength="255">
           </div>
 
           <div *ngIf="error" class="alert alert-danger">{{ error }}</div>
@@ -47,14 +47,14 @@
         <div class="row pt-3">
           <div class="col-md-6 mt-3">
             <div class="d-flex align-items-center flex-nowrap">
-              <i class="info-btn-login p-2 fas fa-user-circle fa-2x text-secondary"></i>
-              <i class="info-btn-login p-2 fas fa-shield-alt fa-2x text-secondary"></i>
-              <i class="info-btn-login p-2 fas fa-question-circle fa-2x text-secondary"></i>
+              <span class="tooltip-wrapper center" [attr.data-tooltip]="'Manual de usuario'"> <i class="info-btn-login p-2 fas fa-user-circle fa-2x text-white"></i></span>
+              <span class="tooltip-wrapper center" [attr.data-tooltip]="'Aviso de privacidad'"> <i class="info-btn-login p-2 fas fa-shield-alt fa-2x text-white"></i></span>
+              <span class="tooltip-wrapper center" [attr.data-tooltip]="'Ayuda'"><i class="info-btn-login p-2 fas fa-question-circle fa-2x text-white"></i></span>
             </div>
           </div>
           <div class="col-md-6 text-end mt-3">
-            <a href="#" class="hover-line-right_local text-decoration-none text-success fw-bold">Crear cuenta</a><br />
-            <a href="#" class="hover-line-right_local text-decoration-none text-muted fw-bold">Olvidé mi contraseña</a>
+            <div role="button" (click)="openConfirmModal()" class="hover-line-right_local text-decoration-none text-white fw-bold">Crear cuenta</div>
+            <div role="button" (click)="openOlvidarContrasenaModal()" class="hover-line-right_local text-decoration-none  text-muted fw-bold">Olvidé mi contraseña</div>
           </div>
         </div>
       </div>
@@ -62,3 +62,54 @@
 
   </div>
 </div>
+
+<ng-template #crearCuentaModal >
+    <div class="container">
+
+      <form [formGroup]="crearCuentaForm">
+
+        <div class="row">
+          <div class="col-md-12">
+            <label class="form-label frmlabel required" for="correo">Correo electrónico</label>
+            <div class="input-icon-wrapper">
+              <i [ngClass]="getValidationStatus('correo') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('correo') == 'invalid' ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+              <input id="correo" type="email" class="form-control" formControlName="correo"  placeholder="tu_correo@anam.gob.mx"
+              [class.invalid]="getValidationStatus('correo') == 'invalid'"
+              [class.valid]="getValidationStatus('correo') == 'valid'" />
+            </div>
+            <p *ngIf="getValidationStatus('correo') == 'invalid'" class="invalid-field">Correo inválido u obligatorio.</p>
+          </div>
+
+          <!-- Campo: RFC -->
+          <div class="col-md-12">
+            <label class="form-label frmlabel required" for="rfc">RFC</label>
+            <div class="input-icon-wrapper">
+              <i [ngClass]="getValidationStatus('rfc') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('rfc') == 'invalid' ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+              <input id="rfc" type="text" class="form-control" formControlName="rfc"  placeholder="RFC"
+              [class.invalid]="getValidationStatus('rfc') == 'invalid'"
+              [class.valid]="getValidationStatus('rfc') == 'valid'" />
+            </div>
+            <p *ngIf="getValidationStatus('rfc') == 'invalid'" class="invalid-field">RFC inválido u obligatorio.</p>
+          </div>
+        </div>
+
+        <div class="mt-3 required"> Campos obligatorios</div>
+        
+          <div class="mt-3 carta-responsiva-area">
+          <p class="text-muted">Deberás enviar tu carta firmada  a la dirección de correo electrónico: <strong><a href="mailto:soporte_scg@anam.gob.mx">{{'soporte_scg@anam.gob.mx'}}</a> </strong>.</p>
+           <p class="text-muted">Descargar carta responsiva <strong> <a href=""> aquí</a></strong>.</p>
+          </div>
+        <div class="mt-3 d-flex align-items-center justify-content-center" >
+          <button role="button" class="btn btn-primary" [disabled]="crearCuentaForm.invalid" > <i class="fas fa-share me-2"></i> Solicitar </button>
+        </div>
+
+      </form>
+
+    </div>
+</ng-template>
+<ng-template #olvidarContrasenaModal >
+    <div class="mt-3 carta-responsiva-area">
+          <p class="text-muted">Envía tu solicitud de recuperación de contraseña a la dirección de correo electrónico: <strong><a href="mailto:soporte_scg@anam.gob.mx?subject=Recuperación de contraseña &body=Escribo para recuperar mi contraseña, mi usuario es: ...">{{'soporte_scg@anam.gob.mx'}}</a> </strong>.</p>
+          
+          </div>
+</ng-template>

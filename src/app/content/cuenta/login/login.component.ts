@@ -1,32 +1,102 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
+import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 
 @Component({
   selector: 'app-login',
-  standalone: false,  
+  standalone: false,
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
+  @ViewChild('crearCuentaModal', { static: true })
+  crearCuentaModal!: TemplateRef<any>;
+  @ViewChild('olvidarContrasenaModal', { static: true })
+  olvidarContrasenaModal!: TemplateRef<any>;
+
   username = '';
   password = '';
   error = '';
-  hiddenPassw:any=false;
+  hiddenPassw: any = false;
 
-  constructor(private router: Router) {}
+  crearCuentaForm!: FormGroup;
 
+
+  constructor(
+	private router: Router,
+	private modalManager: ModalManagerService,
+	private fb: FormBuilder
+  ) {}
+
+  ngOnInit(): void {
+    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
+    //Add 'implements OnInit' to the class.
+  }
+
+
+  
   login() {
-
-    this.router.navigate(['/dashboard']);
-    /* if (this.username === 'admin' && this.password === 'demo') {
+    if (this.username === 'admin' && this.password === 'demo') {
+      this.router.navigate(['/dashboard']);
       localStorage.setItem('session', JSON.stringify({ user: this.username }));
     } else {
-      this.error = 'Credenciales incorrectas';
-    } */
+      this.error = 'Credenciales incorrectas. Intenta ingresar: usuario: admin | contraseña: demo';
+    }
   }
-  sethidden(){
+  sethidden() {
     this.hiddenPassw = !this.hiddenPassw;
+  }
+
+  /* crear cuenta */
+
+  initFormCrearCuenta(){
+	this.crearCuentaForm = this.fb.group({
+      correo: ['', [Validators.required, Validators.email]],
+      rfc: ['', [Validators.required, Validators.pattern(/^([A-ZÑ&]{3,4})\d{6}([A-Z\d]{3})?$/i)]]
+    });
+  }
+
+
+getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
+    const control = this.crearCuentaForm.get(controlName);
+
+    if (!control || !control.touched) {
+      return 'neutral';
+    }
+
+    if (control.errors && (control.errors['required'] || control.invalid)) {
+      return 'invalid';
+    }
+
+    return 'valid';
+  }
+
+
+  openConfirmModal() {
+
+	this.initFormCrearCuenta();
+    this.modalManager.openModal({
+      title: '<i class="fas fa-user-alt me-2"></i> Crear cuenta',
+      template: this.crearCuentaModal,
+      showFooter: false,
+      onAccept: () => this.solicitudCrearCuenta(),
+	  onCancel: () => this.crearCuentaForm.reset()
+    });
+  }
+  solicitudCrearCuenta(){
+
+  }
+
+  /* olvidé mi contraseña */
+  openOlvidarContrasenaModal() {	
+    this.modalManager.openModal({
+      title: '<i class="fas fa-user-lock me-2"></i> Recuperar contraseña',
+      template: this.olvidarContrasenaModal,
+      showFooter: false,
+	   
+      onAccept: () => null,
+    });
   }
 }
