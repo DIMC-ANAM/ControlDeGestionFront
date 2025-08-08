@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
+import { UsuarioService } from '../../../../api/usuario/usuario.service';
+import { UtilsService } from '../../../services/utils.service';
+import { TipoToast } from '../../../../api/entidades/enumeraciones';
 
 @Component({
   selector: 'app-login',
@@ -28,7 +31,9 @@ export class LoginComponent {
   constructor(
 	private router: Router,
 	private modalManager: ModalManagerService,
-	private fb: FormBuilder
+	private fb: FormBuilder,
+  private usuarioApi: UsuarioService,
+  private utils: UtilsService
   ) {}
 
   ngOnInit(): void {
@@ -38,7 +43,7 @@ export class LoginComponent {
   }
 
 
-  
+/*   
   login() {
     if (this.username === 'admin' && this.password === 'demo') {
       this.router.navigate(['/dashboard']);
@@ -46,7 +51,7 @@ export class LoginComponent {
     } else {
       this.error = 'Credenciales incorrectas. Intenta ingresar: usuario: admin | contraseña: demo';
     }
-  }
+  } */
   sethidden() {
     this.hiddenPassw = !this.hiddenPassw;
   }
@@ -107,5 +112,38 @@ export class LoginComponent {
 	   
       onAccept: () => null,
     });
+  }
+
+  /* LOGIN */
+
+  login(){
+    let payload = {
+      email: this.loginForm.value.usuario,
+      password: this.loginForm.value.password,
+      idSistema: 1
+
+    }
+    if(this.loginForm.value.usuario == "admin" && this.loginForm.value.password == "demo"){
+      this.router.navigate(['/dashboard']);
+      return;
+    }else{
+    this.usuarioApi.logIn(payload).subscribe(
+        (data) => {
+          this.onSuccessLogin(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+    }
+  }
+  onSuccessLogin(data:any){
+    
+      if(data.status ==200){
+        this.router.navigate(['/dashboard']);
+        localStorage.setItem('session', JSON.stringify({ userInfo: data }));
+      }else{
+        this.utils.MuestrasToast(TipoToast.Error,data.message)
+      }
   }
 }

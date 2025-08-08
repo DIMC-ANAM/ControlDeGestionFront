@@ -1,19 +1,30 @@
 <div class="vh-100 d-flex">
-  <div class="left"></div>
+    <div class="left d-flex flex-column justify-content-center align-items-center" >
+      <div class="p-4 d-flex justify-content-center align-items-center no-wrap flex-grow-0 w-100">
+        <div class="">
+
+          <img src="/img/ICONO CARPETA.svg" width="80%" alt="imagen">
+        </div>
+        <div>
+          <p style="font-size: 38px;font-family: Noto Sans ; font-weight: bolder;" class="text-white ">Sistema de Control de Gestión </p>
+        </div>
+      </div>
+
+    </div>
 
 
   <div class="right d-flex flex-column justify-content-start  align-items-center">
-    <div class=" pb-3 pt-3" style="width: 651px;">
+    <div class=" pt-3" style="width: 651px;">
       <img src="/img/Logos_P_Hacienda_ANAM.png" alt="Logo" width="100%">
     </div>
-    <div class="p-4 login-card">
-      <p class="text-center mb-4 text-xl-center fw-bolder fs-5 text-muted frmlabel">INICIAR SESIÓN</p>
+    <div class="login-card">
+      <p style="font-family: Noto Sans ; font-weight: 800; font-size: 22px;" class="text-center mb-2 text-dark-gray">INICIAR SESIÓN</p>
 
       <form [formGroup]="loginForm">
-        <div class="mb-3">
-
-          <label class="form-label frmlabel " for="usuario">Usuario</label>
-                    <div class="input-icon-wrapper">
+        <div class="">
+          <div *ngIf="error" class="text-danger w-100">{{ error }}</div>
+          <label class="form-label fw-bolder text-dark-gray pt-3 " for="usuario">Usuario</label>
+                    <div class="pt-0 input-icon-wrapper">
                         <i
                             [ngClass]="getValidationStatus(loginForm,'usuario') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(loginForm,'usuario') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
                         <input type="text"  id="username" class=" w-100"  formControlName="usuario" autocomplete="off"
@@ -25,10 +36,10 @@
                     
         </div>
 
-        <div class="mb-3 position-relative">
+        <div class="mb-1 position-relative">
 
-            <label class="form-label frmlabel " for="password">Contraseña</label>
-                    <div class="input-icon-wrapper">
+            <label class="form-label fw-bolder text-dark-gray pt-4"  for="password">Contraseña</label>
+                    <div class="pt-0 input-icon-wrapper">
                         <i
                             [ngClass]="getValidationStatus(loginForm,'password') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(loginForm,'password') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
                        <input [type]="hiddenPassw ? 'text' : 'password'" id="password" class="w-100 pr-5"
@@ -52,18 +63,18 @@
         </div>
         
 
-        <div *ngIf="error" class="alert alert-danger w-100">{{ error }}</div>
+        
 
-        <button type="submit" [disabled]="loginForm.invalid" class="btn w-100 mb-3" [ngClass]="{'disabled': loginForm.invalid, 'btn-success': loginForm.valid}"> 
-              Ingresar <i class="fas fa-sign-in-alt ms-2"></i>
+        <button type="submit" (click)="login()" [disabled]="loginForm.invalid" class="btn w-100 mb-3" [ngClass]="{'disabled': loginForm.invalid, 'btn-success': loginForm.valid}"> 
+              Ingresar
         </button>
 
       </form>
-      <button (click)="openConfirmModal()" class="btn btn-secondary w-100">
+      <div role="button" (click)="openConfirmModal()" class="btn w-100" style="border: solid 2px; border-color: var(--color-gold);">
         Solicitar cuenta
-      </button>
+      </div>
 
-      <div class="m-auto w-8  0 p-5 d-flex justify-content-around align-items-center">
+      <div class="m-auto w-8  0 pt-3 d-flex justify-content-around align-items-center">
             <span class="tooltip-wrapper center" [attr.data-tooltip]="'Manual de usuario'">
               <i class="info-btn-login p-2 fas fa-user-circle fa-2x"></i>
             </span>
