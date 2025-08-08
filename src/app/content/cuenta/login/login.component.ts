@@ -22,6 +22,7 @@ export class LoginComponent {
   hiddenPassw: any = false;
 
   crearCuentaForm!: FormGroup;
+  loginForm!: FormGroup;
 
 
   constructor(
@@ -33,6 +34,7 @@ export class LoginComponent {
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.initFormLogin();
   }
 
 
@@ -49,6 +51,12 @@ export class LoginComponent {
     this.hiddenPassw = !this.hiddenPassw;
   }
 
+  initFormLogin(){
+	this.loginForm = this.fb.group({
+      usuario: ['', [Validators.required]], // Validators.email
+      password: ['', [Validators.required]]
+    });
+  }
   /* crear cuenta */
 
   initFormCrearCuenta(){
@@ -59,18 +67,17 @@ export class LoginComponent {
   }
 
 
-getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
-    const control = this.crearCuentaForm.get(controlName);
-
-    if (!control || !control.touched) {
-      return 'neutral';
-    }
-
-    if (control.errors && (control.errors['required'] || control.invalid)) {
-      return 'invalid';
-    }
-
-    return 'valid';
+    getValidationStatus(
+    form: FormGroup,
+    controlName: string
+  ): 'valid' | 'invalid' | 'none' {
+    const control = form.get(controlName);
+    if (!control) return 'none';
+    return control.valid && (control.dirty || control.touched)
+      ? 'valid'
+      : control.invalid && (control.dirty || control.touched)
+      ? 'invalid'
+      : 'none';
   }
 
 
@@ -86,6 +93,8 @@ getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
     });
   }
   solicitudCrearCuenta(){
+
+	
 
   }
 

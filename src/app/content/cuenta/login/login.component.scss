@@ -5,36 +5,44 @@
   display: block;
   min-height: 100vh;
 } */
-:host {
-  background: linear-gradient(90deg, var(--color-success), var(--color-success));
-  background-size: cover;
-  display: block;
-  min-height: 100vh;
-}
-.login-content{
-  width: fit-content!important; 
-  border-radius: 1rem;
-  backdrop-filter: blur(5px);
-  background-color: rgba(255, 255, 255, 0.247);
-}
+  body{
+      display: flex;
+      height: 100vh;
+      width: 100vw;
+      overflow: hidden; /* Evita scroll si hay superposición */
+      position: relative;
+
+  }
+  .left {
+    width: 53%;
+    background-color: #9f2241;
+    box-shadow: inset -30px 0 80px rgba(0, 0, 0, 0.5); /* sombra interna derecha */
+  }
+  
+  .right {
+      width: 49%;
+      background-color: white;
+      border-top-left-radius: 20px;
+      border-bottom-left-radius: 20px;
+      box-shadow: inset 0 -70px 60px rgba(0, 0, 0, 0.25);/* sombra interna inferior tenue */
+      margin-left: -1%; /* Esto es el 10% del 45% del ancho total */
+      z-index: 2;
+      position: relative;
+  }
 .login-card {
-
-  background-color: transparent;
- /*  border-left: ridge 10px rgba(167, 165, 165, 0.247);; */
-  min-width: 400px;
-  width: 400px;
+  max-width: 450px;
+  width: 100%;
+  margin: 5%;
 }
 
-.optionsIcon {
-  position: absolute;
-  right: 20px;
-  top: 50px;
-  cursor: pointer;
+.info-btn-login{
+  color: #6c757d;
 }
 
 .info-btn-login:hover {
   cursor: pointer;
   filter: drop-shadow(0rem 0rem 20px rgb(255, 255, 255));
+  
 }
 
 @media (max-width: 768px) {
@@ -72,4 +80,84 @@
 
 .hover-line-right_local:hover::after {
     width: 100%;
+}
+
+
+input.form-control-login {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    outline: none;
+    box-shadow: 0px 13px 2px -10px gray;
+    border-radius: 10px;
+    font-family: var(--font-family-text);
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-primary);
+    /* height: 40px!important; */
+    /*  */
+    transition: all 0.1s ease-in-out;
+    appearance: auto;
+    &:focus {
+        outline: none;
+        border: none;
+        
+        /* box-shadow: 0 0 10px 1px rgb(107, 105, 105); */
+
+    }
+    &.valid {
+        box-shadow: 0px 13px 2px -10px #22b573!important;
+        /* box-shadow: 0 0 5px 1px #08741a; */
+      }
+      
+      &.invalid {
+        box-shadow: 0px 13px 2px -10px var(--color-primary)!important;        
+    }
+  }
+
+  .input-icon-wrapper {
+    position: relative;
+
+    input {
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .icon {
+        position: absolute;
+        top: 50%;
+        left:93%;
+        transform: translateY(-50%);
+        font-size: 1.1rem;
+        transition: color 0.1s ease-in-out;
+
+        &.valid-icon {
+            color: #22b573; // Verde    
+        }
+
+        &.invalid-icon {
+            color: #a33635; // Verde    
+        }
+
+    }
+  }
+
+  /* Para inputs de password cuando Chrome los autorellena */
+input[type="password"]:-webkit-autofill,
+input[type="password"]:-webkit-autofill:hover,
+input[type="password"]:-webkit-autofill:focus,
+input[type="password"]:-webkit-autofill:active {
+    /* -webkit-box-shadow: 0 0 0 1000px white inset !important; */
+    -webkit-text-fill-color: black !important;
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s !important;
+}
+
+/* También para el campo de usuario asociado */
+input[type="text"]:-webkit-autofill,
+input[type="email"]:-webkit-autofill {
+    /* -webkit-box-shadow: 0 0 0 1000px white inset !important; */
+    -webkit-text-fill-color: black !important;
+    background-color: transparent !important;
+    transition: background-color 5000s ease-in-out 0s !important;
 }

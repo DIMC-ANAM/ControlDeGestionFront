@@ -72,7 +72,7 @@ export class ListaTurnadosComponent {
   }
 
    consultarTurnados(){
-      this.turnadoApi.consultarTurnados({idUnidadAdministrativa: 2   /* hay que cambiarlo  */
+      this.turnadoApi.consultarTurnados({idUnidadAdministrativa:   2   /* hay que cambiarlo  */
   
       }).subscribe(
           (data) => {
