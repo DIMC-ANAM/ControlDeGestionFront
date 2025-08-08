@@ -1,7 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { AfterViewInit, Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../../services/sidebar-service.service';
 import { Router } from '@angular/router';
+import { TipoToast } from '../../../../api/entidades/enumeraciones';
+import { UtilsService } from '../../../services/utils.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -9,47 +11,65 @@ import { Router } from '@angular/router';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.scss',
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit {
  // Inyección moderna (limpia y sin constructor)
-  private router = inject(Router);
-  public sidebarService = inject(SidebarService);
+
+  constructor(
+    private router: Router,
+    public sidebarService: SidebarService,
+    private utils: UtilsService
+  ){}
+
+  ngOnInit(): void {
+    const session = localStorage.getItem('session');
+    if (!session) {
+    this.router.navigate(['/']);
+    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha vencido!"); // corregido MuestraToast
+  }
+  }
 
   menuItems = [
     {
       id: 'registro',
       label: 'Registro de asuntos',
       icon: 'fas fa-plus',
-      link: '/registro-asunto'
+      link: '/registro-asunto',
+      rol: [2],
     },
     {
       id: 'consultarAsuntos',
       label: 'Asuntos registrados',
       icon: 'fas fa-file-alt',
-      link: '/consultar-asuntos'
+      link: '/consultar-asuntos',
+      rol: [2],
     },
     {
       id: 'consultarTurnados',
       label: 'Asuntos turnados',
       icon: 'fas fa-sync',
-      link: '/consultar-turnados'
+      link: '/consultar-turnados',
+      rol: [2,3],
     },
     {
       id: 'busquedaAvanzada',
       label: 'Búsqueda avanzada',      
       icon: 'fas fa-search',
-      link: '/busqueda-avanzada'
+      link: '/busqueda-avanzada',
+      rol: [2,3],
     },
     {
       id: 'reportes',
       label: 'Reportes',
       icon: 'fas fa-chart-pie',
-      link: '/reportes'
+      link: '/reportes',
+      rol: [2,3],
     },
     {
       id: 'catalogos',
       label: 'Catálogos',
       icon: 'fas fa-cogs',
-      link: '/catalogos'
+      link: '/catalogos',
+      rol: [2],
     },
   ];
 

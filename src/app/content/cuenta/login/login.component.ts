@@ -23,6 +23,7 @@ export class LoginComponent {
   password = '';
   error = '';
   hiddenPassw: any = false;
+  recordar: boolean = false;
 
   crearCuentaForm!: FormGroup;
   loginForm!: FormGroup;
@@ -35,12 +36,28 @@ export class LoginComponent {
   private usuarioApi: UsuarioService,
   private utils: UtilsService
   ) {}
+ngOnInit(): void {
+  this.initFormLogin(); // primero inicializa el form
 
-  ngOnInit(): void {
-    //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
-    //Add 'implements OnInit' to the class.
-    this.initFormLogin();
+  const session = localStorage.getItem('session');
+  const userString = localStorage.getItem('user');
+
+  if (session) {
+    this.router.navigate(['/dashboard']);
+    this.utils.MuestrasToast(TipoToast.Info, "¡Bienvenido!"); // corregido MuestraToast
   }
+
+  if (userString) {
+    try {
+      const user = JSON.parse(userString);
+      this.loginForm.patchValue(user);
+      this.loginForm.markAllAsTouched();
+    } catch (e) {
+      console.error('Error parsing user JSON from localStorage', e);
+    }
+  }
+}
+
 
 
 /*   
@@ -90,7 +107,7 @@ export class LoginComponent {
 
 	this.initFormCrearCuenta();
     this.modalManager.openModal({
-      title: '<i class="fas fa-user-alt me-2"></i> Crear cuenta',
+      title: '<i class="fas fa-user-plus me-2"></i> Solicitar cuenta',
       template: this.crearCuentaModal,
       showFooter: false,
       onAccept: () => this.solicitudCrearCuenta(),
@@ -141,7 +158,11 @@ export class LoginComponent {
     
       if(data.status ==200){
         this.router.navigate(['/dashboard']);
-        localStorage.setItem('session', JSON.stringify({ userInfo: data }));
+        localStorage.setItem('session', JSON.stringify(data.model));
+        
+        if(this.recordar){
+          localStorage.setItem('user', JSON.stringify({usuario: this.loginForm.value.usuario, password: this.loginForm.value.password}));
+        }
       }else{
         this.utils.MuestrasToast(TipoToast.Error,data.message)
       }

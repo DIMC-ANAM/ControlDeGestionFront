@@ -4,6 +4,8 @@ import { CommonModule } from '@angular/common';
 import { SidebarService } from '../../../services/sidebar-service.service';
 import { inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
+import { UtilsService } from '../../../services/utils.service';
+import { TipoToast } from '../../../../api/entidades/enumeraciones';
 
 @Component({
   selector: 'app-header',
@@ -25,22 +27,18 @@ export class HeaderComponent {
   expandSidebar(): void {
     this.sidebarService.expandSidebar();
   }
-
-  @Input() username: string = 'Usuario';
    @Output() onLogout = new EventEmitter<void>();
 
-  usuario: any ={
-    nombreCompleto: 'JOSE ANDRES REYES CERDA',
-    unidadAdministrativa: 'DIRECCIÓN DE RECURSOS HUMANOS',
-  };
+  usuario:any;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private utils: UtilsService
   ) {
     const session = localStorage.getItem('session');
     if (session) {
       const sessionData = JSON.parse(session);
-      this.usuario = sessionData.user || '';
+      this.usuario = sessionData || null;
     }
   }
 
@@ -52,8 +50,10 @@ export class HeaderComponent {
 
   logout() {
     this.isDropdownOpen = false;
+    localStorage.removeItem('session');
     this.onLogout.emit();
     this.router.navigate(['/login']);
+    this.utils.MuestrasToast(TipoToast.Info, "Se ha finalizado la sesión.");
   }
 
   // Cerrar dropdown al hacer click fuera

@@ -31,7 +31,7 @@
   
   .right {
       overflow-y: auto;
-      
+      overflow-x: hidden;
       width: 49%;
       background-color: white;
       border-top-left-radius: 20px;
@@ -43,7 +43,7 @@
   }
 .login-card {
   max-width: 450px;
-  margin: 5%;
+  margin-top: 15%;
   max-height: 100%;
   width: 100%;
 }
@@ -81,7 +81,7 @@
 
   .login-card {
     padding: -5px;
-    margin: 0px;
+    margin-top: 50px;
     width: 350px;
   }
   
@@ -142,7 +142,6 @@ input.form-control-login {
     /* height: 40px!important; */
     /*  */
     transition: all 0.1s ease-in-out;
-    appearance: auto;
     &:focus {
         outline: none;
         border: none;
@@ -206,3 +205,4 @@ input[type="email"]:-webkit-autofill {
     background-color: transparent !important;
     transition: background-color 5000s ease-in-out 0s !important;
 }
+

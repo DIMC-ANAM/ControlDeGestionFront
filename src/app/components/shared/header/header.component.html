@@ -13,15 +13,17 @@
           class="toolbar-toggle-btn"
           (click)="goHome()"
           >
-          <span class="toggle-icon"> <i class="fas fa-home-alt"></i> </span>
+          <span class="toggle-icon"> <i class="fas fa-house"></i> </span>
+
         </div>
+        <div class="text-white">Sistema de Control de Gestión</div>
 
 
     </div>
         
         <!-- Elementos del usuario (lado derecho) -->
         <div class="header-right">
-          <span class="username">{{ username }}</span>
+          <span class="username">{{ usuario.nombreUsuario }} <i class="fas fa-caret-right fa-xs"></i> {{usuario.unidadAdscripcion}}</span>
           
           <div class="user-menu" (click)="toggleDropdown()">
             <!-- Ícono de usuario -->
