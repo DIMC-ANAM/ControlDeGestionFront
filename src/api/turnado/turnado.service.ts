@@ -21,5 +21,14 @@ export class TurnadoService {
   consultarTurnados(data:any) {
     return this.http.post(this.urlBase + 'consultarTurnados', data);
   }
+  consultarDetalleTurnado(data:any) {
+    return this.http.post(this.urlBase + 'consultarDetalleTurnado', data);
+  }
+  contestarTurnado(data:any) {
+    return this.http.post(this.urlBase + 'contestarTurnado', data);
+  }
+  rechazarTurnado(data:any) {
+    return this.http.post(this.urlBase + 'rechazarTurnado', data);
+  }
   
 }

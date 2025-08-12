@@ -143,7 +143,7 @@ ngOnInit(): void {
     if (this.loginForm.value.usuario === 'admin' && this.loginForm.value.password === 'demo') {
   localStorage.setItem('session', JSON.stringify({
     nombreUsuario: 'admin',
-    idUsuario: 1,
+    idUsuario: 9999,
     unidadAdscripcion: 'ROOT'
   }));
 
@@ -168,6 +168,7 @@ onSuccessLogin(data: any) {
 
     if (this.recordar) {
       localStorage.setItem('user', JSON.stringify({
+        
         usuario: this.loginForm.value.usuario,
         password: this.loginForm.value.password
       }));

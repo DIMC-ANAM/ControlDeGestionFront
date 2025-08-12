@@ -29,11 +29,11 @@
                 </div>
 
                 <div class="d-flex gap-2">
-                    <button class="btn btn-primary btn-sm" (click)="openResponderModal()">
-                        <i class="fas fa-share me-2"></i> Dar respuesta
+                    <button [disabled]="[3, 4].includes(this.turnadoDS.idStatusTurnado)"  class="btn btn-primary btn-sm" (click)="openResponderModal()">
+                        <i class="fas fa-share me-2"></i> Dar respuesta 
                     </button>
                     
-                    <div role="button" class="btn btn-outline-secondary btn-sm" (click)="openRechazarTurnado()">
+                    <div role="button" [ngClass]="{'d-none': [3, 4].includes(this.turnadoDS.idStatusTurnado)}"  class="btn btn-outline-secondary btn-sm" (click)="openRechazarTurnado()">
                         <i class="fas fa-times me-2 fw-bold fa-"></i> Rechazar
                     </div>
                 </div>
@@ -462,10 +462,10 @@
 
 <ng-template #responderModal let-aceptar="aceptar" let-cancelar="cancelar">
      <div class="container">
-        <form [formGroup]="conclusionForm" (ngSubmit)="finalizarAsunto()">
+        <form [formGroup]="conclusionForm">
             <div class="mb-3">
                 <div class="w-100">
-                    <span class="mb-2 d-block text-center frmlabel pt-0"><i
+                    <span class="mb-2 d-block frmlabel pt-0"><i
                             class="fas fa-file-arrow-up p-2 "></i>Documento de respuesta</span>
                     <label class="text-center w-100">
 
@@ -489,8 +489,16 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-end mt-4">
-                <button type="submit" class="btn btn-success" [disabled]="conclusionForm.invalid">
+            <div class="mb-3">
+                <label for="respuesta" class="d-block frmlabel pt-0 p-2">Respuesta</label>
+                <textarea id="respuesta" formControlName="respuesta" class="form-control" rows="3"
+                placeholder="Debe proporcionar una respuesta."></textarea>
+                <div *ngIf="getValidationStatus(conclusionForm,'respuesta') == 'invalid'" class="invalid-field">Debe
+                    proporcionar una respuesta.</div>
+            </div>
+
+            <div class="d-flex justify-content-end mt-4 ">
+                <button (click)="aceptar()" class="btn btn-success" [disabled]="conclusionForm.invalid">
                     Concluir
                 </button>
             </div>
@@ -507,7 +515,7 @@
         </div>
         
         <div class="d-flex justify-content-center align-items-center">
-            <button class="btn btn-primary" [disabled]="rechazarForm.invalid"> Rechazar <i class="fas fa-times-circle m-2"></i></button>
+            <button (click)="aceptar()" class="btn btn-primary" [disabled]="rechazarForm.invalid"> Rechazar <i class="fas fa-times-circle m-2"></i></button>
         </div>
     </form>
 </div>

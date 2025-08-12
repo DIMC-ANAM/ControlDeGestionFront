@@ -41,8 +41,9 @@ export class DetalleTurnadosComponent {
   isDragOver: boolean = false;
 
   tabActiva = 'detalles';
-  idUsuario = 1;
+  usuario: any = null;
   turnadoSeleccionado: any = null;
+  turnadoDS:any = null
 
   documentoPrincipal: any = null;
   anexos: any[] = [];
@@ -55,29 +56,36 @@ export class DetalleTurnadosComponent {
     public colors: ColorsEnum,
     private asuntoApi: AsuntoService, 
     private utils: UtilsService,
-    private catalogoApi: CatalogoService
+    private catalogoApi: CatalogoService,
+    private turnadoApi: TurnadoService    
 
   ) {}
 
    ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
+    this.usuario = JSON.parse(localStorage.getItem('session')!);
+
   }
-
-
-    ngOnChanges() {
+  
+  
+  ngOnChanges() {
     if (this.asuntoInput) {
       this.consultarDetallesAsunto(this.asuntoInput.idAsunto);
       /* entra */
       this.consultarExpedienteAsunto(this.asuntoInput.idAsunto);
       /*this.consultarHistorialAsunto(this.idAsunto); */      
+      this.consultarDetalleTurnado(this.asuntoInput.idTurnado); 
     }
   }
    private createDocumentoForm(): FormGroup {
     return this.fb.group({ documento: [null, Validators.required] });
   }
+   private createconclusionForm(): FormGroup {
+    return this.fb.group({ documento: [null, Validators.required], respuesta: [null, Validators.required] });
+  }
   initFormConcluir() {
-    this.conclusionForm = this.createDocumentoForm();
+    this.conclusionForm = this.createconclusionForm();
   }
   initFormRechazar() {
     this.rechazarForm = this.fb.group({
@@ -133,8 +141,8 @@ export class DetalleTurnadosComponent {
       title: '<i class ="fas fa-share m-2"> </i> Dar respuesta al turnado',
       template: this.responderModal,
       showFooter: false,
-      onAccept: () => {},
-      onCancel: () => URL.revokeObjectURL(this.documentoStringURL),
+      onAccept: () => this.contestarTurnado(),
+      onCancel: () => {this.resetFormularioArchivo(this.conclusionForm); this.clearFile('concluir')},
       width: '',
     });
   }
@@ -144,24 +152,65 @@ export class DetalleTurnadosComponent {
       title: '<i class ="fas fa-times-circle m-2"> </i> Rechazar turnado',
       template: this.rechazarModal,
       showFooter: false,
-      onAccept: () => {},
-      onCancel: () => null,
+      onAccept: () => this.rechazarTurnado(),
+      onCancel: () => {this.resetFormularioArchivo(this.rechazarForm)},
       width: '',
     });
   }
 
-  finalizarAsunto(): void {
+  contestarTurnado(): void {
     const estado = this.fileState.get('concluir');
-    if (this.conclusionForm.valid && estado?.file) {
-      alert(`¡Asunto finalizado con el documento: ${estado.name}! 🎉`);
-      this.resetFormularioArchivo(this.conclusionForm);
+    if (this.conclusionForm.valid && estado?.file) {      
+      this.construirPayloadRespuestaTurnado().then((payload) => {   
+      this.turnadoApi.contestarTurnado(payload).subscribe(
+        (data) => {
+          this.onSuccessContestarTurnado(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+    });
+      
     } else {
       this.conclusionForm.markAllAsTouched();
     }
   }
-
-
-
+  
+  onSuccessContestarTurnado(data:any){
+    if(data.status == 200){
+      this.utils.MuestrasToast(TipoToast.Success, data.message)
+      this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
+    }else{
+      this.utils.MuestrasToast(TipoToast.Error, data.message)
+      
+    }
+    this.resetFormularioArchivo(this.conclusionForm);
+  }
+  
+  
+  rechazarTurnado(){    
+    this.turnadoApi.rechazarTurnado({
+      idTurnado: this.turnadoDS.idTurnado, 
+      idUsuarioModifica: this.usuario.idUsuario,
+      motivoRechazo: this.rechazarForm.get('motivoRechazo')?.value
+    }).subscribe(
+      (data) => {
+        this.onSuccessRechazarTurnado(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessRechazarTurnado(data:any){
+    if (data.status== 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+  }
 
   /* ENDPOINTS */
     consultarDetallesAsunto(id:number) {
@@ -179,6 +228,25 @@ export class DetalleTurnadosComponent {
     onSuccessconsultarDetallesAsunto(data: any) {
       if (data.status == 200) {
         this.turnadoSeleccionado = data.model
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+    consultarDetalleTurnado(id:number) {
+
+        this.turnadoApi.consultarDetalleTurnado({idTurnado: id}).subscribe(
+          (data) => {
+            this.onSuccessconsultarDetalleTurnado(data);
+          },
+          (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        } 
+    );
+
+    }
+    onSuccessconsultarDetalleTurnado(data: any) {
+      if (data.status == 200) {
+        this.turnadoDS = data.model
       } else {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
@@ -307,6 +375,47 @@ export class DetalleTurnadosComponent {
   private resetFormularioArchivo(form: FormGroup): void {
     form.reset();
     this.fileState.set('concluir', { file: null, name: null });
+  }
+
+  private fileToBase64(file: File): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+
+      reader.onload = () => {
+        const base64String = (reader.result as string).split(',')[1]; // quitar encabezado
+        resolve(base64String);
+      };
+
+      reader.onerror = (error) => reject(error);
+
+      reader.readAsDataURL(file); // convierte a base64
+    });
+  }
+  /* end auxiliares turnado  */
+
+  async construirPayloadRespuestaTurnado(): Promise<any> {
+    let documentoPayload = null;
+	let documentoConclusion = this.fileState.get('concluir');
+
+    if (documentoConclusion?.file) {
+      const base64 = await this.fileToBase64(documentoConclusion.file);
+      documentoPayload = {
+        fileName: documentoConclusion.name,
+        fileEncode64: base64,
+        size: documentoConclusion.file.size,
+        tipoDocumento: 'Documento principal',
+      };
+    }
+
+    const payload = {
+      idUsuario: this.usuario.idUsuario,
+      idAsunto: this.turnadoSeleccionado.idAsunto,         
+      idTurnado: this.asuntoInput.idTurnado,      
+      folio: this.turnadoSeleccionado.folio,
+      documentos: [documentoPayload],
+      respuesta: this.conclusionForm.get('respuesta')?.value || null,
+    };
+    return payload;
   }
 
 }

@@ -11,10 +11,8 @@ import { LayoutsModule } from './layouts/layouts.module';
 import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asunto.component';
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
-import { ConsultarTurnadosComponent } from './content/consultar-turnados/consultar-turnados.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { ConsultarAsuntosComponent } from './content/consultar-asuntos/consultar-asuntos.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,12 +26,9 @@ import { LoaderInterceptor } from './components/shared/interceptors/loader.inter
     DashboardComponent,
     UxDesignComponent,
     RegistroAsuntoComponent,
-    ConsultarTurnadosComponent,
     BusquedaAvanzadaComponent,
     ReportesComponent,
-    ConsultarTurnadosComponent,
     UnitTestComponent,
-    ConsultarAsuntosComponent,
   ],
   imports: [
     LayoutsModule,
