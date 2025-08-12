@@ -140,10 +140,18 @@ ngOnInit(): void {
       idSistema: 1
 
     }
-    if(this.loginForm.value.usuario == "admin" && this.loginForm.value.password == "demo"){
-      this.router.navigate(['/dashboard']);
-      return;
-    }else{
+    if (this.loginForm.value.usuario === 'admin' && this.loginForm.value.password === 'demo') {
+  localStorage.setItem('session', JSON.stringify({
+    nombreUsuario: 'admin',
+    idUsuario: 1,
+    unidadAdscripcion: 'ROOT'
+  }));
+
+  setTimeout(() => {
+    this.router.navigate(['/dashboard']);
+  }, 0); 
+  return;
+}else{
     this.usuarioApi.logIn(payload).subscribe(
         (data) => {
           this.onSuccessLogin(data);
@@ -154,17 +162,20 @@ ngOnInit(): void {
       );
     }
   }
-  onSuccessLogin(data:any){
-    
-      if(data.status ==200){
-        this.router.navigate(['/dashboard']);
-        localStorage.setItem('session', JSON.stringify(data.model));
-        
-        if(this.recordar){
-          localStorage.setItem('user', JSON.stringify({usuario: this.loginForm.value.usuario, password: this.loginForm.value.password}));
-        }
-      }else{
-        this.utils.MuestrasToast(TipoToast.Error,data.message)
-      }
+onSuccessLogin(data: any) {
+  if (data.status == 200) {
+    localStorage.setItem('session', JSON.stringify(data.model));
+
+    if (this.recordar) {
+      localStorage.setItem('user', JSON.stringify({
+        usuario: this.loginForm.value.usuario,
+        password: this.loginForm.value.password
+      }));
+    }
+
+    this.router.navigate(['/dashboard']); // <-- ahora sí después
+  } else {
+    this.utils.MuestrasToast(TipoToast.Error, data.message);
   }
+}
 }

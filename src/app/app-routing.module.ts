@@ -7,15 +7,16 @@ import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asun
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
-
+import { AuthGuard } from './services/auth-guard';
 const routes: Routes = [
   {
-    path: '',
+    path: 'auth',
     loadChildren: () => import('./content/cuenta/cuenta.module').then(m => m.CuentaModule)
   },
-   {
+  {
     path: '',
     component: GeneralComponent,
+    canActivate: [AuthGuard],      // <-- Aquí el guard
     children: [
       {
         path: 'dashboard',
@@ -27,7 +28,7 @@ const routes: Routes = [
       },
       {
         path: 'consultar-asuntos',
-         loadChildren: () => import('./content/asuntos-layout/asuntos-layout.module').then(m => m.AsuntosLayoutModule)
+        loadChildren: () => import('./content/asuntos-layout/asuntos-layout.module').then(m => m.AsuntosLayoutModule)
       },
       {
         path: 'consultar-turnados',
@@ -36,11 +37,11 @@ const routes: Routes = [
       /* {
         path: 'consultar-turnados',
         component: ConsultarTurnadosComponent
-      }, */
-      {
-        path: 'busqueda-avanzada',
-        component: BusquedaAvanzadaComponent
-      },
+        }, */
+        {
+          path: 'busqueda-avanzada',
+          component: BusquedaAvanzadaComponent
+        },
       {
         path: 'reportes',
         component: ReportesComponent
@@ -52,6 +53,12 @@ const routes: Routes = [
       
     ]
   },
+    {
+    path: '',
+    redirectTo: 'auth/login',
+    pathMatch: 'full'
+  },
+
   {
     path: 'ux-design',
     component: UxDesignComponent
@@ -59,7 +66,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)],
+  imports: [RouterModule.forRoot(routes, { enableTracing: true })],
   exports: [RouterModule]
 })
 export class AppRoutingModule { }

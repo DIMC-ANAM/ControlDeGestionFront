@@ -21,11 +21,11 @@ export class SidebarComponent implements OnInit {
   ){}
 
   ngOnInit(): void {
-    const session = localStorage.getItem('session');
+    /* const session = localStorage.getItem('session');
     if (!session) {
     this.router.navigate(['/']);
-    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha vencido!"); // corregido MuestraToast
-  }
+    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
+  } */
   }
 
   menuItems = [

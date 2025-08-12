@@ -23,11 +23,11 @@ export class GeneralComponent {
     
   }
   
-  ngOnInit() {
+/*   ngOnInit() {
     const session = localStorage.getItem('session');
     if (!session) {
       this.utils.MuestrasToast(TipoToast.Info, "La sesión ha caducado.");
       this.router.navigate(['/']);
     }
-  }
+  } */
 }

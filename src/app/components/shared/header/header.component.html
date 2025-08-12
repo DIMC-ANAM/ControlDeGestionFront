@@ -23,7 +23,7 @@
         
         <!-- Elementos del usuario (lado derecho) -->
         <div class="header-right">
-          <span class="username">{{ usuario.nombreUsuario }} <i class="fas fa-caret-right fa-xs"></i> {{usuario.unidadAdscripcion}}</span>
+          <span class="username">{{ usuario?.nombreUsuario || '' }} <i class="fas fa-caret-right fa-xs"></i> {{usuario?.unidadAdscripcion || ''}}</span>
           
           <div class="user-menu" (click)="toggleDropdown()">
             <!-- Ícono de usuario -->
