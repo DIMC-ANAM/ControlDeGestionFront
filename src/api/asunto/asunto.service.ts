@@ -54,4 +54,7 @@ export class AsuntoService {
   eliminarDocumento(data:any) {
     return this.http.post(this.urlBase + 'eliminarDocumento', data);
   }
+  concluirAsunto(data:any) {
+    return this.http.post(this.urlBase + 'concluirAsunto', data);
+  }
 }

@@ -403,7 +403,7 @@ export class DetalleTurnadosComponent {
         fileName: documentoConclusion.name,
         fileEncode64: base64,
         size: documentoConclusion.file.size,
-        tipoDocumento: 'Documento principal',
+        tipoDocumento: 'Respuesta turnado',
       };
     }
 

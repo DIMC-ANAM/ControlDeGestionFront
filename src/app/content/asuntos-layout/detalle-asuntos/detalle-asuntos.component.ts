@@ -55,7 +55,7 @@ export class DetalleAsuntosComponent {
   asuntoSeleccionadoModificado: Boolean = false;
 
   tabActiva = 'detalles';
-  idUsuario = 1;
+  usuario:any = null;
   asuntoSeleccionado: any = null;
 
   documentoPrincipal: any = null;
@@ -72,6 +72,7 @@ export class DetalleAsuntosComponent {
   ) {}
 
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem('session')!);
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();
   }
@@ -121,7 +122,7 @@ export class DetalleAsuntosComponent {
     this.openModal({
       title: 'Concluir asunto',
       template: this.concluirModal,
-      onAccept: () => this.finalizarAsunto(),
+      onAccept: () => this.concluirAsunto(),
       onCancel: () => {
         this.resetFormularioArchivo(this.conclusionForm);
         this.clearFile('concluir');
@@ -193,15 +194,39 @@ export class DetalleAsuntosComponent {
     this.agregarAnexoForm = this.createDocumentoForm();
   }
 
-  finalizarAsunto(): void {
+  concluirAsunto(): void {
     const estado = this.fileState.get('concluir');
     if (this.conclusionForm.valid && estado?.file) {
-      alert(`¡Asunto finalizado con el documento: ${estado.name}! 🎉`);
-      this.resetFormularioArchivo(this.conclusionForm);
+    
+      this.construirPayloadConcluirAsunto().then((payload) => {
+        this.asuntoApi.concluirAsunto(payload).subscribe(
+          (data) => {
+            this.onSuccessConcluirAsunto(data);
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+      });
+      
     } else {
       this.conclusionForm.markAllAsTouched();
     }
   }
+
+  onSuccessConcluirAsunto(data:any){
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.resetFormularioArchivo(this.conclusionForm);
+      this.clearFile('concluir');
+      this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+  }
+
+  
+
 
   cancelarTurnado(): void {
     this.turnados = [];
@@ -332,7 +357,7 @@ export class DetalleAsuntosComponent {
           idAsunto: this.idAsunto,
           idUnidadResponsable: unidad.idUnidadResponsable,
           idInstruccion: instruccion.idInstruccion,
-          idUsuarioAsigna: this.idUsuario,
+          idUsuarioAsigna: this.usuario.idUsuario,
         });
         this.turnadoForm.reset();
       } else {
@@ -638,7 +663,7 @@ onSuccesscargarAnexos(data: any) {
 		idDocumentoReemplazo: this.documentoPrincipal.idDocumentoAsunto,   
 		documento: documentoPayload,
 		urlReemplazo: this.documentoPrincipal.ruta,	
-		idUsuarioRegistra: 1
+		idUsuarioRegistra: this.usuario.idUsuario
 
     };
 
@@ -651,7 +676,7 @@ onSuccesscargarAnexos(data: any) {
 
     const payload = {
 		idAsunto: this.asuntoSeleccionado.idAsunto,
-		idUsuarioRegistra: 1,
+		idUsuarioRegistra: this.usuario.idUsuario,
 		anexos: anexosPayload
 
     };
@@ -659,5 +684,29 @@ onSuccesscargarAnexos(data: any) {
     return payload;
   }
 
+  async construirPayloadConcluirAsunto(): Promise<any> {
+    let documentoPayload = null;
+	let documentoConclusion = this.fileState.get('concluir');
+
+    if (documentoConclusion?.file) {
+      const base64 = await this.fileToBase64(documentoConclusion.file);
+      documentoPayload = {
+        fileName: documentoConclusion.name,
+        fileEncode64: base64,
+        size: documentoConclusion.file.size,
+        tipoDocumento: 'Conclusión',
+      };
+    }
+
+    const payload = {
+		idAsunto: this.asuntoSeleccionado.idAsunto,
+		folio: this.asuntoSeleccionado.folio,		   
+		documentos: [documentoPayload],		
+		idUsuarioRegistra: this.usuario.idUsuario
+
+    };
+
+    return payload;
+  }
 
 }

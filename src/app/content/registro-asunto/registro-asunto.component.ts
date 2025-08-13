@@ -46,7 +46,7 @@ export class RegistroAsuntoComponent {
 
   response: any = null;
   today = new Date().toISOString().split('T')[0];
-
+  usuario: any= null;
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -59,6 +59,7 @@ export class RegistroAsuntoComponent {
   ngOnInit(): void {
     /* session stuff */
     /* roles stuff */
+    this.usuario = JSON.parse(localStorage.getItem('session')!);
 
     this.consultarTipoDocumento();
     this.consultarTema();
@@ -102,7 +103,7 @@ export class RegistroAsuntoComponent {
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra: 1 /* falta!! */,
+      idUsuarioRegistra:  this.usuario.idUsuario /* falta!! */,
       usuarioRegistra: 'Andresillo' /* falta!! */,
       idUnidadAdministrativa: 1 /* falta */,
       unidadAdministrativa: 'Recursos Humanos',
