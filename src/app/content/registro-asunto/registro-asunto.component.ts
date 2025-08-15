@@ -103,8 +103,8 @@ export class RegistroAsuntoComponent {
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra:  this.usuario.idUsuario /* falta!! */,
-      usuarioRegistra: 'Andresillo' /* falta!! */,
+      idUsuarioRegistra:  this.usuario.idUsuario,
+      usuarioRegistra: this.usuario.nombreUsuario,
       idUnidadAdministrativa: 1 /* falta */,
       unidadAdministrativa: 'Recursos Humanos',
       observaciones: '',

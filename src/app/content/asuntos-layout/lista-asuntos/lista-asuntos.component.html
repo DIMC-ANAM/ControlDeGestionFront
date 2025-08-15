@@ -20,35 +20,39 @@
           <div class="col-md-4">
             <select class="form-control" [(ngModel)]="filtroEstado">
               <option value="">Todos los Estados</option>
-              <option value="pendiente">Registrado</option>
-              <option value="en_progreso">En trámite</option>
-              <option value="completado">Concluido</option>
+              <option value="1">Registrado</option>
+              <option value="2">En curso</option>
+              <option value="3">Concluido</option>
             </select>
           </div>
 
           <div class="col-md-4">
             <select class="form-control" [(ngModel)]="filtroPrioridad">
               <option value="">Todas las Prioridades</option>
-              <option value="alta">Alta</option>
-              <option value="media">Media</option>
-              <option value="baja">Baja</option>
+              <option value="3">Alta</option>
+              <option value="2">Media</option>
+              <option value="1">Baja</option>
             </select>
           </div>
 
           <div class="col-md-4">
             <select class="form-control" [(ngModel)]="filtroTema">
               <option value="">Todos los Temas</option>
-              <option *ngFor="let asunto of asuntos" [value]="asunto.Tema">{{ asunto.Tema }}</option>
+              <option *ngFor="let t of temaDS" [value]="t.idTema">{{ t.tema }}</option>
             </select>
           </div>
 
-          <div class="col-md-4">
-            <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio" />
+          <fieldset class="col-md-8">
+          <legend class="small fw-bold text-center">Rango de Fecha de registro</legend>
+          <div class="row ">
+            <div class="col-md-6">
+              <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio" placeholder="Fecha de inicio" />
+            </div>
+            <div class="col-md-6">
+              <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" placeholder="Fecha de fin" />
+            </div>
           </div>
-
-          <div class="col-md-4">
-            <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" />
-          </div>
+        </fieldset>
 
           <div class="col-md-4 pt-2 text-center">
           <button class="btn btn-outline-secondary btn-sm"
@@ -95,8 +99,8 @@
         </div>
 
           <div class="text-end">
-            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asunto.statusAsunto)">
-              <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.statusAsunto)"></i>
+            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asunto.idStatusAsunto)">
+              <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.idStatusAsunto)"></i>
               <span class="ms-1 ">
                 {{ asunto.statusAsunto }}
               </span>

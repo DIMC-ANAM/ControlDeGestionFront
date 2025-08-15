@@ -57,4 +57,7 @@ export class AsuntoService {
   concluirAsunto(data:any) {
     return this.http.post(this.urlBase + 'concluirAsunto', data);
   }
+  editarAsunto(data:any) {
+    return this.http.post(this.urlBase + 'editarAsunto', data);
+  }
 }

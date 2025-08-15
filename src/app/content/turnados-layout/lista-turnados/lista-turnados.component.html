@@ -93,17 +93,26 @@
         </div>
         
           <div class="text-end">
-            <!-- <span class="badge me-1" [ngClass]="colors.getEstadoColor(asunto.statusAsunto)">
-              <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.statusAsunto)"></i>
-              <span class="ms-1 ">
-                {{ asunto.statusAsunto.replace('_', ' ') }}
+            <span
+                            class="tooltip-wrapper down right text-uppercase me-2"
+                            [attr.data-tooltip]="'Prioridad ' + asunto.prioridad"
+                            >
+                            <i
+                                class="fas fa-star"
+                                [ngClass]="colors.getPrioridadColor(asunto.prioridad)"
+                            ></i>
               </span>
-            </span> -->
-
-            <span class="badge" [ngClass]="colors.getPrioridadColor(asunto.prioridad)">
-              <i class="fas fa-star me-1 small"></i>
-              {{ asunto.prioridad }}
+            <span class="badge me-1" [ngClass]="colors.getEstadoTurnadoColor(asunto.idStatusTurnado)">
+              <i class="fas" [ngClass]="colors.getEstadoTurnadoIcon(asunto.idStatusTurnado)"></i>
+              <span class="ms-1 ">
+                {{ asunto.statusTurnado }}
+              </span>
             </span>
+
+            <!-- <span class="badge" [ngClass]="colors.getPrioridadColor(asunto.prioridad)">
+              <i class="fas fa-star me-1 small"></i>
+             
+            </span> -->
           </div>
         </div>
       </div>

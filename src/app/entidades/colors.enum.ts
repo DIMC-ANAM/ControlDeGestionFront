@@ -1,9 +1,16 @@
 import { Injectable } from '@angular/core';
 
 export enum EstadoAsunto {
-  Registrado = 'Registrado',
-  EnCurso = 'En curso',
-  Concluido = 'Concluido'
+  Registrado = 1,
+  EnCurso = 2,
+  Concluido = 3
+}
+
+export enum EstadoTurnado {
+  Recibido = 1,
+  Visto = 2,
+  Atendido = 3,
+  Rechazado = 4
 }
 
 export enum PrioridadAsunto {
@@ -16,36 +23,67 @@ export enum PrioridadAsunto {
   providedIn: 'root'
 })
 export class ColorsEnum {
-  private readonly estadoStyles: Record<EstadoAsunto, { icon: string; colorClass: string }> = {
-    [EstadoAsunto.Registrado]: {
-      icon: 'fas fa-file',
+  private readonly estadoStyles: Record<string, { icon: string; colorClass: string }> = {
+    // EstadoAsunto
+    ['asunto:Registrado']: {
+      icon: 'fas fa-file-alt',
       colorClass: 'bg-deep-blue text-white'
     },
-    [EstadoAsunto.EnCurso]: {
+    ['asunto:EnCurso']: {
       icon: 'fas fa-clock',
       colorClass: 'bg-purple text-white'
     },
-    [EstadoAsunto.Concluido]: {
+    ['asunto:Concluido']: {
       icon: 'fas fa-check',
       colorClass: 'bg-success text-white'
+    },
+
+    // EstadoTurnado
+    ['turnado:Recibido']: {
+      icon: 'fas fa-file',
+      colorClass: 'bg-deep-blue text-white'
+    },
+    ['turnado:Visto']: {
+      icon: 'fas fa-clock',
+      colorClass: 'bg-purple text-white'
+    },
+    ['turnado:Atendido']: {
+      icon: 'fas fa-check',
+      colorClass: 'bg-success text-white'
+    },
+    ['turnado:Rechazado']: {
+      icon: 'fas fa-times',
+      colorClass: 'bg-secondary text-white'
     }
   };
 
   private readonly prioridadStyles: Record<PrioridadAsunto, { colorClass: string }> = {
-    [PrioridadAsunto.Alta]: { colorClass: 'bg-primary text-white' },
-    [PrioridadAsunto.Media]: { colorClass: 'bg-gold text-white' },
-    [PrioridadAsunto.Baja]: { colorClass: 'bg-secondary text-white' }
+    [PrioridadAsunto.Alta]: { colorClass: 'text-primary ' },/*  text-white */
+    [PrioridadAsunto.Media]: { colorClass: 'text-gold ' },/*  text-white */
+    [PrioridadAsunto.Baja]: { colorClass: 'text-success ' }/*  text-white */
   };
 
-  getEstadoIcon(estado: string): string {
-    return this.estadoStyles[estado as EstadoAsunto]?.icon || 'x-circle';
+  getEstadoIcon(idStatusAsunto: number): string {
+    const estado = EstadoAsunto[idStatusAsunto];
+    return estado ? this.estadoStyles[`asunto:${estado}`]?.icon || 'x-circle' : 'x-circle';
   }
 
-  getEstadoColor(estado: string): string {
-    return this.estadoStyles[estado as EstadoAsunto]?.colorClass || '';
+  getEstadoColor(idStatusAsunto: number): string {
+    const estado = EstadoAsunto[idStatusAsunto];
+    return estado ? this.estadoStyles[`asunto:${estado}`]?.colorClass || '' : '';
   }
 
-  getPrioridadColor(prioridad: string): string {
-    return this.prioridadStyles[prioridad as PrioridadAsunto]?.colorClass || '';
+  getEstadoTurnadoIcon(idStatusTurnado: number): string {
+    const estado = EstadoTurnado[idStatusTurnado];
+    return estado ? this.estadoStyles[`turnado:${estado}`]?.icon || 'x-circle' : 'x-circle';
+  }
+
+  getEstadoTurnadoColor(idStatusTurnado: number): string {
+    const estado = EstadoTurnado[idStatusTurnado];
+    return estado ? this.estadoStyles[`turnado:${estado}`]?.colorClass || '' : '';
+  }
+
+  getPrioridadColor(prioridad: PrioridadAsunto): string {
+    return this.prioridadStyles[prioridad]?.colorClass || '';
   }
 }

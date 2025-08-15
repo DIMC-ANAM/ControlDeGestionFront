@@ -9,7 +9,7 @@
       display: flex;
       height: 100vh;
       width: 100vw;
-      overflow: hidden; /* Evita scroll si hay superposición */
+      overflow: hidden; 
       position: relative;
       font-size: 22px!important;
       font-family: Noto Sans!important;
@@ -17,7 +17,7 @@
 
   }
 .left {
-  width: 53%;
+  width: 55%;
   background-image: 
     linear-gradient(#9f2241, #9f2241), 
     url('/img/pleca.png');

@@ -3,6 +3,7 @@ import { AsuntoService } from '../../../../api/asunto/asunto.service';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { ColorsEnum } from '../../../entidades/colors.enum';
+import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 
 @Component({
   selector: 'app-lista-asuntos',
@@ -23,9 +24,12 @@ export class ListaAsuntosComponent {
   asuntos:any[] = [];
   asuntoSeleccionadoItem: any = null;
 
+  temaDS: any[] = [];
+
 
   constructor(
     private asuntoApi: AsuntoService,
+    private catalogoApi: CatalogoService,
     private utils: UtilsService,
     public colors: ColorsEnum
   ){}
@@ -34,6 +38,7 @@ export class ListaAsuntosComponent {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.consultarAsuntosUR();
+    this.consultarTema();
   }
 
   seleccionarAsunto(id: number): void {
@@ -42,37 +47,53 @@ export class ListaAsuntosComponent {
   }
   
   get asuntosFiltrados() {
-    return this.asuntos.filter((a) => {
-      const texto = this.filtroTexto.toLowerCase();
-      const coincideTexto = Object.values(a).some((valor) => {
-        if (typeof valor === 'string') {
-          return valor.toLowerCase().includes(texto);
-        }
-        return false;
-      });
+  return this.asuntos.filter((a) => {
+    const texto = this.filtroTexto?.toLowerCase() || '';
+    const coincideTexto = texto
+      ? Object.values(a).some((valor) => {
+          if (typeof valor === 'string') {
+            return valor.toLowerCase().includes(texto);
+          }
+          return false;
+        })
+      : true;
 
-      const coincideEstado = this.filtroEstado
-        ? a.statusAsunto === this.filtroEstado
-        : true;
-      const coincidePrioridad = this.filtroPrioridad
-        ? a.prioridad === this.filtroPrioridad
-        : true;
-      const coincideTema = this.filtroTema ? a.Tema === this.filtroTema : true;
-      const coincideFecha =
-        (!this.filtroFechaInicio ||
-          new Date(a.fechaRegistro) >= this.filtroFechaInicio) &&
-        (!this.filtroFechaFin ||
-          new Date(a.fechaRegistro) <= this.filtroFechaFin);
+    // Convertimos filtros a número para comparar
+    const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
+    const filtroPrioridadNum = this.filtroPrioridad ? +this.filtroPrioridad : null;
 
-      return (
-        coincideTexto &&
-        coincideEstado &&
-        coincidePrioridad &&
-        coincideTema &&
-        coincideFecha
-      );
-    });
-  }
+    const coincideEstado = filtroEstadoNum !== null
+      ? a.idStatusAsunto === filtroEstadoNum
+      : true;
+
+    const coincidePrioridad = filtroPrioridadNum !== null
+      ? a.idPrioridad === filtroPrioridadNum
+      : true;
+
+    
+    const coincideTema = this.filtroTema
+      ? a.idTema === this.filtroTema || a.idTema === this.filtroTema
+      : true;
+
+    
+    const fechaRegistro = new Date(a.fechaRegistro);
+    const fechaInicio = this.filtroFechaInicio ? new Date(this.filtroFechaInicio) : null;
+    const fechaFin = this.filtroFechaFin ? new Date(this.filtroFechaFin) : null;
+
+    const coincideFecha =
+      (!fechaInicio || fechaRegistro >= fechaInicio) &&
+      (!fechaFin || fechaRegistro <= fechaFin);
+
+    return (
+      coincideTexto &&
+      coincideEstado &&
+      coincidePrioridad &&
+      coincideTema &&
+      coincideFecha
+    );
+  });
+}
+
 
   /* web services */
 
@@ -97,4 +118,23 @@ export class ListaAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Error,data.message);
     }
   }
+    consultarTema() {
+      this.catalogoApi
+        .consultarTema()
+        .subscribe(
+          (data) => {
+            this.onSuccessconsultarTema(data);
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+    }
+    onSuccessconsultarTema(data: any) {
+      if (data.status == 200) {
+        this.temaDS = data.model;
+      } else {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
 }

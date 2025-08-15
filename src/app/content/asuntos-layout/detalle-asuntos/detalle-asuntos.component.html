@@ -4,7 +4,19 @@
             <div class="p-3 border-bottom bg-white w-100 flex-shrink-0">
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div class="flex-grow-1 me-3" style="min-width: 0">
-                        <h2 class="fw-bold text-truncate">{{ asuntoSeleccionado.noOficio }}</h2>
+                        
+                        <div class="d-flex align-items-center mb-1">
+                            <span
+                            class="tooltip-wrapper down right text-uppercase me-2"
+                            [attr.data-tooltip]="'Prioridad ' + asuntoSeleccionado.prioridad"
+                            >
+                            <i
+                                class="fas fa-star"
+                                [ngClass]="colors.getPrioridadColor(asuntoSeleccionado.prioridad)"
+                            ></i>
+                            </span>
+                            <h2 class="fw-bold text-truncate mb-0">{{ asuntoSeleccionado.noOficio }}</h2>
+                        </div>
                         <div class="text-muted small fw-bold ">
                             <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de registro'"><i
                                     class="fas fa-calendar-day text-primary"></i></span>
@@ -19,16 +31,13 @@
                     </div>
                     <div class="text-end flex-shrink-0">
                         <div class="d-flex flex-column gap-1">
-                            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asuntoSeleccionado.statusAsunto)">
-                                <i class="fas" [ngClass]="colors.getEstadoIcon(asuntoSeleccionado.statusAsunto)"></i>
+                            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asuntoSeleccionado.idStatusAsunto)">
+                                <i class="fas" [ngClass]="colors.getEstadoIcon(asuntoSeleccionado.idStatusAsunto)"></i>
                                 <span class="ms-1 ">
                                     {{ asuntoSeleccionado.statusAsunto }}
                                 </span>
-                                </span>
-                            <span class="badge" [ngClass]="this.colors.getPrioridadColor(asuntoSeleccionado.prioridad)">
-                                <i class="fas fa-star me-1 small"></i>
-                                {{ asuntoSeleccionado.prioridad }}
                             </span>
+                            
                         </div>
                     </div>
                 </div>
@@ -40,9 +49,9 @@
                     
                 </div>
             </div>
-            <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill" role="tablist">
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
+                <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill " role="tablist" >
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
                         (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
                         <i class="fas fa-file-alt me-2"></i> Detalles
                     </button>
@@ -61,40 +70,40 @@
                 </li>
                 <li class="nav-item" role="presentation">
                     <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
-                        (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
-                        <i class="fas fa-clock me-2"></i> Historial
-                    </button>
-                </li>
-            </ul>
+                    (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
+                    <i class="fas fa-clock me-2"></i> Historial
+                </button>
+            </li>
+        </ul>
 
             <!-- Contenido de tabs con scroll -->
-            <div class="flex-grow-1 p-4 overflow-auto">
+            <div class="flex-grow-1 p-4 overflow-auto" >
                 <!-- Detalles -->
-                <div *ngIf="tabActiva === 'detalles'">
+                <div *ngIf="tabActiva === 'detalles'" style="margin-top: -15px;">
                     <!-- Información General -->
+                   <span style="left: 99%; top: 20px; position: sticky; z-index: 3;"  class="tooltip-wrapper down center" [attr.data-tooltip]="'Guardar'"><i role="button" class=" destello  text-success fas fa-save  fa-2x me-2"*ngIf="asuntoSeleccionadoModificado" (click)="guardarCambios()"></i></span>  <!-- y guardar -->                
                     <div class="section">
                         <div class="section-header d-flex ">
                             <i class="fas fa-file-alt"></i>
                             <h6 class="fw-bold mb-0">Información General</h6>
-                            <div class="btn btn-outline-secondary btn-sm" (click)="editar= !editar">
+                            <div class="btn btn-outline-secondary btn-sm" (click)="editar= !editar;">
                                 <i class="fas fa-edit me-2"></i> Editar
                             </div>
-
-                            <i style="left: 2px;" class="text-success fas fa-save  fa-2x me-2"*ngIf="asuntoSeleccionadoModificado" (click)="asuntoSeleccionadoModificado= !asuntoSeleccionadoModificado"></i> <!-- y guardar -->
-                            
                         </div>
+                        
 
                         <div class="row">
                             <div class="col-md-4 ">
                                 <div class="field">
                                     <label>Tipo de Documento:</label>
                                     <ng-container *ngIf="editar; else tipoDocumentoView">
-                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.tipoDocumento" class="editControl">
-                                            <option *ngFor="let tipo of ['Carta']" [value]="tipo">{{ tipo }}</option>
+                                        <select id="idTipoDocumento" class="form-control" [(ngModel)]="asuntoSeleccionado.idTipoDocumento" (ngModelChange)="asuntoSeleccionadoModificado = true"
+                                            >
+                                            <option *ngFor="let t of tipoDocumentoDS" [value]="t.idTipoDocumento">{{ t.tipoDocumento }}</option>
                                         </select>
                                     </ng-container>
                                     <ng-template #tipoDocumentoView>
-                                        <div>{{ asuntoSeleccionado.tipoDocumento }}</div>
+                                        <div>{{encontrarPorId(tipoDocumentoDS, 'idTipoDocumento', asuntoSeleccionado.idTipoDocumento,'tipoDocumento') || ''}}</div>
                                     </ng-template>
                                 </div>
                             </div>
@@ -145,12 +154,14 @@
                                 <div class="field">
                                     <label>Tema:</label>
                                     <ng-container *ngIf="editar; else temaView">
-                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.Tema" class="editControl">
-                                            <option *ngFor="let tema of ['tema']" [value]="tema">{{ tema }}</option>
+                                        <select id="idTema" class="form-control" [(ngModel)]="asuntoSeleccionado.idTema"> (ngModelChange)="asuntoSeleccionadoModificado = true"
+                                             >
+                                            
+                                            <option *ngFor="let t of temaDS" [value]="t.idTema">{{ t.tema }}</option>
                                         </select>
                                     </ng-container>
                                     <ng-template #temaView>
-                                        <div>{{ asuntoSeleccionado.Tema }}</div>
+                                        <div>{{encontrarPorId(temaDS, 'idTema', asuntoSeleccionado.idTema,'tema') || ''}}</div>
                                     </ng-template>
                                 </div>
                             </div>
@@ -160,7 +171,15 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Cumplimiento:</label>
-                                    <div>{{ asuntoSeleccionado.fechaCumplimiento | date }}</div>
+                                    <ng-container *ngIf="editar; else fechaCumplimientoView">
+                                        <input type="datetime-local" 
+                                        [ngModel]="getFechaHoraLocal('fechaCumplimiento')"
+                                         (ngModelChange)="setFechaHoraLocal('fechaCumplimiento', $event)"
+                                            class="editControl" />
+                                    </ng-container>
+                                    <ng-template #fechaCumplimientoView>
+                                        <div>{{ asuntoSeleccionado.fechaCumplimiento | fechaMexico:true }} {{asuntoSeleccionado.fechaCumplimiento ? 'hrs':''}}</div>
+                                    </ng-template>
                                 </div>
                             </div>
 
@@ -197,7 +216,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Registro:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRegistro | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaRegistro | fechaMexico }}</div>
                                 </div>
                             </div>
                         </div>
@@ -207,11 +226,13 @@
                                 <div class="field">
                                     <label>Fecha del Documento:</label>
                                     <ng-container *ngIf="editar; else fechaDocumentoView">
-                                        <input type="date" (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.fechaDocumento"
+                                        <input type="date" 
+                                        [ngModel]="getFechaSoloFecha('fechaDocumento')"
+                                        (ngModelChange)="setFechaSoloFecha('fechaDocumento', $event)"
                                             class="editControl" />
                                     </ng-container>
                                     <ng-template #fechaDocumentoView>
-                                        <div>{{ asuntoSeleccionado.fechaDocumento | date: 'longDate' }}</div>
+                                        <div>{{ asuntoSeleccionado.fechaDocumento | fechaMexico }}</div>
                                     </ng-template>
                                 </div>
                             </div>
@@ -245,7 +266,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Recepción:</label>
-                                    <div>{{ asuntoSeleccionado.fechaRecepcion | date }}</div>
+                                    <div>{{ asuntoSeleccionado.fechaRecepcion | fechaMexico }}</div>
                                 </div>
                             </div>
 
@@ -337,13 +358,14 @@
                                 <div class="field">
                                     <label>Medio:</label>
                                     <ng-container *ngIf="editar; else medioView">
-                                        <select (ngModelChange)="asuntoSeleccionadoModificado = true" [(ngModel)]="asuntoSeleccionado.medio" class="editControl">
-                                            <option *ngFor="let medio of ['medios']" [value]="medio">{{ medio }}
-                                            </option>
+                                        <select id="idMedio" class="form-control" [(ngModel)]="asuntoSeleccionado.idMedio" (ngModelChange)="asuntoSeleccionadoModificado = true">
+                                             
+                                            <option value="null" disabled selected>Seleccione</option>
+                                            <option *ngFor="let t of medioDS" [value]="t.idMedioRecepcion">{{ t.medioRecepcion }}</option>
                                         </select>
                                     </ng-container>
                                     <ng-template #medioView>
-                                        <div>{{ asuntoSeleccionado.medio }}</div>
+                                        <div>{{encontrarPorId(medioDS, 'idMedioRecepcion', asuntoSeleccionado.idMedio,'medioRecepcion') || ''}} </div>
                                     </ng-template>
                                 </div>
                             </div>
@@ -778,7 +800,7 @@
             <div class="pdf-info">
                 <strong>Archivo:</strong> {{documentoVisor.nombre}} |
                 <strong>Tamaño:</strong> {{documentoVisor.size}} bytes|
-                <strong>Última modificación: </strong>{{documentoVisor.fechaRegistro }} |
+                <strong>Última modificación: </strong>{{documentoVisor.fechaRegistro | fechaMexico }} |
                 <strong>Tipo: </strong>{{documentoVisor.type || null }}
             </div>
         </div>

@@ -36,8 +36,15 @@ export class DetalleAsuntosComponent {
   agregarAnexoForm!: FormGroup;
 
   unidadesResponsablesDS: any[] = [];
-
   instruccionesDS: any[] = [];
+
+  tipoDocumentoDS: any[] = [];
+  temaDS: any[] = [];
+  medioDS: any[] = [];
+  
+
+
+
   turnados: any[] = []; /* turnados por cargar */
   turnadosAsunto: any[] = [];
 
@@ -75,6 +82,9 @@ export class DetalleAsuntosComponent {
     this.usuario = JSON.parse(localStorage.getItem('session')!);
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();
+      this.consultarTipoDocumento();
+    this.consultarTema();
+    this.consultarMedioRecepcion();
   }
 
   ngOnChanges() {
@@ -82,6 +92,8 @@ export class DetalleAsuntosComponent {
       this.consultarDetallesAsunto(this.idAsunto);
       this.consultarExpedienteAsunto(this.idAsunto);
       this.consultarTurnadosAsunto(this.idAsunto);
+      this.asuntoSeleccionadoModificado = false;
+      this.editar = false;
       /*this.consultarHistorialAsunto(this.idAsunto); */
     }
   }
@@ -496,6 +508,63 @@ export class DetalleAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
   }
+  consultarTipoDocumento() {
+    this.catalogoApi
+      .consultarTipoDocumento()
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarTipoDocumento(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarTipoDocumento(data: any) {
+    if (data.status == 200) {
+      this.tipoDocumentoDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarTema() {
+    this.catalogoApi
+      .consultarTema()
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarTema(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarTema(data: any) {
+    if (data.status == 200) {
+      this.temaDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarMedioRecepcion() {
+    this.catalogoApi
+      .consultarMedioRecepcion()
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarMedioRecepcion(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarMedioRecepcion(data: any) {
+    if (data.status == 200) {
+      this.medioDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
   turnarAsunto() {
     this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
       (data) => {
@@ -708,5 +777,95 @@ onSuccesscargarAnexos(data: any) {
 
     return payload;
   }
+
+   encontrarPorId(lista: any[], campo: string, valor: number,target:string): string | undefined {
+      return lista.find(item => item[campo] == valor)?.[target] as string | undefined;
+    }
+
+  guardarCambios(){
+    let payload = {
+      idAsunto: this.asuntoSeleccionado.idAsunto,
+      idTipoDocumento: this.asuntoSeleccionado.idTipoDocumento,
+      idTema: this.asuntoSeleccionado.idTema,
+      noOficio: this.asuntoSeleccionado.noOficio,
+      idMedio: this.asuntoSeleccionado.idMedio,
+      observaciones: this.asuntoSeleccionado.observaciones,
+      descripcionAsunto: this.asuntoSeleccionado.descripcionAsunto,
+      idUsuarioModifica: this.usuario.idUsuario,
+      fechaCumplimiento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaCumplimiento),
+      fechaDocumento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaDocumento),
+      remitenteNombre: this.asuntoSeleccionado.remitenteNombre,
+      remitenteCargo: this.asuntoSeleccionado.remitenteCargo,
+      remitenteDependencia: this.asuntoSeleccionado.remitenteDependencia,
+      dirigidoA: this.asuntoSeleccionado.dirigidoA,
+      dirigidoACargo: this.asuntoSeleccionado.dirigidoACargo
+
+    }
+    this.asuntoApi.editarAsunto(payload).subscribe(
+        (data) => {
+          this.onSuccesseditarAsunto(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccesseditarAsunto(data:any){
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.asuntoSeleccionadoModificado = false;
+      this.editar = false;
+      this.consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+  }
+  
+getFechaSoloFecha(key: keyof typeof this.asuntoSeleccionado): string {
+  const fecha = this.asuntoSeleccionado?.[key];
+  if (!fecha) return '';
+
+  // Puede venir con espacio ' ' o 'T', separar y tomar solo fecha
+  if (fecha.includes('T')) {
+    return fecha.split('T')[0];
+  }
+  if (fecha.includes(' ')) {
+    return fecha.split(' ')[0];
+  }
+  return fecha; // ya solo fecha
+}
+setFechaSoloFecha(key: keyof typeof this.asuntoSeleccionado, nuevaFecha: string): void {
+  if (!nuevaFecha) return;
+
+  // Asumimos que la hora será 00:00:00 para completar el timestamp
+  const valorCompleto = `${nuevaFecha} 00:00:00`;
+
+  this.asuntoSeleccionado[key] = valorCompleto;
+  this.asuntoSeleccionadoModificado = true;
+}
+
+getFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado): string {
+  const fechaISO = this.asuntoSeleccionado?.[key];
+  if (!fechaISO) return '';
+
+  // Extraemos directamente 'YYYY-MM-DDTHH:mm' sin conversión de zona horaria
+  return fechaISO.substring(0, 16);
+}
+
+setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): void {
+  if (!valor) return;
+
+  // Convertimos 'YYYY-MM-DDTHH:mm' a 'YYYY-MM-DD HH:mm:00' para el timestamp
+  const valorParaGuardar = valor.replace('T', ' ') + ':00';
+
+  this.asuntoSeleccionado[key] = valorParaGuardar;
+  this.asuntoSeleccionadoModificado = true;
+}
+
+ formatearFechaParaBD(fechaISO: string): string {
+  if (!fechaISO) return '';
+  // Quita la 'T' y la 'Z', y corta los milisegundos
+  return fechaISO.replace('T', ' ').substring(0, 19);
+}
 
 }
