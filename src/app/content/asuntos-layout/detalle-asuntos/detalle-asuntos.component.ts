@@ -67,6 +67,9 @@ export class DetalleAsuntosComponent {
 
   documentoPrincipal: any = null;
   anexos: any[] = [];
+  respuestasDocs: any[] = [];
+  documentoConclusion: any = null;
+
 
   constructor(
     private fb: FormBuilder,
@@ -416,18 +419,28 @@ export class DetalleAsuntosComponent {
       },
       (ex) => {
         this.documentoPrincipal = null;
+        this.documentoConclusion = null;
         this.anexos = [];
+        this.respuestasDocs = [];
         if (muestraToast) this.utils.MuestraErrorInterno(ex);
       }
     );
   }
   onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
     if (data.status == 200) {
-      this.documentoPrincipal = data.model.documento;
+      this.documentoPrincipal = data.model.documentos.find(
+        (doc:any) => doc.tipoDocumento === 'Documento principal'
+      );
+      this.documentoConclusion = data.model.documentos.find(
+        (doc:any) => doc.tipoDocumento === 'Conclusión'
+      );
       this.anexos = data.model.anexos;
+      this.respuestasDocs = data.model.respuestas;
     } else {
       this.documentoPrincipal = null;
+      this.documentoConclusion = null;
       this.anexos = [];
+      this.respuestasDocs = [];
       if (muestraToast)
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }

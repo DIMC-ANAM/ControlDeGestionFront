@@ -24,7 +24,7 @@
   /* text overflow ellipsis */
     max-width: 100%;
     word-wrap: break-word;
-    overflow: hidden; 
+    
     cursor: pointer;
     
   &:hover {
@@ -51,4 +51,26 @@ input, select {
   font-size: small;
   cursor: pointer;
   color: var(--color-gray-dark);
+}
+
+fieldset {
+  border: 1px solid #ccc;
+  padding: 0 0.2rem 0 1.5rem;
+  border-radius: 0.5rem;
+  position: relative;
+  margin-top: 1rem;
+}
+
+legend {
+  position: inherit;
+  top: -17px!important;
+  width: auto;
+  padding: 0 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #757575;
+  margin-bottom: 0;
+  text-align: center;
+  background-color: white;
+
 }

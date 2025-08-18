@@ -20,6 +20,7 @@ import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 export class DetalleTurnadosComponent {
   
 @Input() asuntoInput: any | null = null;
+baseurl = environment.baseurl;
 
   @ViewChild('responderModal', { static: true }) responderModal!: TemplateRef<any>;
   @ViewChild('rechazarModal', { static: true }) rechazarModal!: TemplateRef<any>;
@@ -47,6 +48,8 @@ export class DetalleTurnadosComponent {
 
   documentoPrincipal: any = null;
   anexos: any[] = [];
+  respuestasDocs: any[] = [];
+  documentoConclusion: any = null;
 
 
     constructor(
@@ -251,31 +254,39 @@ export class DetalleTurnadosComponent {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
     }
-    consultarExpedienteAsunto(id:number,muestraToast:boolean = false) {
-
-        this.asuntoApi.consultarExpedienteAsunto({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
-          },
-          (ex) => {
-            this.documentoPrincipal = null;
-            this.anexos =[];
-           if  (muestraToast ) this.utils.MuestraErrorInterno(ex);
-          } 
-        );
-        
+      consultarExpedienteAsunto(id: number, muestraToast: boolean = false) {
+    this.asuntoApi.consultarExpedienteAsunto({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
+      },
+      (ex) => {
+        this.documentoPrincipal = null;
+        this.documentoConclusion = null;
+        this.anexos = [];
+        this.respuestasDocs = [];
+        if (muestraToast) this.utils.MuestraErrorInterno(ex);
       }
-      onSuccessconsultarExpedienteAsunto(data: any, muestraToast:boolean) {
-        if (data.status == 200) {
-          this.documentoPrincipal = data.model.documento
-          this.anexos = data.model.anexos
-        } else {
-          this.documentoPrincipal = null;
-          this.anexos =[];
-          if  (muestraToast )this.utils.MuestrasToast(TipoToast.Warning, data.message);
-        
-      }
+    );
+  }
+  onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
+    if (data.status == 200) {
+      this.documentoPrincipal = data.model.documentos.find(
+        (doc:any) => doc.tipoDocumento === 'Documento principal'
+      );
+      this.documentoConclusion = data.model.documentos.find(
+        (doc:any) => doc.tipoDocumento === 'Conclusión'
+      );
+      this.anexos = data.model.anexos;
+      this.respuestasDocs = data.model.respuestas;
+    } else {
+      this.documentoPrincipal = null;
+      this.documentoConclusion = null;
+      this.anexos = [];
+      this.respuestasDocs = [];
+      if (muestraToast)
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
+  }
 
     consultarHistorialAsunto(id:number) {
 

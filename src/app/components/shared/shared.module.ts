@@ -5,6 +5,7 @@ import { SidebarComponent } from './sidebar/sidebar.component';
 import { ModalComponent } from './modal/modal.component';
 import { NgbModalModule } from '@ng-bootstrap/ng-bootstrap';
 import { FechaMexicoPipe } from '../../pipes/date-mx-format';
+import { SizeFormatPipe } from '../../pipes/size-files-format';
 /* local mx date */
 import localeEsMx from '@angular/common/locales/es-MX';
 import { GraficasComponent } from './graficas/graficas.component';
@@ -17,7 +18,8 @@ registerLocaleData(localeEsMx, 'es-MX');
     ModalComponent,
     FechaMexicoPipe,
     GraficasComponent,
-    LoaderComponent
+    LoaderComponent,
+    SizeFormatPipe
   ],
   imports: [
     CommonModule,
@@ -29,7 +31,8 @@ registerLocaleData(localeEsMx, 'es-MX');
     ModalComponent,
     FechaMexicoPipe,
     GraficasComponent,
-    LoaderComponent
+    LoaderComponent,
+    SizeFormatPipe
   ],
 })
 export class SharedModule { }

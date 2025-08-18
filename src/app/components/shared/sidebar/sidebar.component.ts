@@ -39,7 +39,7 @@ export class SidebarComponent implements OnInit {
     {
       id: 'consultarAsuntos',
       label: 'Asuntos registrados',
-      icon: 'fas fa-file-alt',
+      icon: 'fas fa-file-import',
       link: '/consultar-asuntos',
       rol: [2],
     },

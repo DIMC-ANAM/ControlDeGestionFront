@@ -9,55 +9,63 @@
 
     <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
 
-    <div class="p-2 bg-light">
-      <div class="row pb-3">
-        <div class="col-md-12">
-          <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto" />
+          <div class="p-2 bg-light">
+        <div class="row pb-3">
+          <div class="col-md-12">
+            <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto" />
+          </div>
+        </div>
+
+        <div class="row g-3 p-1">
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroEstado">
+              <option value="">Todos los estatus</option>
+              <option value="1">Recibido</option>
+              <option value="2">En visto</option>
+              <option value="3">Atendido</option>
+              <option value="4">Rechazado</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroPrioridad">
+              <option value="">Todas las prioridades</option>
+              <option value="3">Alta</option>
+              <option value="2">Media</option>
+              <option value="1">Baja</option>
+            </select>
+          </div>
+
+          <div class="col-md-4">
+            <select class="form-control" [(ngModel)]="filtroTema">
+              <option value="">Todos los temas</option>
+              <option *ngFor="let t of temaDS" [value]="t.idTema">{{ t.tema }}</option>
+            </select>
+          </div>
+
+          <fieldset class="p-2 col-md-8 custom-fieldset">
+          <legend class="custom-legend">Fecha de turnado</legend>
+          <div class="row d-flex justify-content-around align-items-center">
+            <div class="col-md-5 w-40 ">
+              <input type="date" class="form-control " [(ngModel)]="filtroFechaInicio" placeholder="Fecha de inicio" />
+            </div>
+            <div class="col-md-1 small"><i class="fas fa-long-arrow-right"></i></div>
+            <div class="col-md-5 w-40">
+              <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" placeholder="Fecha de fin" />
+            </div>
+          </div>
+        </fieldset>
+
+
+
+          <div class="col-md-4 d-flex justify-content-center align-items-center">
+          <button class="btn btn-outline-secondary btn-sm"
+                (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
+                <i class="fas fa-filter me-2"></i> Limpiar Filtros
+              </button>
+          </div>
         </div>
       </div>
-
-      <div class="row g-3 p-2">
-        <div class="col-md-4">
-          <select class="form-control" [(ngModel)]="filtroEstado">
-            <option value="">Todos los Estados</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="en_progreso">En Progreso</option>
-            <option value="completado">Completado</option>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <select class="form-control" [(ngModel)]="filtroPrioridad">
-            <option value="">Todas las Prioridades</option>
-            <option value="alta">Alta</option>
-            <option value="media">Media</option>
-            <option value="baja">Baja</option>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <select class="form-control" [(ngModel)]="filtroTema">
-            <option value="">Todos los Temas</option>
-            <option *ngFor="let asunto of turnados" [value]="asunto.Tema">{{ asunto.Tema }}</option>
-          </select>
-        </div>
-
-        <div class="col-md-4">
-          <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio" />
-        </div>
-
-        <div class="col-md-4">
-          <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" />
-        </div>
-
-        <div class="col-md-4 pt-2 text-center">
-         <button class="btn btn-outline-secondary btn-sm"
-              (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
-              <i class="fas fa-filter me-2"></i> Limpiar Filtros
-            </button>
-        </div>
-      </div>
-    </div>
   </div>
 
   <!-- Lista de tarjetas -->
@@ -74,20 +82,21 @@
             {{ asunto.folio }}
           </p>
 
-           <div class="d-flex align-items-center  text-muted small">
-            <i class="fas fa-layer-group me-2 text-secondary"></i>
+           <div class="d-flex align-items-center text-muted small">
+            <span class="tooltip-wrapper up center" [attr.data-tooltip]="'Tema'"><i class="fas fa-table-list me-2 text-secondary"></i></span>
             <span class="text-truncate">{{ asunto.Tema }}</span>
           </div>
-
-          <div class="d-flex align-items-center  text-muted small">
-            <i class="fas fa-file-alt me-2 text-secondary"></i>
+          <div class="d-flex align-items-center text-muted small">
+            <span class="tooltip-wrapper up end" [attr.data-tooltip]="'Tipo de documento'"><i class="fas fa-file-alt me-2 text-secondary"></i></span>
             <span class="text-truncate">{{ asunto.tipoDocumento }}</span>
           </div>
 
           
-          <div class="d-flex align-items-center  text-muted small mt-1">
-            <i class="fas fa-calendar-alt me-2 text-secondary"></i>
-            <span>{{ asunto.fechaTurnado | fechaMexico }}</span>
+          <div class="d-flex align-items-center  text-muted small " >
+            <span class="tooltip-wrapper down right" [attr.data-tooltip]="'Fecha de turnado'">
+              <i class="fas fa-calendar-alt me-2 text-secondary"></i>
+              <span  >{{ asunto.fechaTurnado | fechaMexico }}</span>
+            </span>
           </div>
          
         </div>

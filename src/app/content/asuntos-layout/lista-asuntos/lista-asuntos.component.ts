@@ -47,51 +47,55 @@ export class ListaAsuntosComponent {
   }
   
   get asuntosFiltrados() {
-  return this.asuntos.filter((a) => {
-    const texto = this.filtroTexto?.toLowerCase() || '';
-    const coincideTexto = texto
-      ? Object.values(a).some((valor) => {
-          if (typeof valor === 'string') {
-            return valor.toLowerCase().includes(texto);
-          }
-          return false;
-        })
-      : true;
+    return this.asuntos.filter((a) => {
+      const texto = this.filtroTexto?.toLowerCase() || '';
+      const coincideTexto = texto
+        ? Object.values(a).some((valor) => {
+            if (typeof valor === 'string') {
+              return valor.toLowerCase().includes(texto);
+            }
+            return false;
+          })
+        : true;
 
-    // Convertimos filtros a número para comparar
-    const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
-    const filtroPrioridadNum = this.filtroPrioridad ? +this.filtroPrioridad : null;
+      const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
+      const filtroPrioridadNum = this.filtroPrioridad ? +this.filtroPrioridad : null;
 
-    const coincideEstado = filtroEstadoNum !== null
-      ? a.idStatusAsunto === filtroEstadoNum
-      : true;
+      const coincideEstado = filtroEstadoNum !== null
+        ? a.idStatusAsunto === filtroEstadoNum
+        : true;
 
-    const coincidePrioridad = filtroPrioridadNum !== null
-      ? a.idPrioridad === filtroPrioridadNum
-      : true;
+      const coincidePrioridad = filtroPrioridadNum !== null
+        ? a.idPrioridad === filtroPrioridadNum
+        : true;
 
-    
-    const coincideTema = this.filtroTema
-      ? a.idTema === this.filtroTema || a.idTema === this.filtroTema
-      : true;
+      const coincideTema = this.filtroTema
+        ? a.idTema === this.filtroTema
+        : true;
 
-    
-    const fechaRegistro = new Date(a.fechaRegistro);
-    const fechaInicio = this.filtroFechaInicio ? new Date(this.filtroFechaInicio) : null;
-    const fechaFin = this.filtroFechaFin ? new Date(this.filtroFechaFin) : null;
+      const fechaRegistro = new Date(a.fechaRegistro);
+      const fechaInicio = this.filtroFechaInicio ? new Date(this.filtroFechaInicio) : null;
+      const fechaFin = this.filtroFechaFin ? new Date(this.filtroFechaFin) : null;
 
-    const coincideFecha =
-      (!fechaInicio || fechaRegistro >= fechaInicio) &&
-      (!fechaFin || fechaRegistro <= fechaFin);
+      const registroDateOnly = this.toDateOnly(fechaRegistro);
+    const inicioDateOnly = fechaInicio ? this.toDateOnly(fechaInicio) : null;
+    const finDateOnly = fechaFin ? this.toDateOnly(fechaFin) : null;
 
-    return (
-      coincideTexto &&
-      coincideEstado &&
-      coincidePrioridad &&
-      coincideTema &&
-      coincideFecha
-    );
-  });
+
+      const coincideFecha = (!inicioDateOnly || registroDateOnly >= inicioDateOnly) && (!finDateOnly || registroDateOnly <= finDateOnly);
+
+      return (
+        coincideTexto &&
+        coincideEstado &&
+        coincidePrioridad &&
+        coincideTema &&
+        coincideFecha
+      );
+    });
+  }
+
+toDateOnly(date: Date): string {
+  return date.toISOString().split('T')[0]; // '2025-08-14'
 }
 
 

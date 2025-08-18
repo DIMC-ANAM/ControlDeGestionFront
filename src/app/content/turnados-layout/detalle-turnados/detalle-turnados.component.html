@@ -149,7 +149,10 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Cumplimiento:</label>
-                                    <div>{{ turnadoSeleccionado.fechaCumplimiento | fechaMexico }}</div>
+                                    <div>
+                                        <span *ngIf="turnadoSeleccionado.fechaCumplimiento as fecha; else NoFecha">{{ fecha | fechaMexico:true }} hrs</span>
+                                        <ng-template #NoFecha>Sin fecha de cumplimiento</ng-template>
+                                    </div>
                                 </div>
                             </div>
 
@@ -186,7 +189,7 @@
                             <div class="col-md-4">
                                 <div class="field">
                                     <label>Fecha de Registro:</label>
-                                    <div>{{ turnadoSeleccionado.fechaRegistro | fechaMexico }}</div>
+                                    <div>{{ turnadoSeleccionado.fechaRegistro | fechaMexico:true }}</div>
                                 </div>
                             </div>
                         </div>
@@ -298,15 +301,12 @@
 
 
                 <!-- Expediente -->
-                <div *ngIf="tabActiva === 'expediente'">
-                    <div class="p-4">
+               <div *ngIf="tabActiva === 'expediente'">
+                        <div class="p-4">
                             <!-- Documento principal -->
                             <div class="mb-4">
                                 <div class="d-flex justify-content-between align-items-center mb-2">
-                                    <h6 class="fw-bold mb-0">Documento Principal</h6>
-                                    <!-- <button class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
-                                        <i class="fas fa-upload me-2"></i> Reemplazar Documento
-                                    </button> -->
+                                    <h6 class="fw-bold mb-0">Documento Principal</h6>                                   
                                 </div>
 
                                 <div *ngIf="documentoPrincipal!=null" class="card p-3 d-flex flex-row justify-content-between align-items-center">
@@ -314,9 +314,9 @@
                                         <i class="fas fa-file-alt fa-2x text-primary"></i>
                                         <div>
                                             <div class="fw-semibold">{{ documentoPrincipal.nombre }}</div>
-                                            <div class="text-muted small">
-                                                {{ documentoPrincipal.type }} • {{
-                                                documentoPrincipal.size
+                                            <div class="text-muted small text-uppercase">
+                                               {{ documentoPrincipal.nombre?.split('.').pop() }} • {{
+                                                documentoPrincipal.size | sizeFormat
                                                 }}
                                             </div>
                                         </div>
@@ -327,9 +327,17 @@
 
                                             <i class="fas fa-eye"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-light">
-                                            <i class="fas fa-download"></i>
-                                        </button>
+                                        <a  target="_blank" href = "{{baseurl + documentoPrincipal.ruta}}" download> 
+                                            <button class="btn btn-sm btn-light" >
+                                                <i class="fas fa-download"></i>
+                                            </button>                                         
+                                        </a>
+                                        <!-- <button class="btn btn-sm btn-light"
+                                            (click)="eliminarDocumento(documentoPrincipal.idDocumentoAsunto)">
+
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button> -->
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -340,9 +348,7 @@
                             <div>
                                 <div class="d-flex justify-content-between align-items-center mb-2">
                                     <h6 class="fw-bold mb-0">Anexos</h6>
-                                    <!-- <button class="btn btn-sm btn-outline-success" (click)="openagregarAnexosModal()">
-                                        <i class="fas fa-plus me-2"></i> Agregar Anexos
-                                    </button> -->
+                                    
                                 </div>
 
                                 <div *ngIf="anexos.length > 0; else sinAnexos">
@@ -352,7 +358,7 @@
                                                 <i class="fas fa-paperclip fa-lg text-secondary"></i>
                                                 <div>
                                                     <div class="fw-semibold">{{ anexo.nombre }}</div>
-                                                    <div class="text-muted small">{{ anexo.type  || "PDF" }} • {{ anexo.size }}
+                                                    <div class="text-muted small text-uppercase">{{ anexo.nombre?.split('.').pop() }} • {{ anexo.size | sizeFormat }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -361,20 +367,107 @@
                                                     (click)="openDocumentoVisor(anexo)">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-light">
+                                                <a  target="_blank" href = "{{baseurl + anexo.ruta}}" download> 
+                                                    <button class="btn btn-sm btn-light" >
                                                     <i class="fas fa-download"></i>
-                                                </button>
+                                                </button>                                         
+                                                </a>
+
+                                               
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <ng-template #sinAnexos>
-                                    <p class="text-muted">No hay anexos disponibles para este asunto.</p>
+                                    <p class="text-muted">No hay anexos para este asunto.</p>
                                 </ng-template>
                             </div>
+                            <hr>
+
+                            <!-- Respuestas turnados -->
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Respuestas </h6>                                    
+                                </div>
+
+                                <div *ngIf="respuestasDocs.length > 0; else sinRespuestas">
+                                    <div class="card mb-2 p-3" *ngFor="let respuesta of respuestasDocs">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center gap-3">
+                                                <i class="fas fa-paperclip fa-lg text-secondary"></i>
+                                                <div>
+                                                    <div class="fw-semibold">{{ respuesta.nombre }}</div>
+                                                    <div class="text-muted small text-uppercase">{{ respuesta.nombre?.split('.').pop() }} • {{ respuesta.size  | sizeFormat}}</div>
+                                                    <div class="text-muted small">Turnado No. {{ respuesta.consecutivoTurnado  }} </div>
+                                                </div>
+                                            </div>
+                                            <div class="d-flex gap-2">
+                                                <button class="btn btn-sm btn-light"
+                                                    (click)="openDocumentoVisor(respuesta)">
+                                                    <i class="fas fa-eye"></i>
+                                                </button>
+                                                <a  target="_blank" href = "{{baseurl + respuesta.ruta}}" download> 
+                                                    <button class="btn btn-sm btn-light" >
+                                                    <i class="fas fa-download"></i>
+                                                </button>                                         
+                                                </a>                                               
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <ng-template #sinRespuestas>
+                                    <p class="text-muted">Todavía no  hay respuestas disponibles para este asunto.</p>
+                                </ng-template>
+
+                                <hr>
+                                <!-- Documento conclusion -->
+                            <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0">Documento de conclusión</h6>
+                                    <!-- <div role="button" class="btn btn-sm btn-outline-success" (click)="openReemplazarModal()">
+                                        <i class="fas fa-upload me-2"></i> Reemplazar Documento
+                                    </div > -->
+                                </div>
+
+                                <div *ngIf="documentoConclusion!=null" class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-file-signature fa-2x text-primary"></i>
+                                        <div>
+                                            <div class="fw-semibold">{{ documentoConclusion.nombre }}</div>
+                                            <div class="text-muted small text-uppercase">
+                                                {{ documentoConclusion.nombre?.split('.').pop() }} • {{
+                                                documentoConclusion.size | sizeFormat
+                                                }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light"
+                                            (click)="openDocumentoVisor(documentoConclusion)">
+
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a  target="_blank" href = "{{baseurl + documentoConclusion.ruta}}" download> 
+                                            <button class="btn btn-sm btn-light" >
+                                                <i class="fas fa-download"></i>
+                                            </button>                                         
+                                        </a>
+                                        <!-- <button class="btn btn-sm btn-light"
+                                            (click)="eliminarDocumento(documentoPrincipal.idDocumentoAsunto)">
+
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button> -->
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                            
+                            </div>
                         </div>
-                </div>
+                    </div>
 
                 <!-- Asignaciones -->
                 <div *ngIf="tabActiva === 'respuesta'">

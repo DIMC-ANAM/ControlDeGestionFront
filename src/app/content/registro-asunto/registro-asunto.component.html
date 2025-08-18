@@ -313,7 +313,7 @@
       <p><strong>Tema:</strong> {{ encontrarPorId(temas, 'idTema', documentoForm.value.idTema, 'tema') || ''}}</p>
       <p><strong>Fecha del documento:</strong> {{ documentoForm.value.fechaDocumento | fechaMexico }}</p>
       <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico }}</p>
-      <p><strong>Fecha de cumplimiento:</strong> {{ documentoForm.value.fechaCumplimiento | fechaMexico }} </p>
+      <p><strong>Fecha de cumplimiento:</strong> {{ documentoForm.value.fechaCumplimiento | fechaMexico:true || ''}} </p>
       <p><strong>Prioridad:</strong> {{ encontrarPorId(prioridad, 'idPrioridad', documentoForm.value.idPrioridad,'prioridad') || ''}}</p>
     </div>
 
