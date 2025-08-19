@@ -472,30 +472,71 @@
                 <!-- Asignaciones -->
                 <div *ngIf="tabActiva === 'respuesta'">
                     <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h6 class="fw-bold mb-0">Detalle de la respuesta </h6>
-                        <!-- <button class="btn btn-primary">
-                            <i class="fas fa-user-check me-2"></i> Nuevo turnado
-                        </button> -->
+                        <h6 class="fw-bold mb-0">Detalle de la respuesta </h6>                        
                     </div>
-                    <!-- <div *ngFor="let asignacion of turnadoSeleccionado.asignaciones" class="card p-3 mb-2">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="d-flex align-items-center gap-3">
-              <div class="icon-circle"><i class="fas fa-user"></i></div>
-              <div>
-                <p class="mb-0 fw-semibold">{{ asignacion.usuario }}</p>
-                <small class="text-muted">{{ asignacion.rol }}</small><br />
-                <small class="text-muted">Asignado: {{ asignacion.fecha }}</small>
-              </div>
-            </div>
-            <div class="d-flex align-items-center gap-2">
-              <span class="badge"
-                [ngClass]="asignacion.statusAsignacion === 'activo' ? 'bg-success text-white' : 'bg-secondary text-white'">
-                {{ asignacion.statusAsignacion }}
-              </span>
-              <button class="btn btn-sm btn-outline-secondary"><i class="fas fa-edit"></i></button>
-            </div>
-          </div>
-        </div> -->
+                    <ng-container *ngIf="turnadoDS.respuesta; else checkMotivoRechazo">
+                    <div class="card p-3">
+                        <p class="mb-0">{{ turnadoDS.respuesta }}</p>
+                    </div>
+                    <hr class="my-3">
+                    <div class="mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <h6 class="fw-bold mb-0 pt-3">Documento de respuesta</h6>                                   
+                                </div>
+
+                                <div *ngIf="documentoRespuesta!=null" class="card p-3 d-flex flex-row justify-content-between align-items-center">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <i class="fas fa-file-alt fa-2x text-primary"></i>
+                                        <div>
+                                            <div class="fw-semibold">{{ documentoRespuesta.nombre }}</div>
+                                            <div class="text-muted small text-uppercase">
+                                               {{ documentoRespuesta.nombre?.split('.').pop() }} • {{
+                                                documentoRespuesta.size | sizeFormat
+                                                }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-light"
+                                            (click)="openDocumentoVisor(documentoRespuesta)">
+
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <a  target="_blank" href = "{{baseurl + documentoRespuesta.ruta}}" download> 
+                                            <button class="btn btn-sm btn-light" >
+                                                <i class="fas fa-download"></i>
+                                            </button>                                         
+                                        </a>
+                                        <!-- <button class="btn btn-sm btn-light"
+                                            (click)="eliminarDocumento(documentoPrincipal.idDocumentoAsunto)">
+
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button> -->
+                                        
+                                    </div>
+                                </div>
+                            </div>
+
+                    </ng-container>
+
+                    <ng-template #checkMotivoRechazo>
+                    <ng-container *ngIf="turnadoDS.motivoRechazo; else sinRespuesta">
+                        <div class="card p-3 border ">
+                        <p class="mb-0 text-primary">Motivo de rechazo:</p>
+                        <p class="mb-0">{{ turnadoDS.motivoRechazo }}</p>
+                        </div>
+                    </ng-container>
+                    </ng-template>
+
+                    <ng-template #sinRespuesta>
+                    <div class="card p-3 text-muted">
+                        <p class="mb-0 fst-italic">Sin respuesta</p>
+                    </div>
+                    </ng-template>
+                    
+                    
+                    
+                    
                 </div>
 
                 <!-- Historial -->

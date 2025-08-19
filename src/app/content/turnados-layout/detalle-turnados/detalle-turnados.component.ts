@@ -50,6 +50,7 @@ baseurl = environment.baseurl;
   anexos: any[] = [];
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
+  documentoRespuesta: any = null;
 
 
     constructor(
@@ -184,6 +185,8 @@ baseurl = environment.baseurl;
     if(data.status == 200){
       this.utils.MuestrasToast(TipoToast.Success, data.message)
       this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
+      this.consultarExpedienteAsunto(this.turnadoDS.idTurnado)
+      
     }else{
       this.utils.MuestrasToast(TipoToast.Error, data.message)
       
@@ -263,7 +266,8 @@ baseurl = environment.baseurl;
         this.documentoPrincipal = null;
         this.documentoConclusion = null;
         this.anexos = [];
-        this.respuestasDocs = [];
+        this.respuestasDocs = [];/* validar rol de usuario */
+        this.documentoRespuesta = null;
         if (muestraToast) this.utils.MuestraErrorInterno(ex);
       }
     );
@@ -276,13 +280,16 @@ baseurl = environment.baseurl;
       this.documentoConclusion = data.model.documentos.find(
         (doc:any) => doc.tipoDocumento === 'Conclusión'
       );
+      this.documentoRespuesta = data.model.respuestas.find(
+        (doc:any) => doc.idTurnado == this.turnadoDS.idTurnado
+      );
       this.anexos = data.model.anexos;
       this.respuestasDocs = data.model.respuestas;
     } else {
       this.documentoPrincipal = null;
-      this.documentoConclusion = null;
       this.anexos = [];
       this.respuestasDocs = [];
+      this.documentoRespuesta = null;
       if (muestraToast)
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
