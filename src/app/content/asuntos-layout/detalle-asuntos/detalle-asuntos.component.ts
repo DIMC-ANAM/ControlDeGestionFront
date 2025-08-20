@@ -428,12 +428,8 @@ export class DetalleAsuntosComponent {
   }
   onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
     if (data.status == 200) {
-      this.documentoPrincipal = data.model.documentos.find(
-        (doc:any) => doc.tipoDocumento === 'Documento principal'
-      );
-      this.documentoConclusion = data.model.documentos.find(
-        (doc:any) => doc.tipoDocumento === 'Conclusión'
-      );
+      this.documentoPrincipal = data.model.documentos.find( (doc:any) => doc.tipoDocumento === 'Documento principal');
+      this.documentoConclusion = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Conclusión' );
       this.anexos = data.model.anexos;
       this.respuestasDocs = data.model.respuestas;
     } else {
