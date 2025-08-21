@@ -133,6 +133,11 @@ export class DetalleAsuntosComponent {
   }
 
   openConcluirModal() {
+    if (this.asuntoSeleccionado.puedeConcluir == 0) {
+      this.utils.MuestrasToast(TipoToast.Error, "Este asunto no puede concluirse!");
+      this.utils.MuestrasToast(TipoToast.Warning, "Advertencia, se detectó el uso de manipulación del DOM.");
+      return;
+    }
     this.initFormConcluir();
     this.openModal({
       title: 'Concluir asunto',
