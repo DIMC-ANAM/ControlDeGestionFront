@@ -36,7 +36,7 @@
     /* Colores de apoyo */
     --color-dark-gray: #6F7271;
     --color-light-gray: #98989A;
-    --color-light-bg: #fffefc;
+    --color-light-bg: #ffffff;
     --color-deep-blue: #0D324D;
     --color-purple: #A188A6;
     --color-light-blue: #C9DAEA;
@@ -205,6 +205,7 @@ body {
 .text-dark-gray { color: var(--color-dark-gray) !important; }
 .text-light-gray { color: var(--color-light-gray) !important; }
 .text-deep-blue { color: var(--color-deep-blue) !important; }
+.text-purple { color: var(--color-purple) !important; }
 
 .bg-primary { background-color: var(--color-primary) !important; }
 .bg-secondary { background-color: var(--color-secondary) !important; }
@@ -880,3 +881,21 @@ input::-ms-clear {
 }
 
 
+
+
+
+/*animaciones */
+@keyframes destello {
+  0%, 100% {
+    filter: drop-shadow(0 0 0px var(--destello-color));
+    transform: scale(1);
+  }
+  50% {
+    filter: drop-shadow(0 0 4px var(--destello-color));
+    transform: scale(1.1);
+  }
+}
+
+.destello {
+  animation: destello 1s infinite ease-in-out;
+}

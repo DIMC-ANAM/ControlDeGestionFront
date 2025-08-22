@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -28,6 +28,7 @@ export class DetalleAsuntosComponent {
   verDocumentoModal!: TemplateRef<any>;
 
   @Input() idAsunto: number | null = null;
+  @Output() cambio = new EventEmitter<string>();
 
   baseurl = environment.baseurl;
   turnadoForm!: FormGroup;
@@ -881,5 +882,11 @@ setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): voi
   // Quita la 'T' y la 'Z', y corta los milisegundos
   return fechaISO.replace('T', ' ').substring(0, 19);
 }
+
+
+  /* event emmiter */
+  notificarCambio() {
+    this.cambio.emit('Se detectó un cambio');
+  }
 
 }

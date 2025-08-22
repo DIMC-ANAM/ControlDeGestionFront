@@ -1,81 +1,88 @@
 <div class="d-flex flex-column h-100">
     <ng-container *ngIf="asuntoSeleccionado; else elseTemplate">
         <div class="d-flex flex-column h-100">
-            <div class="p-3 border-bottom bg-white w-100 flex-shrink-0">
-                <div class="d-flex justify-content-between align-items-start mb-3">
-                    <div class="flex-grow-1 me-3" style="min-width: 0">
-                        
-                        <div class="d-flex align-items-center mb-1">
-                            <span
-                            class="tooltip-wrapper down right text-uppercase me-2"
-                            [attr.data-tooltip]="'Prioridad ' + asuntoSeleccionado.prioridad"
-                            >
-                            <i
-                                class="fas fa-star"
-                                [ngClass]="colors.getPrioridadColor(asuntoSeleccionado.prioridad)"
-                            ></i>
-                            </span>
-                            <h2 class="fw-bold text-truncate mb-0">{{ asuntoSeleccionado.noOficio }}</h2>
-                        </div>
-                        <div class="text-muted small fw-bold ">
-                            <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de recepción'"><i
-                                    class="fas fa-calendar-day text-primary"></i></span>
-                            Fecha de recepción: {{ asuntoSeleccionado.fechaRecepcion | fechaMexico}}
+            <div class="p-3 border-bottom  w-100 flex-shrink-0">
+  <div class="d-flex justify-content-between align-items-start mb-3">
+    <!-- Columna izquierda -->
+    <div class="flex-grow-1 me-3" style="min-width: 0">
+      
+      <!-- Encabezado -->
+      <div class="d-flex align-items-center mb-2">
+        <span class="me-2 tooltip-wrapper down center"
+              [attr.data-tooltip]="'Prioridad ' + asuntoSeleccionado.prioridad">
+          <i class="fas fa-star destello"
+             [ngClass]="colors.getPrioridadColor(asuntoSeleccionado.prioridad)"></i>
+        </span>
+        <h2 class="fw-bold text-truncate mb-0 fs-4">
+          {{ asuntoSeleccionado.noOficio }}
+        </h2>
+      </div>
 
-                        </div>
-                        <div class="text-muted small fw-bold" *ngIf="asuntoSeleccionado.fechaCumplimiento as fecha">
-                            <span class="tooltip-wrapper " [attr.data-tooltip]="'Fecha de cumplimiento'"><i
-                                    class="fas fa-calendar-check text-success "></i></span>
-                            Fecha de cumplimiento: {{ fecha | fechaMexico:true }} hrs
-                        </div>
-                    </div>
-                    <div class="text-end flex-shrink-0">
-                        <div class="d-flex flex-column gap-1">
-                            <span class="badge me-1" [ngClass]="colors.getEstadoColor(asuntoSeleccionado.idStatusAsunto)">
-                                <i class="fas" [ngClass]="colors.getEstadoIcon(asuntoSeleccionado.idStatusAsunto)"></i>
-                                <span class="ms-1 ">
-                                    {{ asuntoSeleccionado.statusAsunto }}
-                                </span>
-                            </span>
-                            
-                        </div>
-                    </div>
-                </div>
+      <!-- Fechas -->
+      <div class="text-muted small mb-1">
+        <i class="fas fa-calendar-day text-deep-blue me-1"></i>
+        <span class="fw-semibold">Recepción:</span> {{ asuntoSeleccionado.fechaRecepcion | fechaMexico}}
+      </div>
+      
+      <div class="text-muted small mb-1" *ngIf="asuntoSeleccionado.fechaCumplimiento as fecha">
+        <i class="fas fa-calendar-check text-deep-blue me-1"></i>
+        <span class="fw-semibold">Cumplimiento:</span> {{ fecha | fechaMexico:true }} hrs
+      </div>
+      
+      <div class="text-muted small">
+        <i class="fa-solid fa-hourglass-half text-deep-blue me-1"></i>
+        <span class="fw-semibold">Días transcurridos:</span>
+        <span class="fw-bolder">{{ asuntoSeleccionado.diasTranscurridos }}</span>
+      </div>
+    </div>
 
-                <div class="d-flex gap-2">
-                    <button [disabled]="asuntoSeleccionado.puedeConcluir == 0" class="btn btn-primary btn-sm" (click)="openConcluirModal()">
-                        <i class="fas fa-check-double me-2"></i> Concluir
-                    </button>
-                    
-                </div>
-            </div>
-                <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill " role="tablist" >
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
-                        (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
-                        <i class="fas fa-file-alt me-2"></i> Detalles
-                    </button>
-                </li>
+    <!-- Columna derecha -->
+    <div class="text-end flex-shrink-0">
+      <span class="badge rounded-3 px-3 py-2"
+            [ngClass]="colors.getEstadoColor(asuntoSeleccionado.idStatusAsunto)">
+        <i class="fas me-1"
+           [ngClass]="colors.getEstadoIcon(asuntoSeleccionado.idStatusAsunto)"></i>
+        {{ asuntoSeleccionado.statusAsunto }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Botones -->
+  <div class="d-flex gap-2">
+    <button [disabled]="asuntoSeleccionado.puedeConcluir == 0"
+            class="btn btn-primary btn-sm d-flex align-items-center"
+            (click)="openConcluirModal()">
+      <i class="fas fa-check-double me-2"></i> Concluir
+    </button>
+  </div>
+</div>
+
+            <ul class="nav nav-tabs px-4 pt-3 border-0 nav-fill " role="tablist" >
                 <li class="nav-item" role="presentation">
-                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
-                        (click)="tabActiva = 'expediente'; consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto, true);">
-                        <i class="fas fa-folder-open me-2"></i> Expediente
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
-                        (click)="tabActiva = 'turnados'; consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto);">
-                        <i class="fas fa-sync me-2"></i> Turnados
-                    </button>
-                </li>
-                <li class="nav-item" role="presentation">
-                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
-                    (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
-                    <i class="fas fa-clock me-2"></i> Historial
+                    <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'detalles'"
+                    (click)="tabActiva = 'detalles'; consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);">
+                    <i class="fas fa-file-alt me-2"></i> Detalles
                 </button>
             </li>
-        </ul>
-
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'expediente'"
+                    (click)="tabActiva = 'expediente'; consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto, true);">
+                    <i class="fas fa-folder-open me-2"></i> Expediente
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'turnados'"
+                    (click)="tabActiva = 'turnados'; consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto);">
+                    <i class="fas fa-sync me-2"></i> Turnados
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link text-deep-blue" [class.active]="tabActiva === 'historial'"
+                (click)="tabActiva = 'historial'; consultarHistorialAsunto(this.asuntoSeleccionado.idAsunto);">
+                <i class="fas fa-clock me-2"></i> Historial
+            </button>
+        </li>
+            </ul>
             <!-- Contenido de tabs con scroll -->
             <div class="flex-grow-1 p-4 overflow-auto" >
                 <!-- Detalles -->
@@ -89,6 +96,7 @@
                             <div [ngClass]="{'d-none': asuntoSeleccionado.idStatusAsunto != 1}" class="btn btn-outline-secondary btn-sm" (click)="editar= !editar;">
                                 <i class="fas fa-edit me-2"></i> Editar
                             </div>
+                            
                         </div>
                         
 
@@ -590,22 +598,25 @@
                                 </button>
                             </div>
 
-                            <div *ngFor="let asignacion of turnadosAsunto" class="card p-3 mb-2">
+                            <div *ngFor="let asignacion of turnadosAsunto" class="card p-3 mb-2" >
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="icon-circle"><i class="fas fa-share"></i></div>
-                                        <div>
-                                            <p class="mb-0 fw-semibold">{{ asignacion.unidadResponsable }}</p>
-                                            <small class="text-muted">{{ asignacion.instruccion
-                                                }}</small><br />
-                                            <small class="text-muted">Asignado: {{ asignacion.fechaRegistro |
-                                                fechaMexico}}</small>
+                                    <div class="d-flex align-items-center gap-3 flex-shrink-0 flex-grow-0" style="flex-basis: auto;">
+                                        
+                                        <div class="icon-circle tooltip-wrapper center" [attr.data-tooltip]="'' + asignacion.statusTurnado"
+                                         [ngClass]="colors.getEstadoTurnadoColor(asignacion.idStatusTurnado)">
+                                        <i class="fas fa-share"></i></div>
+                                        <div class="d-flex flex-column">
+                                            <div class="mb-0 fw-semibold">{{ asignacion.unidadResponsable }}</div>
+                                            <small class="text-muted">{{ asignacion.instruccion}}</small>
+                                            <small class="text-muted">Asignado: {{ asignacion.fechaRegistro | fechaMexico}}</small>
+                                            <small class="text-muted">No. de turnado: {{ asignacion.consecutivo}}</small>
+                                            <small *ngIf="asignacion.atendidoPor" class="text-muted">Atendido por: {{ asignacion.atendidoPor}} , el día {{ asignacion.fechaRespuesta | fechaMexico}}</small>
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center gap-2">
+                                    <!-- <div class="d-flex align-items-center gap-2">
                                         <button class="btn btn-sm btn-outline-secondary"><i
                                                 class="fas fa-edit"></i></button>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -624,8 +635,8 @@
                         </div> -->
                         
                     </div>
-                </div>
             </div>
+        </div>
     </ng-container>
     <ng-template #elseTemplate>
         <div class="d-flex align-items-center justify-content-center h-100">

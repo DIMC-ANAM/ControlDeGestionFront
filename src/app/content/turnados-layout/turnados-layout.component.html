@@ -7,7 +7,7 @@
     
     <!-- Panel derecho - Detalle de asuntos -->
     <div class="panel-resistant h-100">
-      <app-detalle-turnados [asuntoInput]="turnadoSeleccionado"></app-detalle-turnados>
+      <app-detalle-turnados (cambio)="onCambio($event)" [asuntoInput]="turnadoSeleccionado"></app-detalle-turnados>
     </div>
   </div>
 </div>

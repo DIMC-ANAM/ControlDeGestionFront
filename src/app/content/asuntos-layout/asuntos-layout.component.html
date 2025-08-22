@@ -7,7 +7,7 @@
     
     <!-- Panel derecho - Detalle de asuntos -->
     <div class="panel-resistant h-100">
-      <app-detalle-asuntos [idAsunto]="idAsuntoSeleccionado"></app-detalle-asuntos>
+      <app-detalle-asuntos (cambio)="onCambio($event)" [idAsunto]="idAsuntoSeleccionado"></app-detalle-asuntos>
     </div>
   </div>
 </div>

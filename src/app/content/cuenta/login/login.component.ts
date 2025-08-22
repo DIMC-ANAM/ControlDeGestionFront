@@ -144,7 +144,10 @@ ngOnInit(): void {
   localStorage.setItem('session', JSON.stringify({
     nombreUsuario: 'admin',
     idUsuario: 9999,
-    unidadAdscripcion: 'ROOT'
+    unidadAdscripcion: 'ROOT',
+    accesos:{
+      idusuariorol: 9999,
+    }
   }));
 
   setTimeout(() => {

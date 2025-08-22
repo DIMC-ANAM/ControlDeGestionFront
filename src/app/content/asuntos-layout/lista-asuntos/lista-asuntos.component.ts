@@ -20,7 +20,7 @@ export class ListaAsuntosComponent {
   filtroTema = '';
   filtroFechaInicio: Date | null = null;
   filtroFechaFin: Date | null = null;
-
+  cambio = true;
   asuntos:any[] = [];
   asuntoSeleccionadoItem: any = null;
 
@@ -39,6 +39,7 @@ export class ListaAsuntosComponent {
     //Add 'implements OnInit' to the class.
     this.consultarAsuntosUR();
     this.consultarTema();
+    
   }
 
   seleccionarAsunto(id: number): void {
@@ -141,4 +142,10 @@ toDateOnly(date: Date): string {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
     }
+    /* event emmiter */
+refrescar(mensaje: string) {
+    this.cambio = false;
+     this.consultarAsuntosUR();
+     
+  }
 }

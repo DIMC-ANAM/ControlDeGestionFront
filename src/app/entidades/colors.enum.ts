@@ -86,4 +86,5 @@ export class ColorsEnum {
   getPrioridadColor(prioridad: PrioridadAsunto): string {
     return this.prioridadStyles[prioridad]?.colorClass || '';
   }
+
 }

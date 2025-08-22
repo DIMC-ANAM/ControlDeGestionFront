@@ -23,6 +23,7 @@ export class ListaTurnadosComponent {
   turnados : any [] =[];
   turnadoSeleccionadoItem: any = null;
   temaDS: any[] = [];
+  cambio = true;
 
     constructor(
       private turnadoApi: TurnadoService,
@@ -134,5 +135,8 @@ toDateOnly(date: Date): string {
       }
     }
 
-
+/* event emmiter */
+refrescar(mensaje: string) {
+     this.consultarTurnados();
+  }
 }

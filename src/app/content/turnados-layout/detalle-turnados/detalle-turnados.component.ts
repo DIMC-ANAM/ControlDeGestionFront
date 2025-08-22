@@ -1,4 +1,4 @@
-import { Component, Input, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Input, TemplateRef, ViewChild,  EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -20,7 +20,9 @@ import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 export class DetalleTurnadosComponent {
   
 @Input() asuntoInput: any | null = null;
+@Output() cambio = new EventEmitter<string>();
 baseurl = environment.baseurl;
+
 
   @ViewChild('responderModal', { static: true }) responderModal!: TemplateRef<any>;
   @ViewChild('rechazarModal', { static: true }) rechazarModal!: TemplateRef<any>;
@@ -51,6 +53,7 @@ baseurl = environment.baseurl;
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
   documentoRespuesta: any = null;
+
 
 
     constructor(
@@ -274,6 +277,7 @@ baseurl = environment.baseurl;
     onSuccessconsultarDetalleTurnado(data: any) {
       if (data.status == 200) {
         this.turnadoDS = data.model
+        this.notificarCambio();
       } else {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
@@ -472,4 +476,9 @@ baseurl = environment.baseurl;
     return payload;
   }
 
+
+  /* event emmiter */
+  notificarCambio() {
+    this.cambio.emit('Se detectó un cambio');
+  }
 }

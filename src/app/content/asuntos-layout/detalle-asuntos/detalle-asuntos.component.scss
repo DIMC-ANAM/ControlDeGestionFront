@@ -55,7 +55,7 @@
   justify-content: center;
   align-items: center;
   border-radius: 50%;
-  background-color: #7bb7ff;
+  
   color: white;
 }
 
@@ -227,20 +227,4 @@ textarea.editControl{
   box-shadow: 0 0 8px -3px gray;
   padding: 10px;
 
-}
-
-@keyframes destello {
-  0%, 100% {
-    
-    filter: drop-shadow(0 0 0px rgba(0, 255, 0, 0.8));
-    transform: scale(1);
-  }
-  50% {
-    filter: drop-shadow(0 0 4px rgba(0, 255, 0, 0.8));
-    transform: scale(1.1);
-  }
-}
-
-.destello {
-  animation: destello 1s infinite ease-in-out;
 }

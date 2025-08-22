@@ -25,21 +25,21 @@ export class SidebarComponent implements OnInit {
       label: 'Registro de asuntos',
       icon: 'fas fa-plus',
       link: '/registro-asunto',
-      rol: [4,2],
+      rol: [4,2,9999],
     },
     {
       id: 'consultarAsuntos',
       label: 'Asuntos registrados',
       icon: 'fas fa-file-import',
       link: '/consultar-asuntos',
-      rol: [4,2],
+      rol: [4,2,9999],
     },
     {
       id: 'consultarTurnados',
       label: 'Asuntos turnados',
-      icon: 'fas fa-sync',
+      icon: 'fas fa-share',
       link: '/consultar-turnados',
-      rol: [4,2,3],
+      rol: [4,2,3,9999],
     },
     {
       id: 'busquedaAvanzada',
@@ -60,7 +60,7 @@ export class SidebarComponent implements OnInit {
       label: 'Catálogos',
       icon: 'fas fa-cogs',
       link: '/catalogos',
-      rol: [4,2],
+      rol: [4,2,9999],
     },
   ];
   menuUsuario:any = []
@@ -72,7 +72,6 @@ export class SidebarComponent implements OnInit {
   }
   let usuario = JSON.parse(session!);
       this.menuUsuario = this.menuItems.filter(item => item.rol.includes(usuario.accesos.idusuariorol));
-
   }
 
 

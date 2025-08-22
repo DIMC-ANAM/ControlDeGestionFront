@@ -63,6 +63,10 @@
                 (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
                 <i class="fas fa-filter me-2"></i> Limpiar Filtros
               </button>
+               <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
+                (click)="consultarTurnados()">
+                <i class="fa-solid fa-rotate-right me-2"></i>
+              </div>
           </div>
         </div>
       </div>
@@ -71,7 +75,7 @@
   <!-- Lista de tarjetas -->
   <div class="p-4 overflow-auto">
     <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
-      [ngClass]="{'seleccionado': turnadoSeleccionadoItem?.idTurnado === asunto.idTurnado}"
+      [ngClass]="{'seleccionado': turnadoSeleccionadoItem?.idTurnado === asunto.idTurnado , 'card-animada': cambio}"
       (click)="seleccionarTurnado(asunto)">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
@@ -111,12 +115,13 @@
                                 [ngClass]="colors.getPrioridadColor(asunto.prioridad)"
                             ></i>
               </span>
-            <span class="badge me-1" [ngClass]="colors.getEstadoTurnadoColor(asunto.idStatusTurnado)">
-              <i class="fas" [ngClass]="colors.getEstadoTurnadoIcon(asunto.idStatusTurnado)"></i>
-              <span class="ms-1 ">
-                {{ asunto.statusTurnado }}
-              </span>
-            </span>
+                  <span class="badge rounded-3 px-3 py-2"
+            [ngClass]="colors.getEstadoTurnadoColor(asunto.idStatusTurnado)">
+        <i class="fas me-1"
+           [ngClass]="colors.getEstadoTurnadoIcon(asunto.idStatusTurnado)"></i>
+        {{ asunto.statusTurnado }}
+      </span>
+
 
             <!-- <span class="badge" [ngClass]="colors.getPrioridadColor(asunto.prioridad)">
               <i class="fas fa-star me-1 small"></i>
