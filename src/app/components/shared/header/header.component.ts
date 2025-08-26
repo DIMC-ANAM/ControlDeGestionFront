@@ -6,6 +6,7 @@ import { inject, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
+import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 
 @Component({
   selector: 'app-header',
@@ -30,10 +31,12 @@ export class HeaderComponent {
    @Output() onLogout = new EventEmitter<void>();
 
   usuario:any;
+  dependenciaDS: any = [];
 
   constructor(
     private router: Router,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private catalogoApi: CatalogoService
   ) {
     const session = localStorage.getItem('session');
     if (session) {
@@ -68,6 +71,7 @@ export class HeaderComponent {
 
   ngOnInit() {
     document.addEventListener('click', this.onDocumentClick.bind(this));
+    this.consultarDependencia();
   }
 
   ngOnDestroy() {
@@ -76,5 +80,27 @@ export class HeaderComponent {
 
   goHome(){
     this.router.navigate(['/dashboard']);
+  }
+  consultarDependencia() {
+    this.catalogoApi
+      .consultarDependencia({
+        idDependencia: this.usuario.idDependencia || 18 ,
+        opcion: 3
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarDependencia(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarDependencia(data: any) {
+    if (data.status == 200) {
+      this.dependenciaDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
   }
 }

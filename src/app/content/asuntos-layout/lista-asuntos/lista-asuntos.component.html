@@ -59,7 +59,7 @@
 
           <div class="col-md-4 d-flex justify-content-center align-items-center">
           <button class="btn btn-outline-secondary btn-sm"
-                (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null">
+                (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null; this.cambio = false;">
                 <i class="fas fa-filter me-2"></i> Limpiar Filtros
               </button>
           <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"

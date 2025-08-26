@@ -599,20 +599,21 @@
                             </div>
 
                             <div *ngFor="let asignacion of turnadosAsunto" class="card p-3 mb-2" >
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <div class="d-flex align-items-center gap-3 flex-shrink-0 flex-grow-0" style="flex-basis: auto;">
-                                        
-                                        <div class="icon-circle tooltip-wrapper center" [attr.data-tooltip]="'' + asignacion.statusTurnado"
-                                         [ngClass]="colors.getEstadoTurnadoColor(asignacion.idStatusTurnado)">
-                                        <i class="fas fa-share"></i></div>
-                                        <div class="d-flex flex-column">
-                                            <div class="mb-0 fw-semibold">{{ asignacion.unidadResponsable }}</div>
-                                            <small class="text-muted">{{ asignacion.instruccion}}</small>
-                                            <small class="text-muted">Asignado: {{ asignacion.fechaRegistro | fechaMexico}}</small>
-                                            <small class="text-muted">No. de turnado: {{ asignacion.consecutivo}}</small>
-                                            <small *ngIf="asignacion.atendidoPor" class="text-muted">Atendido por: {{ asignacion.atendidoPor}} , el día {{ asignacion.fechaRespuesta | fechaMexico}}</small>
-                                        </div>
-                                    </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div  class="d-flex align-items-center gap-3 flex-shrink-1 flex-grow-1" 
+            style="flex-basis: auto; word-wrap: break-word; overflow-wrap: break-word; width: 90%;">
+                                                
+                                                <div class="icon-circle tooltip-wrapper center " style="min-width:33px; white-space: normal;"  [attr.data-tooltip]="'' + asignacion.statusTurnado"
+                                                [ngClass]="colors.getEstadoTurnadoColor(asignacion.idStatusTurnado)">
+                                                <i class="fas fa-share"></i></div>
+                                                <div class="d-flex flex-column">
+                                                    <div class="mb-0 fw-semibold">{{ asignacion.unidadResponsable }}</div>
+                                                    <small class="text-muted">{{ asignacion.instruccion}}</small>
+                                                    <small class="text-muted">Asignado: {{ asignacion.fechaRegistro | fechaMexico}}</small>
+                                                    <small class="text-muted">No. de turnado: {{ asignacion.consecutivo}}</small>
+                                                    <small *ngIf="asignacion.atendidoPor" class="text-muted">Atendido por: {{ asignacion.atendidoPor}} , el día {{ asignacion.fechaRespuesta | fechaMexico}}</small>
+                                                </div>
+                                            </div>
                                     <!-- <div class="d-flex align-items-center gap-2">
                                         <button class="btn btn-sm btn-outline-secondary"><i
                                                 class="fas fa-edit"></i></button>
@@ -665,7 +666,7 @@
                             [class.invalid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'invalid'"
                             [class.valid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'valid'">
                             <option [value]="null" disabled selected>Seleccione una unidad</option>
-                            <option *ngFor="let unidad of unidadesResponsablesDS" [value]="unidad.idUnidadResponsable">{{ unidad.unidadResponsable
+                            <option *ngFor="let unidad of dependenciaDS" [value]="unidad.id">{{ unidad.area
                                 }}</option>
                         </select>
                     </div>

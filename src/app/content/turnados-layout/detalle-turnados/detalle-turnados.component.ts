@@ -23,7 +23,7 @@ export class DetalleTurnadosComponent {
 @Output() cambio = new EventEmitter<string>();
 baseurl = environment.baseurl;
 
-
+  @ViewChild('turnarModal', { static: true }) turnarModal!: TemplateRef<any>;
   @ViewChild('responderModal', { static: true }) responderModal!: TemplateRef<any>;
   @ViewChild('rechazarModal', { static: true }) rechazarModal!: TemplateRef<any>;
   @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
@@ -47,15 +47,19 @@ baseurl = environment.baseurl;
   usuario: any = null;
   turnadoSeleccionado: any = null;
   turnadoDS:any = null
-
+  
   documentoPrincipal: any = null;
   anexos: any[] = [];
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
   documentoRespuesta: any = null;
-
-
-
+  
+  dependenciaDS: any[] = [];
+  turnadoForm!: FormGroup;
+  turnadosAsunto: any[] = [];
+  instruccionesDS: any[] = [];
+  
+  
     constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -73,6 +77,7 @@ baseurl = environment.baseurl;
     //Add 'implements OnInit' to the class.
     this.usuario = JSON.parse(localStorage.getItem('session')!);
 
+
   }
   
   
@@ -87,6 +92,13 @@ baseurl = environment.baseurl;
         console.error('Error en la cadena de consultas', error);
       }
     }
+  }
+
+    initFormTurnado(): void {
+    this.turnadoForm = this.fb.group({
+      idUnidadResponsable: [null, Validators.required],
+      idInstruccion: [null, Validators.required],
+    });
   }
    private createDocumentoForm(): FormGroup {
     return this.fb.group({ documento: [null, Validators.required] });
@@ -168,6 +180,42 @@ baseurl = environment.baseurl;
     });
   }
 
+    // Modal Abstraction
+  private openModal(options: {
+    title: string;
+    template: TemplateRef<any>;
+    onAccept: () => void;
+    onCancel?: () => void;
+    width?: string;
+  }) {
+    this.modalManager.openModal({
+      title: options.title,
+      template: options.template,
+      showFooter: false,
+      width: options.width ?? 'mediano',
+      onAccept: options.onAccept,
+      onCancel: options.onCancel,
+    });
+  }
+
+    openTurnarModal() {
+    this.consultarDependencia();
+    this.consultarInstruccion();
+    this.initFormTurnado();
+    this.turnados = [...this.turnadosAsunto];
+    this.openModal({
+      title: 'Turnar asunto',
+      template: this.turnarModal,
+      onAccept: () => this.turnarAsunto(),
+      onCancel: () => this.cancelarTurnado(),
+    });
+  }
+
+  cancelarTurnado(): void {
+    this.turnados = [];
+    this.turnadoForm.reset();
+  }
+
   contestarTurnado(): void {
     const estado = this.fileState.get('concluir');
     if (this.conclusionForm.valid && estado?.file) {      
@@ -225,6 +273,159 @@ baseurl = environment.baseurl;
   }
 
   /* ENDPOINTS */
+  consultarDependencia() {
+    this.catalogoApi
+      .consultarDependencia({
+        idDependencia: this.usuario.idDependencia || 18 ,
+        opcion: 2
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarDependencia(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarDependencia(data: any) {
+    if (data.status == 200) {
+      this.dependenciaDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+    turnarAsunto() {
+    this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
+      (data) => {
+        this.onSuccessturnarAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessturnarAsunto(data: any) {
+    if (data.status == 200) {
+      this.consultarTurnadosAsunto(this.turnadoSeleccionado.idAsunto);
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+    this.turnados = [];
+  }
+    consultarTurnadosAsunto(id: number | any) {
+    this.asuntoApi.consultarTurnados({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarTurnadosAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+  onSuccessconsultarTurnadosAsunto(data: any) {
+    if (data.status == 200) {
+      this.turnadosAsunto = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+
+    consultarInstruccion() {
+    this.catalogoApi
+      .consultarInstruccion({ esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarInstruccion(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarInstruccion(data: any) {
+    if (data.status == 200) {
+      this.instruccionesDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+    addTurnado(): void {
+    if (this.turnadoForm.valid) {
+      const unidad = this.dependenciaDS.find(
+		(u) =>  u.id ==  this.turnadoForm.get('idUnidadResponsable')?.value
+      );
+      const instruccion = this.instruccionesDS.find(
+        (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
+      );
+
+      const nuevoTurnado = {
+        idUnidadResponsable: unidad?.id,
+        idInstruccion: instruccion?.idInstruccion,
+      };
+
+      if ( unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
+      ) {
+        this.turnados.push({
+          unidadResponsable: unidad.area,
+          instruccion: instruccion.instruccion,
+          idAsunto: this.turnadoSeleccionado.idAsunto,
+          idUnidadResponsable: unidad.id,
+          idInstruccion: instruccion.idInstruccion,
+          idUsuarioAsigna: this.usuario.idUsuario,
+          idTurnadoPadre: this.turnadoDS.idTurnado
+        });
+        this.turnadoForm.reset();
+      } else {
+        this.utils.MuestrasToast(
+          TipoToast.Warning,
+          'Este turnado ya ha sido agregado.'
+        );
+      }
+    } else {
+      this.turnadoForm.markAllAsTouched();
+    }
+  }
+  private esTurnadoIgual(a: any, b: any): boolean {
+    return ( a.idUnidadResponsable == b.idUnidadResponsable && a.idInstruccion == b.idInstruccion
+    );
+  }
+
+  removeTurnado(index: number): void {
+    this.turnados.splice(index, 1);
+  }
+
+  /* auxiliares turnado  */
+  /**
+   * Compara si la lista temporal de turnados es diferente de los turnados reales del asunto.
+   * @returns boolean
+   */
+  hayCambiosEnTurnados(): boolean {
+    if (this.turnados.length !== this.turnadosAsunto.length) return true;
+
+    const sortedTurnados = [...this.turnados].sort(this.comparadorTurnado);
+    const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
+
+    for (let i = 0; i < sortedTurnados.length; i++) {
+      if ( sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable || sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Función auxiliar para ordenar turnados por unidad e instrucción.
+   */
+  private comparadorTurnado(a: any, b: any): number {
+    if (a.idUnidadResponsable !== b.idUnidadResponsable) {
+      return a.idUnidadResponsable - b.idUnidadResponsable;
+    }
+    return a.idInstruccion - b.idInstruccion;
+  }
+  /*  */
   consultarDetallesAsuntoPromise(id: number): Promise<any> {
   return new Promise((resolve, reject) => {
     this.asuntoApi.consultarDetallesAsunto({ idAsunto: id }).subscribe(

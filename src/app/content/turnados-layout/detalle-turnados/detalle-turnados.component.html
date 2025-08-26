@@ -396,6 +396,8 @@
                                     <h6 class="fw-bold mb-0">Respuestas </h6>                                    
                                 </div>
 
+                              
+
                                 <div *ngIf="respuestasDocs.length > 0; else sinRespuestas">
                                     <div class="card mb-2 p-3" *ngFor="let respuesta of respuestasDocs">
                                         <div class="d-flex justify-content-between align-items-center">
@@ -476,9 +478,18 @@
 
                 <!-- Asignaciones -->
                 <div *ngIf="tabActiva === 'respuesta'">
+                    <div class="d-flex justify-content-between align-items-center mb-3 ">
+                              <h6 class="fw-bold mb-0">Turnar el asunto</h6>
+                              <button class="btn btn-primary  tooltip-wrapper center up"
+                                  [attr.data-tooltip]="'Turnar'" (click)="openTurnarModal()">
+                                          <i class="fas fa-share "></i>
+                                      </button>
+                                  </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Detalle de la respuesta </h6>                        
                     </div>
+
+
                     <ng-container *ngIf="turnadoDS.respuesta; else checkMotivoRechazo">
                     <div class="card p-3">
                         <p class="mb-0">{{ turnadoDS.respuesta }}</p>
@@ -678,4 +689,88 @@
 
 <ng-template #confirmModal let-aceptar="aceptar" let-cancelar="cancelar">
     ¿Está seguro de que desea continuar?
+</ng-template>
+
+
+<ng-template #turnarModal let-aceptar="aceptar" let-cancelar="cancelar">
+    <div class="container-fluid  ">
+        <form [formGroup]="turnadoForm">
+            <div class="row">
+                <div class="col-md-12">
+                    <label class="form-label frmlabel required" for="idUnidadResponsable"><i
+                            class="p-1 fas fa-building-columns"> </i>Unidad Responsable</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'idUnidadResponsable') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idUnidadResponsable" class="form-control" formControlName="idUnidadResponsable"
+                            [class.invalid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'idUnidadResponsable') == 'valid'">
+                            <option [value]="null" disabled selected>Seleccione una unidad</option>
+                            <option *ngFor="let unidad of dependenciaDS" [value]="unidad.id">{{ unidad.area
+                                }}</option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus(turnadoForm,'unidadResponsable') == 'invalid'" class="invalid-field">
+                        Este campo es
+                        obligatorio.</p>
+                </div>
+
+                <div class="col-md-6">
+                    <label class="form-label frmlabel required" for="instruccion"><i class="p-1 fas fa-list-check">
+                        </i>Instrucción</label>
+                    <div class="input-icon-wrapper">
+                        <i
+                            [ngClass]="getValidationStatus(turnadoForm,'idInstruccion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus(turnadoForm,'idInstruccion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+                        <select id="idInstruccion" class="form-control" formControlName="idInstruccion"
+                            [class.invalid]="getValidationStatus(turnadoForm,'idInstruccion') == 'invalid'"
+                            [class.valid]="getValidationStatus(turnadoForm,'idInstruccion') == 'valid'">
+                            <option [value]="null" disabled selected>Seleccione una instrucción</option>
+                            <option *ngFor="let instr of instruccionesDS" [value]="instr.idInstruccion">{{ instr.instruccion }}
+                            </option>
+                        </select>
+                    </div>
+                    <p *ngIf="getValidationStatus(turnadoForm,'idInstruccion') == 'invalid'" class="invalid-field">Este
+                        campo es obligatorio.</p>
+                </div>
+
+                <div
+                    class="col-md-6 d-flex flex-v-center align-items-center mt-5 align-content-center justify-content-center">
+                    <button class="btn btn-success" [disabled]="turnadoForm.invalid" (click)="addTurnado()">
+                        <i class="fas fa-plus fw-bold"></i>
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="table-responsive w-100 mx-auto">
+            <table class="table table-hover table-border-colapse ">
+                <thead>
+                    <tr>
+                        <th><i class="p-1 fas fa-building-columns"></i> Unidad Responsable</th>
+                        <th><i class="p-1 fas fa-list-check"></i>Instrucción</th>
+                        <th>Borrar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="turnados.length === 0">
+                        <td colspan="3" class="text-center">No hay turnados agregados.</td>
+                    </tr>
+                    <tr *ngFor="let turnado of turnados; let i = index">
+                        <td>{{ turnado.unidadResponsable }}</td>
+                        <td>{{ turnado.instruccion }}</td>
+                        <td class="text-center">
+                            <i role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="w-100 d-flex justify-content-end">
+            <button class="btn btn-outline-dark m-2" (click)="cancelar()">Cancelar</button>
+            <button class="btn btn-primary m-2" [disabled]="!hayCambiosEnTurnados() || turnados.length == 0" (click)="aceptar()"> <i class="fas fa-share m-2"></i>Turnar </button>
+        </div>
+
+    </div>
 </ng-template>

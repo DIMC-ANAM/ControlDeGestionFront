@@ -42,6 +42,7 @@ export class DetalleAsuntosComponent {
   tipoDocumentoDS: any[] = [];
   temaDS: any[] = [];
   medioDS: any[] = [];
+  dependenciaDS: any[] = [];
   
 
 
@@ -123,6 +124,7 @@ export class DetalleAsuntosComponent {
   }
 
   openTurnarModal() {
+    this.consultarDependencia();
     this.initFormTurnado();
     this.turnados = [...this.turnadosAsunto];
     this.openModal({
@@ -358,25 +360,25 @@ export class DetalleAsuntosComponent {
 
   addTurnado(): void {
     if (this.turnadoForm.valid) {
-      const unidad = this.unidadesResponsablesDS.find(
-		(u) =>  u.idUnidadResponsable ==  this.turnadoForm.get('idUnidadResponsable')?.value
+      const unidad = this.dependenciaDS.find(
+		(u) =>  u.id ==  this.turnadoForm.get('idUnidadResponsable')?.value
       );
       const instruccion = this.instruccionesDS.find(
         (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
       );
 
       const nuevoTurnado = {
-        idUnidadResponsable: unidad?.idUnidadResponsable,
+        idUnidadResponsable: unidad?.id,
         idInstruccion: instruccion?.idInstruccion,
       };
 
       if ( unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
       ) {
         this.turnados.push({
-          unidadResponsable: unidad.unidadResponsable,
+          unidadResponsable: unidad.area,
           instruccion: instruccion.instruccion,
           idAsunto: this.idAsunto,
-          idUnidadResponsable: unidad.idUnidadResponsable,
+          idUnidadResponsable: unidad.id,
           idInstruccion: instruccion.idInstruccion,
           idUsuarioAsigna: this.usuario.idUsuario,
         });
@@ -470,7 +472,8 @@ export class DetalleAsuntosComponent {
         this.onSuccessconsultarHistorialAsunto(data);
       },
       (ex) => {
-        this.utils.MuestraErrorInterno(ex);
+        this.utils.MuestrasToast(TipoToast.Info,"Funcionalidad en desarrollo.");
+       /*  this.utils.MuestraErrorInterno(ex); */
       }
     );
   }
@@ -538,6 +541,28 @@ export class DetalleAsuntosComponent {
   onSuccessconsultarTipoDocumento(data: any) {
     if (data.status == 200) {
       this.tipoDocumentoDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+  consultarDependencia() {
+    this.catalogoApi
+      .consultarDependencia({
+        idDependencia: this.usuario.idDependencia || 18 ,
+        opcion: 2
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarDependencia(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarDependencia(data: any) {
+    if (data.status == 200) {
+      this.dependenciaDS = data.model;
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }

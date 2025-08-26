@@ -29,5 +29,8 @@ export class CatalogoService {
   consultarInstruccion(data:any) {
     return this.http.post(this.urlBase + 'consultarInstruccion', data);
   }
+  consultarDependencia(data:any) {
+    return this.http.post(this.urlBase + 'consultarDependencia', data);
+  }
 }
 
