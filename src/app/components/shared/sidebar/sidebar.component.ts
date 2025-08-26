@@ -71,7 +71,7 @@ export class SidebarComponent implements OnInit {
     this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
   }
   let usuario = JSON.parse(session!);
-      this.menuUsuario = this.menuItems.filter(item => item.rol.includes(usuario.accesos.idusuariorol));
+      this.menuUsuario = this.menuItems.filter(item => item.rol.includes(usuario.accesos.idUsuarioRol));
   }
 
 
