@@ -103,8 +103,15 @@ baseurl = environment.baseurl;
    private createDocumentoForm(): FormGroup {
     return this.fb.group({ documento: [null, Validators.required] });
   }
-   private createconclusionForm(): FormGroup {
-    return this.fb.group({ documento: [null, Validators.required], respuesta: [null, Validators.required] });
+  private createconclusionForm(): FormGroup {
+  return this.fb.group({
+    documento: [null, this.getDocumentoValidators()],
+    respuesta: [null, Validators.required]
+    });
+  }
+
+  private getDocumentoValidators() {
+    return this.usuario.idUsuarioRol === 7 ? Validators.required : null;
   }
   initFormConcluir() {
     this.conclusionForm = this.createconclusionForm();
@@ -216,24 +223,24 @@ baseurl = environment.baseurl;
     this.turnadoForm.reset();
   }
 
-  contestarTurnado(): void {
-    const estado = this.fileState.get('concluir');
-    if (this.conclusionForm.valid && estado?.file) {      
-      this.construirPayloadRespuestaTurnado().then((payload) => {   
-      this.turnadoApi.contestarTurnado(payload).subscribe(
-        (data) => {
-          this.onSuccessContestarTurnado(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
-    });
-      
-    } else {
-      this.conclusionForm.markAllAsTouched();
+    contestarTurnado(): void {
+      const estado = this.fileState.get('concluir');
+      if (this.conclusionForm.valid && (this.usuario.idUsuarioRol === 7 ? estado?.file : true)) {      
+        this.construirPayloadRespuestaTurnado().then((payload) => {   
+        this.turnadoApi.contestarTurnado(payload).subscribe(
+          (data) => {
+            this.onSuccessContestarTurnado(data);
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+      });
+        
+      } else {
+        this.conclusionForm.markAllAsTouched();
+      }
     }
-  }
   
   onSuccessContestarTurnado(data:any){
     if(data.status == 200){
@@ -673,6 +680,7 @@ baseurl = environment.baseurl;
       folio: this.turnadoSeleccionado.folio,
       documentos: [documentoPayload],
       respuesta: this.conclusionForm.get('respuesta')?.value || null,
+      atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false 
     };
     return payload;
   }

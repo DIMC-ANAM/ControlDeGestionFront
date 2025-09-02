@@ -85,6 +85,7 @@ export class DetalleAsuntosComponent {
 
   ngOnInit(): void {
     this.usuario = JSON.parse(localStorage.getItem('session')!);
+    
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();
       this.consultarTipoDocumento();
@@ -606,7 +607,9 @@ export class DetalleAsuntosComponent {
     }
   }
   turnarAsunto() {
+    console.log("this.turnados", this.turnados);
     this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
+      
       (data) => {
         this.onSuccessturnarAsunto(data);
       },

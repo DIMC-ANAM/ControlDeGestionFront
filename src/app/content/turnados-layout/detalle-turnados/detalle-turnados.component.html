@@ -29,12 +29,17 @@
         <span class="fw-semibold">Cumplimiento:</span> {{ fecha | fechaMexico:true }} hrs
       </div>
       
-      <div class="text-muted small">
+    <div class="text-muted small">
         <i class="fa-solid fa-hourglass-half text-deep-blue me-1"></i>
         <span class="fw-semibold">Días transcurridos:</span>
         <span class="fw-bolder">{{ turnadoSeleccionado.diasTranscurridos }}</span>
-      </div>
     </div>
+    <div class="text-muted small">
+        <i class="fa-solid fa-tasks  text-deep-blue me-1"></i>
+        <span class="fw-semibold">Instrucción: </span>
+        <span class="fw-bolder">{{ turnadoDS.instruccion }}</span>
+    </div>
+</div>
 
     <!-- Columna derecha -->
     <div class="text-end flex-shrink-0">
@@ -48,11 +53,11 @@
   </div>
 
                 <div class="d-flex gap-2">
-                    <button [disabled]="[3, 4].includes(this.turnadoDS.idStatusTurnado) || turnadoDS.idinstruccion == 1"  class="btn btn-primary btn-sm" (click)="openResponderModal()">
+                    <button [disabled]="[3, 4].includes(this.turnadoDS.idStatusTurnado) || turnadoDS.idinstruccion == 1 || turnadoDS.puedeResponder == 0 "  class="btn btn-primary btn-sm" (click)="openResponderModal()">
                         <i class="fas fa-share me-2"></i> Dar respuesta 
                     </button>
                     
-                    <div role="button" [ngClass]="{'d-none': [3, 4].includes(this.turnadoDS.idStatusTurnado)}"  class="btn btn-outline-secondary btn-sm" (click)="openRechazarTurnado()">
+                    <div role="button" [ngClass]="{'d-none': [3, 4].includes(this.turnadoDS.idStatusTurnado) || turnadoDS.idinstruccion == 1 } "  class="btn btn-outline-secondary btn-sm" (click)="openRechazarTurnado()">
                         <i class="fas fa-times me-2 fw-bold fa-"></i> Rechazar
                     </div>
                 </div>
@@ -478,13 +483,13 @@
 
                 <!-- Asignaciones -->
                 <div *ngIf="tabActiva === 'respuesta'">
-                    <div class="d-flex justify-content-between align-items-center mb-3 ">
+                    <div *ngIf="dependenciaDS.length > 0 && ![3,4].includes(turnadoDS.idStatusTurnado) " class="d-flex justify-content-between align-items-center mb-3 ">
                               <h6 class="fw-bold mb-0">Turnar el asunto</h6>
-                              <button class="btn btn-primary  tooltip-wrapper center up"
+                              <button  class="btn btn-primary  tooltip-wrapper center up"
                                   [attr.data-tooltip]="'Turnar'" (click)="openTurnarModal()">
                                           <i class="fas fa-share "></i>
-                                      </button>
-                                  </div>
+                                    </button>
+                    </div>
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h6 class="fw-bold mb-0">Detalle de la respuesta </h6>                        
                     </div>
@@ -629,7 +634,7 @@
 <ng-template #responderModal let-aceptar="aceptar" let-cancelar="cancelar">
      <div class="container">
         <form [formGroup]="conclusionForm">
-            <div class="mb-3">
+            <div class="mb-3" *ngIf="[1, 7].includes(usuario.idUsuarioRol)">
                 <div class="w-100">
                     <span class="mb-2 d-block frmlabel pt-0"><i
                             class="fas fa-file-arrow-up p-2 "></i>Documento de respuesta</span>
@@ -645,14 +650,14 @@
                         <input type="file" (change)="onFileSelected(conclusionForm, $event)" id="documentoCierre"
                             class="hidden-input">
                     </label>
+                    <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe
+                        adjuntar un documento de cierre.</p>
+                    <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
+                        Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
+                    </div>
                 </div>
 
-                <p *ngIf="getValidationStatus(conclusionForm,'documento') == 'invalid'" class="invalid-field">Debe
-                    adjuntar un documento de cierre.</p>
 
-                <div *ngIf="getFileName('concluir')" class="mt-2 text-muted text-center">
-                    Archivo seleccionado: <strong>{{ getFileName('concluir') }}</strong>
-                </div>
             </div>
 
             <div class="mb-3">

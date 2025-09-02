@@ -24,6 +24,7 @@ export class ListaTurnadosComponent {
   turnadoSeleccionadoItem: any = null;
   temaDS: any[] = [];
   cambio = true;
+  usuario: any = true;
 
     constructor(
       private turnadoApi: TurnadoService,
@@ -33,10 +34,11 @@ export class ListaTurnadosComponent {
     ){}
   
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem('session')!);
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.consultarTurnados();
-    this.consultarTema();
+    this.consultarTema ();
   }
   seleccionarTurnado(asuntoTurnado:any): void {
       this.turnadoSeleccionado.emit({idAsunto: asuntoTurnado.idAsunto, idTurnado: asuntoTurnado.idTurnado });
@@ -94,7 +96,7 @@ toDateOnly(date: Date): string {
   return date.toISOString().split('T')[0]; // '2025-08-14'
 }
    consultarTurnados(){
-      this.turnadoApi.consultarTurnados({idUnidadAdministrativa:   2   /* hay que cambiarlo  */
+      this.turnadoApi.consultarTurnados({idUnidadAdministrativa: 2 /* this.usuario.idDependencia */ /* hay que cambiarlo  */
   
       }).subscribe(
           (data) => {
