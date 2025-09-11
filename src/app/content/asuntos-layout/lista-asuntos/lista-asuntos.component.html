@@ -8,7 +8,6 @@
     </div>
 
     <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
-
       <div class="p-2 bg-light">
         <div class="row pb-3">
           <div class="col-md-12">
@@ -73,7 +72,8 @@
 
   <!-- Lista de tarjetas -->
   <div class="p-4 overflow-auto">
-  <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
+    <ng-container *ngIf="asuntosFiltrados.length != 0; else elseTemplate">
+      <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
     
     [ngClass]="{'seleccionado': asuntoSeleccionadoItem?.idAsunto === asunto.idAsunto, 'card-animada': cambio}"
     (click)="seleccionarAsunto(asunto.idAsunto)">
@@ -125,6 +125,15 @@
       </div>
     </div>
   </div>
-</div>
+  </div>
+    </ng-container>
+    <ng-template #elseTemplate>
+        <div class="d-flex align-items-center flex-column justify-content-center h-100">
+            <img src="img\filesnotFound.png" alt="" style="width: 28%; mix-blend-mode: diference;">
+            <p class="text-muted frmlabel pt-3 " style="transform: translateX(-6%);">No se encontraron asuntos</p>
+        </div>
+    </ng-template>
+    
+  
 </div>
 </div>

@@ -1,0 +1,28 @@
+
+
+.card-ld-stats {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 0; /* Elimina margen para que los hijos estén pegados */
+    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
+    text-align: center; /* Opcional: centrar texto */
+}
+.card-charts {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 0; /* Elimina margen para que los hijos estén pegados */
+    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
+    text-align: center; /* Opcional: centrar texto */
+}
+
+fieldset {
+  all: revert; /* Reestablece todos los estilos al estilo por defecto del navegador */
+  border: 1px solid #ccc; /* Asegura que el borde sea visible */
+  padding: 1rem;
+  margin: 1rem 0;
+}
+

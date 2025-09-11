@@ -18,7 +18,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptor } from './components/shared/interceptors/loader.interceptor';
-
+import { DataTablesModule } from 'angular-datatables';
 
 @NgModule({
   declarations: [
@@ -29,8 +29,10 @@ import { LoaderInterceptor } from './components/shared/interceptors/loader.inter
     BusquedaAvanzadaComponent,
     ReportesComponent,
     UnitTestComponent,
+    
   ],
   imports: [
+    DataTablesModule,
     LayoutsModule,
     BrowserModule,
     AppRoutingModule,
