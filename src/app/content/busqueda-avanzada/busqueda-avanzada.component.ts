@@ -37,11 +37,16 @@ export class BusquedaAvanzadaComponent {
     this.dtOptions = {
   pagingType: 'full_numbers',
   pageLength: 10,
-  responsive: true,
-  scrollX: true,
+    responsive: true,
+    scrollX: false, // Ya lo tienes bien
+    scrollCollapse: true, // Añade esto
+    autoWidth: false, // Importante: desactiva el cálculo automático de ancho
+    columnDefs: [
+      { targets: '_all', className: 'text-left' }, // Opcional: centrar contenido
+    ],
 dom: "<'row mb-3'<'col-md-9 d-flex justify-content-start align-items-center dt-buttons-container'B><'col-md-3 d-flex justify-content-end align-items-center'f>>" +
-     "<'row'<'col-12'tr>>" +
-     "<'row mt-3'<'col-sm-5'i><'col-sm-7'p>>",
+       "<'row'<'col-12'tr>>" +
+       "<'row mt-3'<'col-sm-5'i><'col-sm-7'p>>",
 
   language: {
     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/es-ES.json',
@@ -114,17 +119,16 @@ dom: "<'row mb-3'<'col-md-9 d-flex justify-content-start align-items-center dt-b
     });
     
   }
-   rerender(): void {
-    if (this.dtElement && this.dtElement.dtInstance) {
-     this.dtElement.dtInstance.then((dtInstance: any) => {
-        dtInstance.destroy();
-        this.dtTrigger.next(null);
-      });
-    }
+  rerender(): void {
+  if (this.dtElement && this.dtElement.dtInstance) {
+    this.dtElement.dtInstance.then((dtInstance: any) => {
+      dtInstance.destroy();
+      this.dtTrigger = new Subject(); // Crear un nuevo Subject antes de usarlo
+      this.dtTrigger.next(null);
+    });
   }
-
-  ngOnDestroy(): void {
-    this.dtTrigger.unsubscribe();
-  }
-
+}
+ngOnDestroy(): void {
+  this.dtTrigger.unsubscribe();
+}
 }

@@ -117,6 +117,7 @@ html {
     -webkit-text-size-adjust: 100%;
     -moz-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    overflow-x: hidden;
     
 }
 
@@ -129,6 +130,7 @@ body {
     font-size: var(--font-size-base);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
 }
 
 
@@ -720,37 +722,6 @@ input[type="checkbox"].form-check-input {
         background-color: var(--color-purple);
     }
 }
-
-
-/* tablas */
-.table-border-colapse {
-    border-collapse: collapse;
-
-    thead td,
-    thead th {
-        border: none;
-        color: var(--color-success-hover);
-        font-weight: 600;
-        font-size: small;
-
-        &:hover {
-            cursor: pointer;
-        }
-    }
-
-    tbody tr:hover {
-        background-color: #aaaaaa1d;
-        /* o el color que prefieras */
-    }
-
-    tbody td {
-        border: 1px solid #ccc;
-        /* Puedes cambiar el color según lo necesites */
-        padding: 2px 5px 3px 5px;
-    }
-
-}
-
 .tool-icon {
     font-size: 14px;
     color: var(--color-deep-blue);
@@ -951,4 +922,35 @@ input::-ms-clear {
 .dt-button:focus {
   outline: none;
   box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.5);
+}
+
+
+/* CSS principal para la tabla */
+.table-border-colapse {
+    table-layout: fixed;
+    border-collapse: collapse;
+    width: 100% !important; /* Fuerza el ancho completo */
+    
+    thead td,
+    thead th {
+        border: none;
+        color: var(--color-success-hover);
+        font-weight: 600;
+        font-size: small;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    tbody tr:hover {
+        background-color: #aaaaaa1d;
+    }
+
+    tbody td {
+        border: 1px solid #ccc;
+        padding: 2px 5px 3px 5px;
+        word-wrap: break-word; /* Manejo de texto largo */
+        overflow: hidden;
+    }
 }

@@ -21,7 +21,7 @@
         </div>
     </header>
 
-     <div class="container mt-3  p-3 bg-gray rounded-3 border-4 ">
+    <div class="container mt-3  p-3 bg-gray ">
         <div class="bg-light border-bottom p-3">
             <h5 class="card-title d-flex align-items-center gap-2 mb-0">
                 <i class="fas fa-filter text-primary"></i>
@@ -35,88 +35,82 @@
         <!-- filtros -->
         <div class="pt-2">
             <fieldset class="rounded-2">
-                <legend class=" small text-muted position-relative " > Rango de fecha de registro de asuntos. </legend>
+                <legend class=" small text-muted position-relative "> Rango de fecha de registro de asuntos. </legend>
                 <form class="row  gx-4 align-items-end">
                     <div class="col-12 col-sm-4">
                         <label for="start-date" class="form-label fw-medium ">Fecha de inicio</label>
-                        <input id="start-date" type="date" class="form-control" [(ngModel)]="startDate" name="startDate" />
+                        <input id="start-date" type="date" class="form-control" [(ngModel)]="startDate"
+                            name="startDate" />
                     </div>
-                    
+
                     <div class="col-12 col-sm-4">
                         <label for="end-date" class="form-label fw-medium ">Fecha de Fin</label>
                         <input id="end-date" type="date" class="form-control" [(ngModel)]="endDate" name="endDate" />
                     </div>
-                    
+
                     <div class="col-md-4 d-flex justify-content-center gap-2">
                         <button type="button" class="btn btn-primary d-flex align-items-center gap-2"
-                        (click)="applyFilter()">
-                        <i class="fas fa-calendar px-2"></i>
-                        <span>Aplicar</span>
-                    </button>
-                    
-                    <button type="button" class="btn btn-outline-secondary" (click)="clearFilter()">
-                        <i class="fas fa-filter px-2"> </i>
-                        Limpiar
-                    </button>
-                </div>
-            </form>
+                            (click)="applyFilter()">
+                            <i class="fas fa-calendar px-2"></i>
+                            <span>Aplicar</span>
+                        </button>
+
+                        <button type="button" class="btn btn-outline-secondary" (click)="clearFilter()">
+                            <i class="fas fa-filter px-2"> </i>
+                            Limpiar
+                        </button>
+                    </div>
+                </form>
             </fieldset>
         </div>
 
         <!-- resultados -->
-         <div class="pt-2">
-            <h2>Resultados de la búsqueda</h2>
+        <div class="pt-2 ">
 
-            <div class="header-title mt-4 border-rounded">
-                <div class="">
-                    <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-border-colapse  w-100">
+            <div>
+                <h2> Resultados de la búsqueda</h2>
+            </div>
+
+            <div class="mt-4">
+                <table datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger" class="table table-border-colapse">
                     <thead>
-                    <tr>
-                        <td class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="'Asunto'"><i class="fas fa-list-numeric "></i></span></td>
-                        <td> <i class="fas fa-file-alt "></i> No. oficio </td>
-                        <td> <i class="fas fa-archway"></i> Folio </td>
-                        <td> <i class="fas fa-message"></i> Descripción </td>
-                        <td> <i class="fas fa-building-columns"></i> Unidad responsable </td>
-                        <td> <i class="fas fa-calendar-day"></i> Fecha de registro </td>
-                        <td> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus del movimiento'"><i class="fas fa-spinner"></i>Estatus</span></td>
-                        <td> <i class="fas fa-gear"></i> Opciones</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor="let asunto of asuntos">
-                        <!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
-                        <td class="text-center "><i [ngClass]="true ?  'fas fa-person-military-rifle text-dark-gray' : 'fas fa-person text-dark-gray'"></i></td>
-                        <td>{{ asunto.nombre }}</td>
-                        <td>{{ asunto.rfc }}</td>
-                        <td>{{ asunto.nivel }}</td>
-                        <td>{{ asunto.puesto }}</td>
-                        <td>{{ asunto.fechaInicio }}</td>
-                        <td class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="asunto.status">
-                                <p class="tagged-text" [ngClass]="'tagged-text-' + asunto.idStatus">{{ asunto.status
-                                    }}</p>
-                            </span></td>
-                        <td class="text-center">
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
-                                    class="tool-icon fas fa-eye" #triggerBtn
-                                    (click)="null"></i></span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Editar registro'"> <i
-                                    class="tool-icon fas fa-pencil" #triggerBtn
-                                    (click)="null"></i></span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver expediente'"> <i
-                                    class="tool-icon fas fa-folder-open" #triggerBtn
-                                    (click)="null"></i></span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Descargar expediente (ZIP) '"><i
-                                    class="tool-icon fas fa-download" (click)="null"></i> </span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Generar Carta'"><i
-                                    class="tool-icon fas fa-file" (click)="null"></i> </span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Código QR'"><i
-                                    class="tool-icon fas fa-qrcode" (click)="null"></i> </span>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td> <i class="fas fa-file-alt "></i> No. oficio </td>
+                            <td> <i class="fas fa-archway"></i> Folio </td>
+                            <td> <i class="fas fa-message"></i> Descripción </td>
+                            <td> <i class="fas fa-building-columns"></i> Remitente </td>
+                            <td> <i class="fas fa-calendar-day"></i> Fecha de registro </td>
+                            <td> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus del asunto'"><i
+                                        class="fas fa-spinner"></i>Estatus</span></td>
+                            <td> <i class="fas fa-gear"></i> Opciones</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let asunto of asuntos">
+                            <!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
+                            <td>{{ asunto.nombre }}</td>
+                            <td>{{ asunto.rfc }}</td>
+                            <td>{{ asunto.nivel }}</td>
+                            <td>{{ asunto.puesto }}</td>
+                            <td>{{ asunto.fechaInicio }}</td>
+                            <td class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="asunto.status">
+                                    <p class="tagged-text" [ngClass]="'tagged-text-' + asunto.idStatus">{{
+                                        asunto.status
+                                        }}</p>
+                                </span></td>
+                            <td class="text-center">
+                                <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
+                                        class="tool-icon fas fa-eye" #triggerBtn (click)="null"></i></span>
 
-                </tbody>
-            </table>
+                                <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver expediente'"> <i
+                                        class="tool-icon fas fa-folder-open" #triggerBtn (click)="null"></i></span>
+                                <span class="tooltip-wrapper" [attr.data-tooltip]="'Descargar expediente (ZIP) '"><i
+                                        class="tool-icon fas fa-download" (click)="null"></i> </span>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-         </div>
-    </div>
-</div>
