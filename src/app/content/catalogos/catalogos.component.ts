@@ -1,10 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { ModalManagerService } from '../../components/shared/modal-manager.service';
-import { TemplateRef } from '@angular/core';
-import { ViewChild } from '@angular/core';
+import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ModalManagerService } from '../../components/shared/modal-manager.service';
 import { CatalogoService } from '../../../api/catalogo/catalogo.service';
-import { response } from 'express';
+import { UtilsService } from '../../services/utils.service';
+import { TipoToast } from '../../../api/entidades/enumeraciones';
 
 export type Fecha = Date | string;
 
@@ -29,58 +28,65 @@ export interface Determinante {
   templateUrl: './catalogos.component.html',
   styleUrl: './catalogos.component.scss'
 })
-export class CatalogosComponent implements OnInit{
+export class CatalogosComponent implements OnInit {
+
+  rows: Determinante[] = [];
+  
+  term = '';
+  pageSizeOptions = [5, 10, 25];
+  pageSize = 5;
+  currentPage = 1;
+  
+  determinanteForm!: FormGroup;
+  editarDeterminanteForm!: FormGroup;
+   // referencias a los modales
+  @ViewChild('modalRegistrar') modalRegistrar!: TemplateRef<any>;
+  @ViewChild('modalEditar') modalEditar!: TemplateRef<any>;
+  @ViewChild('modalEliminar') modalEliminar!: TemplateRef<any>;
+    //loaders para modales
+  isLoadingRegistrar = false;
+  isLoadingEditar = false;
+  isLoadingEliminar = false;
+  determinanteAEliminar: Determinante | null = null;
+
+  constructor(
+    private fb: FormBuilder,
+    private modalManager: ModalManagerService,
+    private catalogoService: CatalogoService,
+    private utils: UtilsService
+  ) {
+    this.initFormularios();
+  }
 
   ngOnInit(): void {
-      this.cargarDeterminantes();
+    this.cargarDeterminantes();
   }
-  // cargar datos desde la API
+
+// carga los datos a la tabla 
   cargarDeterminantes(): void {
-    const data = { id: 0}; //obtenemos todos los registros 
+    const data = { id: 0 }; 
 
     this.catalogoService.consultarDeterminantes(data).subscribe({
       next: (response: any) => {
-        console.log('Repuesta de la API', response);
-        if (response.status == 200){
-          this.rows = response.model || [];
-          console.log('determinantes cargados');
-        }else{
-          console.log('error al cargar determinantes', response.message);
-          this.rows = []; //array vacio en cas de error
+        if (response.status === 200) {
+          this.rows = response.model;
+        } else {
+          this.utils.MuestrasToast(TipoToast.Warning, response.message);
         }
       },
       error: (error) => {
-        console.error('error en API', error);
-        this.rows = []; //array vacio en cas de error
+        this.utils.MuestraErrorInterno(error);
       }
     });
   }
 
-    
-
-
-  rows: Determinante[] = [
-    { id: 1,  nivel: 'Nivel1',  unidadDeNegocio: 'Negocio1',  unidadAdministrativa: 'Admin1',  area: 'Area1',  determinante: 'Determinante1',  dependencia: 'Dependencia1',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 1,  idUsuarioCreacion: 1,  activo: true },
-    { id: 2,  nivel: 'Nivel2',  unidadDeNegocio: 'Negocio2',  unidadAdministrativa: 'Admin2',  area: 'Area2',  determinante: 'Determinante2',  dependencia: 'Dependencia2',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 2,  idUsuarioCreacion: 2,  activo: true },
-    { id: 3,  nivel: 'Nivel3',  unidadDeNegocio: 'Negocio3',  unidadAdministrativa: 'Admin3',  area: 'Area3',  determinante: 'Determinante3',  dependencia: 'Dependencia3',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 3,  idUsuarioCreacion: 3,  activo: true },
-    { id: 4,  nivel: 'Nivel4',  unidadDeNegocio: 'Negocio4',  unidadAdministrativa: 'Admin4',  area: 'Area4',  determinante: 'Determinante4',  dependencia: 'Dependencia4',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 4,  idUsuarioCreacion: 4,  activo: true },
-    { id: 5,  nivel: 'Nivel5',  unidadDeNegocio: 'Negocio5',  unidadAdministrativa: 'Admin5',  area: 'Area5',  determinante: 'Determinante5',  dependencia: 'Dependencia5',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 5,  idUsuarioCreacion: 5,  activo: true },
-    { id: 6,  nivel: 'Nivel6',  unidadDeNegocio: 'Negocio6',  unidadAdministrativa: 'Admin6',  area: 'Area6',  determinante: 'Determinante6',  dependencia: 'Dependencia6',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 6,  idUsuarioCreacion: 6,  activo: true },
-    { id: 7,  nivel: 'Nivel7',  unidadDeNegocio: 'Negocio7',  unidadAdministrativa: 'Admin7',  area: 'Area7',  determinante: 'Determinante7',  dependencia: 'Dependencia7',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 7,  idUsuarioCreacion: 7,  activo: true },
-    { id: 8,  nivel: 'Nivel8',  unidadDeNegocio: 'Negocio8',  unidadAdministrativa: 'Admin8',  area: 'Area8',  determinante: 'Determinante8',  dependencia: 'Dependencia8',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 8,  idUsuarioCreacion: 8,  activo: true },
-    { id: 9,  nivel: 'Nivel9',  unidadDeNegocio: 'Negocio9',  unidadAdministrativa: 'Admin9',  area: 'Area9',  determinante: 'Determinante9',  dependencia: 'Dependencia9',  fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 9,  idUsuarioCreacion: 9,  activo: true },
-    { id: 10, nivel: 'Nivel10', unidadDeNegocio: 'Negocio10', unidadAdministrativa: 'Admin10', area: 'Area10', determinante: 'Determinante10', dependencia: 'Dependencia10', fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 10, idUsuarioCreacion: 10, activo: true },
-    { id: 11, nivel: 'Nivel11', unidadDeNegocio: 'Negocio11', unidadAdministrativa: 'Admin11', area: 'Area11', determinante: 'Determinante11', dependencia: 'Dependencia11', fechaRegistro: '2025-09-15T12:41:49', fechaModificacion: '2025-09-15T12:41:49', idUsuarioModifica: 11, idUsuarioCreacion: 11, activo: true },
-  ];
-
-    // barra de busqueda
-  term = '';
+  //  metodos de busqueda y filtrado para paginacion y filtro 
 
   private normalize(s: unknown): string {
     return String(s ?? '')
       .toLowerCase()
       .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, ''); // sin acentos
+      .replace(/[\u0300-\u036f]/g, ''); // quitar los acentos 
   }
 
   private matches(row: Determinante, t: string): boolean {
@@ -111,9 +117,6 @@ export class CatalogosComponent implements OnInit{
   }
 
   // paginación
-  pageSizeOptions = [5, 10, 25];
-  pageSize = 5;
-  currentPage = 1;
 
   get totalItems()  { return this.filtered.length; }
   get totalPages()  { return Math.max(1, Math.ceil(this.totalItems / this.pageSize)); }
@@ -128,56 +131,253 @@ export class CatalogosComponent implements OnInit{
   goToLast() { this.currentPage = this.totalPages; }
   goToPage(p: number){ if (p>=1 && p<=this.totalPages) this.currentPage = p; }
 
-  onPageSizeChange(e: Event){
+  onPageSizeChange(e: Event): void {
     this.pageSize = Number((e.target as HTMLSelectElement).value);
     this.currentPage = 1;
   }
 
-  //  Acciones 
-  onCreate()               { console.log('Registrar nuevo'); }
-  onEdit(r: Determinante)  { console.log('Editar', r.id); }
-  onDelete(r: Determinante){ console.log('Eliminar', r.id); }
-
-
-  // Modal para registrar
-  determinanteForm!: FormGroup;
-@ViewChild('modalRegistrar') modalRegistrar!: TemplateRef<any>;
-
-constructor(
-  private fb: FormBuilder,
-  private modalManager: ModalManagerService,
-  private catalogoService : CatalogoService
-) {
-  this.initForm();
-}
-
-private initForm(): void {
-  this.determinanteForm = this.fb.group({
-    nivel: ['', [Validators.required, Validators.maxLength(50)]],
-    unidadDeNegocio: ['', [Validators.required, Validators.maxLength(100)]],
-    unidadAdministrativa: ['', [Validators.required, Validators.maxLength(100)]],
-    area: ['', [Validators.required, Validators.maxLength(100)]],
-    determinante: ['', [Validators.required, Validators.maxLength(200)]],
-    dependencia: ['', [Validators.required, Validators.maxLength(100)]]
-  });
-}
-
-openRegistrarModal(): void {
-  this.determinanteForm.reset(); 
-  this.modalManager.openModal({
-    title: '<i class="fas fa-plus me-2"></i>Registrar Determinante',
-    template: this.modalRegistrar,
-    showFooter: true,
-    onAccept: () => this.guardarDeterminante(),
-    onCancel: () => console.log('Modal cancelado')
-  });
-}
-
-// funcion para guardar y cargar los datos en la api 
-guardarDeterminante(): void {
-  if (this.determinanteForm.valid) {
-    console.log('Datos del formulario:', this.determinanteForm.value);
-    // Aquí irá la lógica para guardar en la API
+  //metodos para iconos de editar y delete
+  onEdit(r: Determinante): void { 
+    this.openEditModal(r); 
   }
-}
+  onDelete(r: Determinante): void { 
+    this.openDeleteModal(r); 
+  }
+
+  //   * * * * * * * * * * * * * * * * * * * * * * * * * * INICIALIZACIÓN DE FORMULARIOS  * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
+  initFormularios(): void {
+    // inicializaciond e registro con todos los campos obligatorios
+    this.determinanteForm = this.fb.group({
+      nivel: ['', [Validators.required, Validators.maxLength(50)]],
+      unidadDeNegocio: ['', [Validators.required, Validators.maxLength(100)]],
+      unidadAdministrativa: ['', [Validators.required, Validators.maxLength(100)]],
+      area: ['', [Validators.required, Validators.maxLength(100)]],
+      determinante: ['', [Validators.required, Validators.maxLength(200)]],
+      dependencia: ['', [Validators.required, Validators.maxLength(100)]]
+    });
+
+    // inicializaciond de update solo con area y determinante obligatorios
+    this.editarDeterminanteForm = this.fb.group({
+      id: ['', Validators.required],
+      nivel: [''],
+      unidadDeNegocio: [''],
+      unidadAdministrativa: [''],
+      area: ['', Validators.required],
+      determinante: ['', Validators.required],
+      dependencia: ['']
+    });
+  }
+
+  //   * * * * * * * * * * * * * * * * * * * * * * * * * * MODAL DE REGISTRO  * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+  openRegistrarModal(): void {
+    this.determinanteForm.reset(); 
+    this.modalManager.openModal({
+      title: '<i class="fas fa-plus me-2"></i>Registrar Determinante',
+      template: this.modalRegistrar,
+      showFooter: true,
+      onAccept: () => this.intentarRegistrar()
+    });
+  }
+
+  private isValidForRegister(): boolean {
+    const area = this.determinanteForm.get('area')?.value?.trim();
+    const determinante = this.determinanteForm.get('determinante')?.value?.trim();
+    const unidadDeNegocio = this.determinanteForm.get('unidadDeNegocio')?.value?.trim();
+    const unidadAdministrativa = this.determinanteForm.get('unidadAdministrativa')?.value?.trim();
+    //validaciones de campos en front - no necesarias porque ya están duplicadas en el SP pero es una doble validacion por si el front es comprometido
+    if (!area) {
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo área es requerido');
+      this.determinanteForm.get('area')?.markAsTouched();
+      return false;
+    }
+    if (!determinante) {
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo determinante es requerido');
+      this.determinanteForm.get('determinante')?.markAsTouched();
+      return false;
+    }
+    if (!unidadDeNegocio){
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo unidad de negocio es requerido');
+      this.determinanteForm.get('unidadDeNegocio')?.markAsTouched();
+      return false;
+    }
+    if (!unidadAdministrativa){
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo unidad adminsitrativa es requerida');
+      this.determinanteForm.get('unidadAdministrativa')?.markAsPending();
+
+    }
+
+    return true;
+  }
+
+
+  intentarRegistrar(): void {
+    if (this.isValidForRegister()) {
+      this.guardarDeterminante();
+    }
+  }
+
+  private guardarDeterminante(): void {
+    this.isLoadingRegistrar = true;
+    
+    this.catalogoService.insertarDeterminantes(this.determinanteForm.value).subscribe(
+      (data) => {
+        this.onSuccessGuardarDeterminante(data);
+      },
+      (ex) => {
+        this.isLoadingRegistrar = false;
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+
+  onSuccessGuardarDeterminante(data: any) {
+    this.isLoadingRegistrar = false;
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, 'Determinante registrado correctamente');
+      this.cargarDeterminantes();
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+
+  //   * * * * * * * * * * * * * * * * * * * * * * * * * * MODAL DE EDICIÓN  * * * * * * * * * * * * * * * * * * * * * * * * * * 
+
+
+  openEditModal(determinante: Determinante): void {
+    this.editarDeterminanteForm.patchValue({ //por si algun campo falta
+      id: determinante.id,
+      nivel: determinante.nivel || '',
+      unidadDeNegocio: determinante.unidadDeNegocio || '',
+      unidadAdministrativa: determinante.unidadAdministrativa || '',
+      area: determinante.area || '',
+      determinante: determinante.determinante || '',
+      dependencia: determinante.dependencia || ''
+    });
+
+    this.modalManager.openModal({
+      title: '<i class="fas fa-edit me-2"></i>Editar Determinante',
+      template: this.modalEditar,
+      showFooter: true,
+      onAccept: () => this.intentarActualizar()
+    });
+  }
+
+  //validaciones de campos 
+  private isValidForUpdate(): boolean {
+    const area = this.editarDeterminanteForm.get('area')?.value?.trim();
+    const determinante = this.editarDeterminanteForm.get('determinante')?.value?.trim();
+      //solo dos validaciones porque es actualizar, no registrar
+    if (!area) {
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo área es requerido');
+      this.editarDeterminanteForm.get('area')?.markAsTouched();
+      return false;
+    }
+    if (!determinante) {
+      this.utils.MuestrasToast(TipoToast.Warning, 'El campo determinante es requerido');
+      this.editarDeterminanteForm.get('determinante')?.markAsTouched();
+      return false;
+    }
+    return true;
+  }
+
+  intentarActualizar(): void {
+    if (this.isValidForUpdate()) {
+      this.actualizarDeterminante();
+    }
+  }
+
+  private actualizarDeterminante(): void {
+    this.isLoadingEditar = true;
+    
+    this.catalogoService.actualizarDeterminantes(this.editarDeterminanteForm.value).subscribe(
+      (data) => {
+        this.onSuccessActualizarDeterminante(data);
+      },
+      (ex) => {
+        this.isLoadingEditar = false;
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+
+  onSuccessActualizarDeterminante(data: any) {
+    this.isLoadingEditar = false;
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, 'Determinante actualizado correctamente');
+      this.cargarDeterminantes();
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+
+  //   * * * * * * * * * * * * * * * * * * * * * * * * * * MODAL DE ELIMINACIÓN  * * * * * * * * * * * * * * * * * * * * * * * * * * 
+  openDeleteModal(determinante: Determinante): void {
+    this.determinanteAEliminar = determinante;
+    this.modalManager.openModal({
+
+      title: 'Confirmar Eliminación',
+      template: this.modalEliminar,
+      showFooter: true,
+      onAccept: () => this.intentarEliminar()
+    });
+  }
+
+  intentarEliminar(): void {
+    if (this.determinanteAEliminar) {
+      this.eliminarDeterminante();
+    }
+  }
+
+  private eliminarDeterminante(): void {
+    if (!this.determinanteAEliminar) return; // regresa si no hay id detectado para eliminar
+    this.isLoadingEliminar = true;
+    const datosEliminar = { id: this.determinanteAEliminar.id };
+    
+    this.catalogoService.desactivarDeterminantes(datosEliminar).subscribe(
+      (data) => {
+        this.onSuccessEliminarDeterminante(data);
+      },
+      (ex) => {
+        this.isLoadingEliminar = false;
+        this.utils.MuestraErrorInterno(ex);
+        this.determinanteAEliminar = null;
+      }
+    );
+  }
+  onSuccessEliminarDeterminante(data: any) {
+    this.isLoadingEliminar = false;
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, 'Determinante eliminado correctamente');
+      this.cargarDeterminantes();
+      this.determinanteAEliminar = null;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message || 'Error al eliminar el determinante');
+    }
+  }
+
+  //  * * * * * * * * * * * * * * * * * * * * * * * * * *  utilidades 
+
+        // muestra el estado de validacion de los campos en el formulario de editar
+  getValidationStatusEditar(fieldName: string): string {
+    const field = this.editarDeterminanteForm.get(fieldName);
+    if (field?.valid && field?.touched) {
+      return 'valid';
+    } else if (field?.invalid && field?.touched) {
+      return 'invalid';
+    }
+    return '';
+  }
+
+  //solo numeros en formularios
+  onlyNumbers(event: KeyboardEvent): void {
+    const charCode = event.which ? event.which : event.keyCode; //codigo ascci de la tecla presionada
+    
+    // solo numeros 0al 9
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+    }
+  }
 }

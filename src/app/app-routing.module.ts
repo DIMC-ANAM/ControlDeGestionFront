@@ -7,6 +7,7 @@ import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asun
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
+import { CatalogosComponent } from './content/catalogos/catalogos.component';
 import { AuthGuard } from './services/auth-guard';
 const routes: Routes = [
   {
@@ -50,6 +51,10 @@ const routes: Routes = [
         path: 'test',
         component: UnitTestComponent
       },
+      {
+        path: 'catalogos',
+        component: CatalogosComponent
+      }
       
     ]
   },

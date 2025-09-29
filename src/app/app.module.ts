@@ -19,6 +19,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptor } from './components/shared/interceptors/loader.interceptor';
 import { DataTablesModule } from 'angular-datatables';
+import { CatalogosComponent } from './content/catalogos/catalogos.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { DataTablesModule } from 'angular-datatables';
     BusquedaAvanzadaComponent,
     ReportesComponent,
     UnitTestComponent,
+    CatalogosComponent,
     
   ],
   imports: [

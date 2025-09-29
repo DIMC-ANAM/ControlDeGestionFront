@@ -13,3 +13,12 @@
   vertical-align: middle;
 }
 
+.table-burgundy {
+  background-color: #a52a48 !important;
+  color: white !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(165, 42, 72, 0.08) !important;
+}
+

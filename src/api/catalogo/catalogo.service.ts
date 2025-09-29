@@ -32,5 +32,17 @@ export class CatalogoService {
   consultarDependencia(data:any) {
     return this.http.post(this.urlBase + 'consultarDependencia', data);
   }
+  consultarDeterminantes(data:any) {
+    return this.http.post(this.urlBase + 'consultarDeterminantes', data);
+  }
+  insertarDeterminantes(data:any){
+    return this.http.post(this.urlBase + 'insertarDeterminantes', data);
+  }
+  actualizarDeterminantes(data:any){
+    return this.http.post(this.urlBase + 'actualizarDeterminantes', data);
+  }
+  desactivarDeterminantes(data:any){
+    return this.http.post(this.urlBase + 'desactivarDeterminantes', data);
+  }
 }
 
