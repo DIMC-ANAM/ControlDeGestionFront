@@ -30,7 +30,7 @@ export class SidebarComponent implements OnInit {
     {
       id: 'consultarAsuntos',
       label: 'Asuntos registrados',
-      icon: 'fas fa-file-import',
+      icon: 'fas fa-search',
       link: '/consultar-asuntos',
       rol: [1,2,9999],
     },
