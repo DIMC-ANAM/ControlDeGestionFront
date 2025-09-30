@@ -267,7 +267,14 @@ export class CatalogosComponent implements OnInit {
 
   //validaciones de campos 
   private isValidForUpdate(): boolean {
-    const area = this.editarDeterminanteForm.get('area')?.value?.trim();
+
+    if (this.editarDeterminanteForm.invalid ) {
+      this.utils.MuestrasToast(TipoToast.Warning, 'Se requiere llenar los campos correctamente.');
+      this.editarDeterminanteForm.markAllAsTouched();
+      return false;
+    }
+    return true;
+    /* const area = this.editarDeterminanteForm.get('area')?.value?.trim();
     const determinante = this.editarDeterminanteForm.get('determinante')?.value?.trim();
       //solo dos validaciones porque es actualizar, no registrar
     if (!area) {
@@ -280,7 +287,7 @@ export class CatalogosComponent implements OnInit {
       this.editarDeterminanteForm.get('determinante')?.markAsTouched();
       return false;
     }
-    return true;
+    return true; */
   }
 
   intentarActualizar(): void {
@@ -318,7 +325,7 @@ export class CatalogosComponent implements OnInit {
     this.determinanteAEliminar = determinante;
     this.modalManager.openModal({
 
-      title: 'Confirmar Eliminación',
+      title: ' <i class="fas fa-exclamation-triangle text-warning me-2"></i> Confirmar Eliminación',
       template: this.modalEliminar,
       showFooter: true,
       onAccept: () => this.intentarEliminar()
