@@ -24,6 +24,9 @@
 
 
     <div class="container mt-4 p-3 bg-gray rounded-3 border-4">
+        <div class="mb-3">
+        <input type="text" placeholder="Buscar por nombre, RFC, puesto..." [(ngModel)]="searchTerm" (input)="applyFilter()" class="form-control" />
+        </div>
         <div class="col-md-12 right align-items-right">
 
             <table class="w-100 table-responsive  table-border-colapse ">
@@ -38,7 +41,11 @@
                         <td> <i class="fas fa-gear"></i> Opciones</td>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody *ngIf="paginaPersonal.length > 0; else noData">
+                    <tr *ngFor="let persona of paginaPersonal">
+                        <!-- tus columnas aquí -->
+                    </tr>
+
                     <tr *ngFor="let persona of paginaPersonal">
                         <!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
                         
@@ -62,10 +69,25 @@
                     </tr>
 
                 </tbody>
+
+            <ng-template #noData>
+            <tbody>
+                <tr>
+                <td colspan="8" class="text-center py-4 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No hay registros disponibles.
+                </td>
+                </tr>
+            </tbody>
+            </ng-template>
             </table>
 
             <div class="text-end my-2" *ngIf="personal.length > 0">
-            Mostrando <strong> {{ paginaPersonal.length }}</strong> de <strong>{{ personal.length }} </strong> registros
+            Mostrando del
+            <strong>{{ currentPage * pageSize + 1 }} </strong>
+            al 
+            <strong>{{ Math.min((currentPage + 1) * pageSize, filteredPersonal.length) }} </strong>
+            de <strong>{{ filteredPersonal.length }}</strong> registros
             </div>
 			<div class="pagination">
 				<button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
