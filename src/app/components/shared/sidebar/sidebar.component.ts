@@ -46,14 +46,14 @@ export class SidebarComponent implements OnInit {
       label: 'Búsqueda avanzada',      
       icon: 'fas fa-search',
       link: '/busqueda-avanzada',
-      rol: [1,2,7],
+      rol: [1,2,7,9999],
     },
     {
       id: 'reportes',
       label: 'Reportes',
       icon: 'fas fa-chart-pie',
       link: '/reportes',
-      rol: [1,2,7],
+      rol: [1,2,7,9999],
     },
     {
       id: 'catalogos',
@@ -61,6 +61,13 @@ export class SidebarComponent implements OnInit {
       icon: 'fas fa-cogs',
       link: '/catalogos',
       rol: [1,2,9999],
+    },
+    {
+      id: 'admin-usuarios',
+      label: 'Administración de usuarios',
+      icon: 'fas fa-users-cog',
+      link: '/admin-usuarios',
+      rol: [9999],
     },
   ];
   menuUsuario:any = []

@@ -26,6 +26,7 @@ export class DetalleAsuntosComponent {
   reemplazarDocumentoModal!: TemplateRef<any>;
   @ViewChild('verDocumentoModal', { static: true })
   verDocumentoModal!: TemplateRef<any>;
+  @ViewChild('eliminarDocumentoModal', { static: true }) eliminarDocumentoModal!: TemplateRef<any>;
 
   @Input() idAsunto: number | null = null;
   @Output() cambio = new EventEmitter<string>();
@@ -154,6 +155,17 @@ export class DetalleAsuntosComponent {
     });
   }
 
+  openeliminarDocumentoModal(idDocumento:any){/* id del documento!!!  */
+    this.modalManager.openModal(
+      {
+        title: " <i class= 'fas fa-warning me-2 text-warning'> </i> ¿Eliminar este documento?",
+        template: this.eliminarDocumentoModal,
+        showFooter: true,
+        onAccept: () => this.eliminarDocumento(idDocumento)
+      }
+    );
+
+  }
   openReemplazarModal() {
     this.initFormReemplazar();
     this.openModal({
@@ -549,7 +561,7 @@ export class DetalleAsuntosComponent {
   consultarDependencia() {
     this.catalogoApi
       .consultarDependencia({
-        idDependencia: this.usuario.idDependencia || 18 ,
+        idDependencia: this.usuario.idDeterminante,
         opcion: 2
       })
       .subscribe(
@@ -675,7 +687,7 @@ onSuccesscargarAnexos(data: any) {
   }
 
 
-    eliminarDocumento(idDocumento: number){
+  eliminarDocumento(idDocumento: number){
 	this.asuntoApi.eliminarDocumento({ idDocumentAsunto: idDocumento }).subscribe(
       (data) => {
         this.onSuccesseliminarDocumento(data);
@@ -835,8 +847,8 @@ onSuccesscargarAnexos(data: any) {
       observaciones: this.asuntoSeleccionado.observaciones,
       descripcionAsunto: this.asuntoSeleccionado.descripcionAsunto,
       idUsuarioModifica: this.usuario.idUsuario,
-      fechaCumplimiento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaCumplimiento),
-      fechaDocumento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaDocumento),
+      fechaCumplimiento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaCumplimiento == '' ? null:this.asuntoSeleccionado.fechaCumplimiento),
+      fechaDocumento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaDocumento == '' ? null: this.asuntoSeleccionado.fechaDocumento),
       remitenteNombre: this.asuntoSeleccionado.remitenteNombre,
       remitenteCargo: this.asuntoSeleccionado.remitenteCargo,
       remitenteDependencia: this.asuntoSeleccionado.remitenteDependencia,
@@ -905,8 +917,8 @@ setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): voi
   this.asuntoSeleccionadoModificado = true;
 }
 
- formatearFechaParaBD(fechaISO: string): string {
-  if (!fechaISO) return '';
+ formatearFechaParaBD(fechaISO: string): string | null {
+  if (!fechaISO) return null;
   // Quita la 'T' y la 'Z', y corta los milisegundos
   return fechaISO.replace('T', ' ').substring(0, 19);
 }

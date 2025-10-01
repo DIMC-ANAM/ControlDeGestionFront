@@ -145,6 +145,7 @@ ngOnInit(): void {
     nombreUsuario: 'admin',
     idUsuario: 9999,
     unidadAdscripcion: 'ROOT',
+    idDeterminante: 21,
     accesos:{
       idUsuarioRol: 9999,
     }

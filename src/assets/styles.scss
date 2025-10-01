@@ -951,6 +951,6 @@ input::-ms-clear {
         border: 1px solid #ccc;
         padding: 2px 5px 3px 5px;
         word-wrap: break-word; /* Manejo de texto largo */
-        overflow: hidden;
+        /* overflow: hidden; */
     }
 }

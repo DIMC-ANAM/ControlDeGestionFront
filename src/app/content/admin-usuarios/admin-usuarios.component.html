@@ -1,0 +1,93 @@
+<div class="container-fluid p-4">
+
+    <header class="bg-light border-bottom">
+        <div class="container py-4 px-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="p-2 bg-primary rounded">
+                        <!-- Icono de archivo (puedes usar Bootstrap Icons o Font Awesome) -->
+                        <i class="fas fa-users-cog text-white fs-4"></i>
+                    </div>
+                    <div class="text-left">
+                        <h1 class="fw-bold text-dark mb-1 px-0">Administración de usuarios</h1>
+                        <p class="text-muted mb-0">Administrador de usuarios del sistema</p>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 text-muted small">
+                    <i class="bi bi-calendar"></i>
+                    <span>Última actualización: Hoy</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <div class="container mt-4 p-3 bg-gray rounded-3 border-4">
+        <div class="col-md-12 right align-items-right">
+
+            <table class="w-100 table-responsive  table-border-colapse ">
+                <thead>
+                    <tr>
+                        <td> <i class="fas fa-user"></i> Nombre(s) </td>
+                        <td> <i class="fas fa-at"></i> Correo electrónico </td>
+                        <td> <i class="fas fa-diagram-project"></i> Rol de usuario </td>
+                        <td> <i class="fas fa-calendar-alt"></i> Fecha registro </td>
+                        <td> <i class="fas fa-clock-rotate-left"></i> Último inicio de sesión </td>
+                        <td> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i class="fas fa-spinner"></i>Estatus</span></td>
+                        <td> <i class="fas fa-gear"></i> Opciones</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let persona of paginaPersonal">
+                        <!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
+                        
+                        <td>{{ persona.nombre }}</td>
+                        <td>{{ persona.correoElectronico }}</td>
+                        <td>{{ persona.rolUsuario }}</td>
+                        <td>{{ persona.fechaRegistro }}</td>
+                        <td>{{ persona.fechaInicioSesion }}</td>
+                        <td class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="persona.status">
+                                <p class="tagged-text" [ngClass]="'tagged-text-' + persona.idStatus">{{ persona.status
+                                    }}</p>
+                            </span></td>
+                        <td class="text-center">
+                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
+                                    class="tool-icon fas fa-eye" #triggerBtn
+                                    (click)="null"></i></span>
+                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Eliminar registro'"> <i
+                                    class="tool-icon fas fa-trash-alt" #triggerBtn
+                                    (click)="null"></i></span>
+                        </td>
+                    </tr>
+
+                </tbody>
+            </table>
+
+            <div class="text-end my-2" *ngIf="personal.length > 0">
+            Mostrando <strong> {{ paginaPersonal.length }}</strong> de <strong>{{ personal.length }} </strong> registros
+            </div>
+			<div class="pagination">
+				<button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
+			  
+				<ng-container *ngIf="visiblePages[0] > 0">
+				  <span>...</span>
+				</ng-container>
+			  
+				<ng-container *ngFor="let page of visiblePages">
+				  <button (click)="goToPage(page)" [class.active]="page === currentPage">
+					{{ page + 1 }}
+				  </button>
+				</ng-container>
+			  
+				<ng-container *ngIf="visiblePages[visiblePages.length - 1] < totalPages - 1">
+				  <span>...</span>
+				</ng-container>
+			  
+				<button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Siguiente &gt;</button>
+			  </div>
+		</div>
+
+    </div>
+
+</div>

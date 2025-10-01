@@ -8,20 +8,20 @@ import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
 import { AuthGuard } from './services/auth-guard';
+import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
 const routes: Routes = [
   {
     path: 'auth',
-    loadChildren: () => import('./content/cuenta/cuenta.module').then(m => m.CuentaModule)
+    loadChildren: () =>
+      import('./content/cuenta/cuenta.module').then(m => m.CuentaModule)
   },
   {
     path: '',
     component: GeneralComponent,
-    canActivate: [AuthGuard],      // <-- Aquí el guard
+    canActivate: [AuthGuard],
     children: [
-      {
-        path: 'dashboard',
-        component: DashboardComponent
-      },
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // 👈 aquí el redirect
+      { path: 'dashboard', component: DashboardComponent },
       {
         path: 'registro-asunto',
         component: RegistroAsuntoComponent
@@ -50,14 +50,14 @@ const routes: Routes = [
         path: 'test',
         component: UnitTestComponent
       },
+      {
+        path: 'admin-usuarios',
+        component: AdminUsuariosComponent
+      },
       
     ]
   },
-    {
-    path: '',
-    redirectTo: 'auth/login',
-    pathMatch: 'full'
-  },
+    { path: '**', redirectTo: 'auth/login' },
 
   {
     path: 'ux-design',

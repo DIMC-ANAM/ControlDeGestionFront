@@ -1,6 +1,6 @@
 <div class="sidebar-container">
 			<!-- Sidebar -->
-			<nav class="sidebar bg-secondary" [class.collapsed]="sidebarService.isCollapsed()"
+				<nav class="sidebar " [class.collapsed]="sidebarService.isCollapsed()"
 			 [class.mobile-visible]="sidebarService.isMobile() && sidebarService.isExpanded()">
 
 				<!-- Menú de navegación -->
@@ -12,7 +12,7 @@
 						</a>
 					</li>
 				</ul>
-				<div class="d-block">
+				<div class="d-block" [ngClass]="{'d-none': sidebarService.isCollapsed()}">
 					<!-- <div  style= " position: absolute; width: 90vh; height: 70vh; background-color: #43020244; border-radius: 50%; left: -30%; z-index: -1;"></div> -->
 					<img src="/img/anam.png" alt="" width="180" height="120" class="mx-auto d-block  my-5 ">
 				</div>

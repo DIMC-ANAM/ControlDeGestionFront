@@ -3,8 +3,8 @@
   top: 50px;
   height: calc(100vh - 50px);
   width: 250px;
-  background-color: #9f2241;/* usa variables si puedes */
-  color: white;
+  background-color: #c0c0c054;/* usa variables si puedes */
+  
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   transition: width 0.3s ease, transform 0.3s ease;
   z-index: 1000;
@@ -38,7 +38,8 @@
   align-items: center;
   gap: 1rem;
   padding: 0.875rem 1rem;
-  color: white;
+  /* color: white; */
+  color: var(--color-deep-blue);
   text-decoration: none;
   border-radius: 8px;
   transition: all 0.2s ease;
