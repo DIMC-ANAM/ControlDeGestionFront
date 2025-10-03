@@ -1,4 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { CatalogoService } from '../../../api/catalogo/catalogo.service';
+import { UsuarioService } from '../../../api/usuario/usuario.service';
+import { ModalManagerService } from '../../components/shared/modal-manager.service';
+import { UtilsService } from '../../services/utils.service';
+import { TipoToast } from '../../../api/entidades/enumeraciones';
 
 @Component({
   selector: 'app-admin-usuarios',
@@ -7,6 +13,12 @@ import { Component } from '@angular/core';
   styleUrl: './admin-usuarios.component.scss',
 })
 export class AdminUsuariosComponent {
+  @ViewChild('crearUsuarioModal', { static: true }) crearUsuarioModal!: TemplateRef<any>;
+  @ViewChild('editarUsuarioModal', { static: true }) editarUsuarioModal!: TemplateRef<any>;
+  @ViewChild('eliminarUsuarioModal', { static: true }) eliminarUsuarioModal!: TemplateRef<any>;
+  @ViewChild('logModal', { static: true }) logModal!: TemplateRef<any>;
+
+
   Math = Math;
   personal: any = [];
   paginaPersonal: any[] = []; // Lista que se muestra por página
@@ -18,12 +30,23 @@ filteredPersonal: any[] = []; // Lista filtrada
   totalPages: number = 0;
   visiblePages: number[] = [];
 
-  constructor() {}
+  miFormulario!: FormGroup;
+  rolesUsuario: any = [];
+  determinantesList: any = [];
+  usuarioSeleccionado:any = null;
+  constructor(
+    private fb: FormBuilder,
+    private catalogoApi: CatalogoService,
+    private usuarioApi: UsuarioService,
+    private modalManager: ModalManagerService,
+    private utils: UtilsService
+
+  ) {}
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.personal = [{nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},{nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
+    this.personal = [{ activo:1 , nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},{nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
       {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
       {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
       {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
@@ -71,6 +94,8 @@ filteredPersonal: any[] = []; // Lista filtrada
   this.updatePaginaPersonal();
 
   }
+
+
 
  updatePaginaPersonal() {
   const start = this.currentPage * this.pageSize;
@@ -132,5 +157,108 @@ applyFilter() {
   this.updatePaginaPersonal();
 }
 
+/* formularios */
+initForm(){
+      this.miFormulario = this.fb.group({
+      idUsuarioRol: [null, Validators.required],
+      nombre: ['', Validators.required],
+      primerApellido: ['', Validators.required],
+      segundoApellido: ['', ],
+      correo: ['', [Validators.required, Validators.email]],
+      contrasena: ['', Validators.required],
+      usuarioNombre: ['', Validators.required],
+      idDependencia: [null, Validators.required]
+    });
+}
+  getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
+    const control = this.miFormulario.get(controlName);
+
+    if (!control || !control.touched) {
+      return 'neutral';
+    }
+
+    if (control.errors && (control.errors['required'] || control.invalid)) {
+      return 'invalid';
+    }
+
+    return 'valid';
+  }
+
+
+/*  MODALES */
+openCrearUsuarioModal(usuarioDS: {}, tramite:number) {
+  /* 1 registro: 2 editar */
+  this.consultarUsuarioRol();
+    let title = '';
+    switch (tramite) {
+      case 1:
+        this.initForm();
+        title = '<i class="fas fa-user-plus me-2"></i> Crear nuevo usuario';
+        break;
+        case 2:
+          this.initForm();
+          this.miFormulario.patchValue(
+            usuarioDS
+          );
+          title= '<i class="fas fa-user-edit me-2"></i> Detalles del usuario';
+        break;
+    
+      default:
+        break;
+    }
+this.modalManager.openModal({
+      title: title,
+      template: this.crearUsuarioModal,
+      showFooter: false,
+      onAccept: () => {
+            if (this.miFormulario.invalid) {
+              this.miFormulario.markAllAsTouched(); // Para forzar validación visual
+              return;
+            }
+            /* mandar el call swithc tambien  */
+      }
+        ,
+      onCancel: () => null,
+      width: '400px',
+    });
+  }
+openActivacionModal(usuario:any) {
+  this.usuarioSeleccionado = usuario;
+this.modalManager.openModal({
+      title: '<i class="fas fa-user-cog me-2"></i>Control de usuario',
+      template: this.eliminarUsuarioModal,
+      showFooter: true,
+      onAccept: () => {},
+      onCancel: () => null,
+      /* width: '400px', */
+    });
+  }
+openLogModal() {
+this.modalManager.openModal({
+      title: '<i class="fas fa-clock-rotate-left me-2"></i>Actividad reciente',
+      template: this.logModal,
+      showFooter: false,
+      onAccept: () => {},
+      onCancel: () => null,
+      /* width: '400px', */
+    });
+  }
+
+  /* web services:  */
+
+    consultarUsuarioRol() {
+        this.catalogoApi.consultarUsuarioRol({idUsuarioRol:0}).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.rolesUsuario = data.model
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message)
+            }
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+    }
 
 }

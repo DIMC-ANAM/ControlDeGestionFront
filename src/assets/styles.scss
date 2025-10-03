@@ -722,6 +722,27 @@ input[type="checkbox"].form-check-input {
         background-color: var(--color-purple);
     }
 }
+
+.tagged-text-usuarios-status {
+    width: fit-content;
+    color: white;
+    font-weight: 600;
+    font-size: x-small;
+    padding: 1% 6px 1% 6px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 0;
+    vertical-align: middle;
+
+    &-1 {
+        background-color: var(--color-success);
+    }
+
+    &-2 {
+        background-color: var(--color-dark-gray);
+    }
+
+}
 .tool-icon {
     font-size: 14px;
     color: var(--color-deep-blue);

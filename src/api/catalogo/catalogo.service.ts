@@ -32,5 +32,8 @@ export class CatalogoService {
   consultarDependencia(data:any) {
     return this.http.post(this.urlBase + 'consultarDependencia', data);
   }
+  consultarUsuarioRol(data:any) {
+    return this.http.post(this.urlBase + 'consultarUsuarioRol', data);
+  }
 }
 

@@ -1,115 +1,295 @@
 <div class="container-fluid p-4">
 
-    <header class="bg-light border-bottom">
-        <div class="container py-4 px-3">
-            <div class="d-flex justify-content-between align-items-center">
-                <div class="d-flex align-items-center gap-3">
-                    <div class="p-2 bg-primary rounded">
-                        <!-- Icono de archivo (puedes usar Bootstrap Icons o Font Awesome) -->
-                        <i class="fas fa-users-cog text-white fs-4"></i>
-                    </div>
-                    <div class="text-left">
-                        <h1 class="fw-bold text-dark mb-1 px-0">Administración de usuarios</h1>
-                        <p class="text-muted mb-0">Administrador de usuarios del sistema</p>
-                    </div>
-                </div>
+	<header class="bg-light border-bottom">
+		<div class="container py-4 px-3">
+			<div class="d-flex justify-content-between align-items-center">
+				<div class="d-flex align-items-center gap-3">
+					<div class="p-2 bg-primary rounded">
+						<!-- Icono de archivo (puedes usar Bootstrap Icons o Font Awesome) -->
+						<i class="fas fa-users-cog text-white fs-4"></i>
+					</div>
+					<div class="text-left">
+						<h1 class="fw-bold text-dark mb-1 px-0">Administración de usuarios</h1>
+						<p class="text-muted mb-0">Administrador de usuarios del sistema</p>
+					</div>
+				</div>
 
-                <div class="d-flex align-items-center gap-2 text-muted small">
-                    <i class="bi bi-calendar"></i>
-                    <span>Última actualización: Hoy</span>
-                </div>
-            </div>
-        </div>
-    </header>
+				<div class="d-flex flex-column align-items-end gap-2 text-muted small">
+					
+					<span>Última actualización: Hoy</span>
+					<span (click)="openLogModal()" role="button" class="historial-link"> <i class="fas fa-clock-rotate-left  me-1"></i>  Ver actividad reciente</span>
+				</div>
+			</div>
+		</div>
+	</header>
 
+	<div class="mb-3 d-flex gap-2 justify-content-end w-100 mt-3">
+			<div (click)="openCrearUsuarioModal({}, 1)" role="button" class="rounded-3 bg-primary text-white p-2 "> <i
+					class="fas fa fa-plus-circle me-2"></i>Crear</div>
+	</div>
+	<div class="container-fluid mt-4 p-3 bg-gray rounded-3 border-4">
+		
 
-    <div class="container mt-4 p-3 bg-gray rounded-3 border-4">
-        <div class="mb-3">
-        <input type="text" placeholder="Buscar por nombre, RFC, puesto..." [(ngModel)]="searchTerm" (input)="applyFilter()" class="form-control" />
-        </div>
-        <div class="col-md-12 right align-items-right">
+		<div class="mb-3 d-flex gap-2 ">
+			<input type="text" placeholder="Buscar por nombre, correo, rol..." [(ngModel)]="searchTerm"
+				(input)="applyFilter()" class="form-control" />
 
-            <table class="w-100 table-responsive  table-border-colapse ">
-                <thead>
-                    <tr>
-                        <td> <i class="fas fa-user"></i> Nombre(s) </td>
-                        <td> <i class="fas fa-at"></i> Correo electrónico </td>
-                        <td> <i class="fas fa-diagram-project"></i> Rol de usuario </td>
-                        <td> <i class="fas fa-calendar-alt"></i> Fecha registro </td>
-                        <td> <i class="fas fa-clock-rotate-left"></i> Último inicio de sesión </td>
-                        <td> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i class="fas fa-spinner"></i>Estatus</span></td>
-                        <td> <i class="fas fa-gear"></i> Opciones</td>
-                    </tr>
-                </thead>
-                <tbody *ngIf="paginaPersonal.length > 0; else noData">
-                    <tr *ngFor="let persona of paginaPersonal">
-                        <!-- tus columnas aquí -->
-                    </tr>
+		</div>
+		<div class="col-md-12 right align-items-right">
 
-                    <tr *ngFor="let persona of paginaPersonal">
-                        <!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
-                        
-                        <td>{{ persona.nombre }}</td>
-                        <td>{{ persona.correoElectronico }}</td>
-                        <td>{{ persona.rolUsuario }}</td>
-                        <td>{{ persona.fechaRegistro }}</td>
-                        <td>{{ persona.fechaInicioSesion }}</td>
-                        <td class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="persona.status">
-                                <p class="tagged-text" [ngClass]="'tagged-text-' + persona.idStatus">{{ persona.status
-                                    }}</p>
-                            </span></td>
-                        <td class="text-center">
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
-                                    class="tool-icon fas fa-eye" #triggerBtn
-                                    (click)="null"></i></span>
-                            <span class="tooltip-wrapper" [attr.data-tooltip]="'Eliminar registro'"> <i
-                                    class="tool-icon fas fa-trash-alt" #triggerBtn
-                                    (click)="null"></i></span>
-                        </td>
-                    </tr>
+			<table class="w-100 table-responsive  table-border-colapse ">
+				<thead>
+					<tr>
+						<td style="width: 20%"> <i class="fas fa-user"></i> Nombre(s) </td>
+						<td> <i class="fas fa-at"></i> Correo electrónico </td>
+						<td> <i class="fas fa-diagram-project"></i> Rol de usuario </td>
+						<td> <i class="fas fa-calendar-alt"></i> Fecha registro </td>
+						<td> <i class="fas fa-clock-rotate-left"></i> Último inicio de sesión </td>
+						<td style="width: 8%!important"> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i
+									class="fas fa-spinner"></i>Estatus</span></td>
+						<td> <i class="fas fa-gear"></i> Opciones</td>
+					</tr>
+				</thead>
+				<tbody *ngIf="paginaPersonal.length > 0; else noData">
+					<tr *ngFor="let persona of paginaPersonal">
+						<!-- tus columnas aquí -->
+					</tr>
 
-                </tbody>
+					<tr *ngFor="let persona of paginaPersonal">
+						<!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
 
-            <ng-template #noData>
-            <tbody>
-                <tr>
-                <td colspan="8" class="text-center py-4 text-muted">
-                    <i class="fas fa-info-circle me-2"></i>
-                    No hay registros disponibles.
-                </td>
-                </tr>
-            </tbody>
-            </ng-template>
-            </table>
+						<td >{{ persona.nombre }}</td>
+						<td>{{ persona.correoElectronico }}</td>
+						<td>{{ persona.rolUsuario }}</td>
+						<td>{{ persona.fechaRegistro }}</td>
+						<td>{{ persona.fechaInicioSesion }}</td>
+						<td style="width: 5%;" class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="persona.activo == 1 ? 'activo': 'inactivo'">
+								<i class="fas fa-circle " [ngClass]="persona.activo == 1 ? 'text-success': 'text-dark-gray'"></i>
+							</span></td>
+						<td class="text-center">
+							<span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
+									class="tool-icon fas fa-eye" #triggerBtn
+									(click)="openCrearUsuarioModal(persona, 2)"></i></span>
+							<span class="tooltip-wrapper" [attr.data-tooltip]="'Eliminar registro'"> <i
+									class="tool-icon fas fa-cog" #triggerBtn
+									(click)="openActivacionModal(persona)"></i></span>
+						</td>
+					</tr>
 
-            <div class="text-end my-2" *ngIf="personal.length > 0">
-            Mostrando del
-            <strong>{{ currentPage * pageSize + 1 }} </strong>
-            al 
-            <strong>{{ Math.min((currentPage + 1) * pageSize, filteredPersonal.length) }} </strong>
-            de <strong>{{ filteredPersonal.length }}</strong> registros
-            </div>
+				</tbody>
+
+				<ng-template #noData>
+					<tbody>
+						<tr>
+							<td colspan="8" class="text-center py-4 text-muted">
+								<i class="fas fa-info-circle me-2"></i>
+								No hay registros disponibles.
+							</td>
+						</tr>
+					</tbody>
+				</ng-template>
+			</table>
+
+			<div class="text-end my-2" *ngIf="personal.length > 0">
+				Mostrando del
+				<strong>{{ currentPage * pageSize + 1 }} </strong>
+				al
+				<strong>{{ Math.min((currentPage + 1) * pageSize, filteredPersonal.length) }} </strong>
+				de <strong>{{ filteredPersonal.length }}</strong> registros
+			</div>
 			<div class="pagination">
 				<button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
-			  
+
 				<ng-container *ngIf="visiblePages[0] > 0">
-				  <span>...</span>
+					<span>...</span>
 				</ng-container>
-			  
+
 				<ng-container *ngFor="let page of visiblePages">
-				  <button (click)="goToPage(page)" [class.active]="page === currentPage">
-					{{ page + 1 }}
-				  </button>
+					<button (click)="goToPage(page)" [class.active]="page === currentPage">
+						{{ page + 1 }}
+					</button>
 				</ng-container>
-			  
+
 				<ng-container *ngIf="visiblePages[visiblePages.length - 1] < totalPages - 1">
-				  <span>...</span>
+					<span>...</span>
 				</ng-container>
-			  
+
 				<button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Siguiente &gt;</button>
-			  </div>
+			</div>
 		</div>
 
-    </div>
+	</div>
 
 </div>
+
+<!-- MODALES -->
+
+
+<ng-template #crearUsuarioModal let-aceptar="aceptar">
+	<div class="container-fluid p-2">
+		<form [formGroup]="miFormulario">
+
+			<div class="row">
+				<!-- Nombre -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="nombre">Nombre</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('nombre') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('nombre') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="nombre" type="text" class="form-control" formControlName="nombre"
+							[class.invalid]="getValidationStatus('nombre') == 'invalid'"
+							[class.valid]="getValidationStatus('nombre') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('nombre') == 'invalid'" class="invalid-field">Campo obligatorio.</p>
+				</div>
+
+				<!-- Primer Apellido -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="primerApellido">Primer apellido</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('primerApellido') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('primerApellido') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="primerApellido" type="text" class="form-control" formControlName="primerApellido"
+							[class.invalid]="getValidationStatus('primerApellido') == 'invalid'"
+							[class.valid]="getValidationStatus('primerApellido') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('primerApellido') == 'invalid'" class="invalid-field">Campo
+						obligatorio.</p>
+				</div>
+
+				<!-- Segundo Apellido -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel" for="segundoApellido">Segundo apellido</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('segundoApellido') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('segundoApellido') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="segundoApellido" type="text" class="form-control" formControlName="segundoApellido"
+							[class.invalid]="getValidationStatus('segundoApellido') == 'invalid'"
+							[class.valid]="getValidationStatus('segundoApellido') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('segundoApellido') == 'invalid'" class="invalid-field">Campo
+						obligatorio.</p>
+				</div>
+
+
+
+			</div>
+
+			<div class="row mt-3">
+
+				<!-- idUsuarioRol -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="idUsuarioRol">Rol de usuario</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('idUsuarioRol') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idUsuarioRol') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<select id="idUsuarioRol" class="form-control" formControlName="idUsuarioRol"
+							[class.invalid]="getValidationStatus('idUsuarioRol') == 'invalid'"
+							[class.valid]="getValidationStatus('idUsuarioRol') == 'valid'">
+							<option value=null disabled selected>Seleccione</option>
+							<option *ngFor="let rol of rolesUsuario" [value]="rol.idUsuarioRol">{{ rol.rol }} -
+								{{rol.descripcion}}</option>
+						</select>
+					</div>
+					<p *ngIf="getValidationStatus('idUsuarioRol') == 'invalid'" class="invalid-field">Campo obligatorio.
+					</p>
+				</div>
+
+				<!-- idDependencia -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="idDependencia">Área de adscripción</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('idDependencia') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('idDependencia') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<select id="idDependencia" class="form-control" formControlName="idDependencia"
+							[class.invalid]="getValidationStatus('idDependencia') == 'invalid'"
+							[class.valid]="getValidationStatus('idDependencia') == 'valid'">
+							<option value=null disabled selected>Seleccione</option>
+							<option *ngFor="let depenedencia of determinantesList"
+								[value]="depenedencia.idDeterminante">{{ depenedencia.nombreRol }}</option>
+						</select>
+					</div>
+					<p *ngIf="getValidationStatus('idDependencia') == 'invalid'" class="invalid-field">Campo
+						obligatorio.</p>
+				</div>
+
+			</div>
+
+			<div class="row mt-3">
+
+				<!-- Correo -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="correo">Correo</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('correo') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('correo') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="correo" type="email" class="form-control" formControlName="correo"
+							[class.invalid]="getValidationStatus('correo') == 'invalid'"
+							[class.valid]="getValidationStatus('correo') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('correo') == 'invalid'" class="invalid-field">Correo inválido.</p>
+				</div>
+
+				<!-- UsuarioNombre -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="usuarioNombre">Nombre de usuario</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('usuarioNombre') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('usuarioNombre') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="usuarioNombre" type="text" class="form-control" formControlName="usuarioNombre"
+							[class.invalid]="getValidationStatus('usuarioNombre') == 'invalid'"
+							[class.valid]="getValidationStatus('usuarioNombre') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('usuarioNombre') == 'invalid'" class="invalid-field">Campo
+						obligatorio.</p>
+				</div>
+
+				<!-- Contraseña -->
+				<div class="col-md-4">
+					<label class="form-label frmlabel required" for="contrasena">Contraseña</label>
+					<div class="input-icon-wrapper">
+						<i
+							[ngClass]="getValidationStatus('contrasena') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('contrasena') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
+						<input id="contrasena" type="text" class="form-control" formControlName="contrasena"
+							[class.invalid]="getValidationStatus('contrasena') == 'invalid'"
+							[class.valid]="getValidationStatus('contrasena') == 'valid'" />
+					</div>
+					<p *ngIf="getValidationStatus('contrasena') == 'invalid'" class="invalid-field">Campo obligatorio.
+					</p>
+				</div>
+
+			</div>
+
+		</form>
+		<p class="text-auxiliary text-muted pt-4">* Campos obligatorios</p>
+	</div>
+
+	<div class="border-top d-flex justify-content-end p-2 ">
+		<button class="btn btn-primary " (click)="aceptar()" [disabled]="miFormulario.invalid"> Aceptar</button>
+	</div>
+</ng-template>
+
+
+<ng-template #eliminarUsuarioModal let-aceptar="aceptar">
+
+		<ng-container *ngIf="usuarioSeleccionado.activo == 0; else elseTemplate">
+			<div class="alert alert-warning m-auto" role="alert">
+				<strong>Advertencia:</strong> Esta acción <strong>activará</strong> al usuario y recuperará su acceso al sistema, asegúrese de
+				que es lo que realmente quiere hacer.
+			</div>
+			
+		</ng-container>
+		<ng-template #elseTemplate>
+			<div class="alert alert-warning m-auto" role="alert">
+				<strong>Advertencia:</strong> Esta acción <strong>desactivará</strong> al usuario y revocará su acceso al sistema, asegúrese de
+				que es lo que realmente quiere hacer.
+			</div>
+			
+		</ng-template>
+		
+</ng-template>
+<ng-template #logModal let-aceptar="aceptar">
+
+
+		
+</ng-template>
