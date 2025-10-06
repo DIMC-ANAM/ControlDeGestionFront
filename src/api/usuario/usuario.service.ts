@@ -8,21 +8,24 @@ import { HttpClient } from '@angular/common/http';
 export class UsuarioService {
 
   /* urlBase: string = "http://safirho.site/api/login/"; */
-  urlBase: string = environment.baseurl + "/usuario";
+  urlBase: string = environment.baseurl + "user";
 
   constructor(private http: HttpClient) { }
 
   logIn(data:any) {
-    return this.http.post(this.urlBase + "/login", data);
+    return this.http.post(this.urlBase + "/logIn", data);
   }
-  crearUsuario(data:any) {
-    return this.http.post(this.urlBase + "/crearUsuario", data);
+  registrarUsuario(data:any) {
+    return this.http.post(this.urlBase + "/registrarUsuario", data);
   }
   updateUsuario(data:any) {
     return this.http.post(this.urlBase + "/updateUsuario", data);
   }
   activacionUsuario(data:any) {
     return this.http.post(this.urlBase + "/activacionUsuario", data);
+  }
+  obtenerUsuarioAdmin(data:any) {
+    return this.http.post(this.urlBase + "/getUsuariosAdmin", data);
   }
 
   

@@ -5,6 +5,7 @@ import { UsuarioService } from '../../../api/usuario/usuario.service';
 import { ModalManagerService } from '../../components/shared/modal-manager.service';
 import { UtilsService } from '../../services/utils.service';
 import { TipoToast } from '../../../api/entidades/enumeraciones';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-admin-usuarios',
@@ -18,7 +19,7 @@ export class AdminUsuariosComponent {
   @ViewChild('eliminarUsuarioModal', { static: true }) eliminarUsuarioModal!: TemplateRef<any>;
   @ViewChild('logModal', { static: true }) logModal!: TemplateRef<any>;
 
-
+  usuario: any = null;
   Math = Math;
   personal: any = [];
   paginaPersonal: any[] = []; // Lista que se muestra por página
@@ -32,66 +33,32 @@ filteredPersonal: any[] = []; // Lista filtrada
 
   miFormulario!: FormGroup;
   rolesUsuario: any = [];
-  determinantesList: any = [];
   usuarioSeleccionado:any = null;
+  dependenciasList:any = null;
   constructor(
     private fb: FormBuilder,
     private catalogoApi: CatalogoService,
     private usuarioApi: UsuarioService,
     private modalManager: ModalManagerService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private router: Router
 
   ) {}
 
   ngOnInit(): void {
+    this.usuario = JSON.parse(localStorage.getItem('session')!);
+
+    const session =  localStorage.getItem('session');
+    if (!session) {
+    this.router.navigate(['/']);
+    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
+    }
+
+    this.usuario = session;
+
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.personal = [{ activo:1 , nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},{nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-      {nombre: "José González", rfc: 'XAXA990301GA1',idStatus: 1, status: 'Activo'},
-    ];
-
-      this.filteredPersonal = [...this.personal]; // Copia inicial
-
-  this.totalPages = Math.ceil(this.filteredPersonal.length / this.pageSize);
-  this.currentPage = 0;
-  this.updateVisiblePages();
-  this.updatePaginaPersonal();
+    this.obtenerUsuarios();
 
   }
 
@@ -144,17 +111,22 @@ updateVisiblePages() {
 applyFilter() {
   const term = this.searchTerm.toLowerCase();
 
-  this.filteredPersonal = this.personal.filter((persona:any) => {
+  this.filteredPersonal = this.personal.filter((persona: any) => {
     return (
       persona.nombre.toLowerCase().includes(term) ||
-      persona.rfc.toLowerCase().includes(term)
+      persona.primerApellido.toLowerCase().includes(term) ||
+      persona.segundoApellido.toLowerCase().includes(term) ||
+      persona.correo.toLowerCase().includes(term) ||
+      persona.nombreRol.toLowerCase().includes(term) ||
+      persona.area.toLowerCase().includes(term) ||
+      (persona.fechaRegistro && persona.fechaRegistro.toString().toLowerCase().includes(term))
     );
   });
 
   this.totalPages = Math.ceil(this.filteredPersonal.length / this.pageSize);
   this.currentPage = 0;
   this.updateVisiblePages();
-  this.updatePaginaPersonal();
+  this.updatePaginaPersonal(); // ✅ Muy importante: actualizar la página visible después del filtro
 }
 
 /* formularios */
@@ -167,7 +139,7 @@ initForm(){
       correo: ['', [Validators.required, Validators.email]],
       contrasena: ['', Validators.required],
       usuarioNombre: ['', Validators.required],
-      idDependencia: [null, Validators.required]
+      idDependencia: [null, Validators.required],
     });
 }
   getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
@@ -189,6 +161,7 @@ initForm(){
 openCrearUsuarioModal(usuarioDS: {}, tramite:number) {
   /* 1 registro: 2 editar */
   this.consultarUsuarioRol();
+  this.consultarDependencia();
     let title = '';
     switch (tramite) {
       case 1:
@@ -216,6 +189,7 @@ this.modalManager.openModal({
               return;
             }
             /* mandar el call swithc tambien  */
+            this.registrarUsuario();
       }
         ,
       onCancel: () => null,
@@ -260,5 +234,59 @@ this.modalManager.openModal({
           }
         );
     }
+    consultarDependencia() {
+        this.catalogoApi.consultarDependencia({idDependencia:1, opcion: 1}).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.dependenciasList = data.model
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message)
+            }
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+    }
 
+    obtenerUsuarios (){
+
+          this.usuarioApi.obtenerUsuarioAdmin({idUsuario:0}).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.personal  = data.model;
+              this.filteredPersonal = [...this.personal]; // Copia inicial
+                this.totalPages = Math.ceil(this.filteredPersonal.length / this.pageSize);
+                this.currentPage = 0;
+                this.updateVisiblePages();
+                this.updatePaginaPersonal();
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            }
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+
+    }
+
+    registrarUsuario(){
+        let payload = this.miFormulario.value;
+        payload.idUsuario = this.usuario.idUsuario;
+        this.usuarioApi.registrarUsuario(payload).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.utils.MuestrasToast(TipoToast.Success, data.message);
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            }
+            this.obtenerUsuarios();
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+
+    }
 }

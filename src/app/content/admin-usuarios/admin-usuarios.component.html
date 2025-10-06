@@ -51,18 +51,15 @@
 					</tr>
 				</thead>
 				<tbody *ngIf="paginaPersonal.length > 0; else noData">
-					<tr *ngFor="let persona of paginaPersonal">
-						<!-- tus columnas aquí -->
-					</tr>
 
 					<tr *ngFor="let persona of paginaPersonal">
 						<!-- <td class="text-center "><span class="tooltip-wrapper" [attr.data-tooltip]="getRandomClass() ? 'Militar': 'Civil'"><i [ngClass]="getRandomClass() ? 'fas fa-person-military-rifle text-success' : 'fas fa-person text-dark-gray'"></i></span></td> -->
 
 						<td >{{ persona.nombre }}</td>
-						<td>{{ persona.correoElectronico }}</td>
-						<td>{{ persona.rolUsuario }}</td>
-						<td>{{ persona.fechaRegistro }}</td>
-						<td>{{ persona.fechaInicioSesion }}</td>
+						<td>{{ persona.correo }}</td>
+						<td>{{ persona.nombreRol }}</td>
+						<td>{{ persona.fechaRegistro  | fechaMexico}}</td>
+						<td>{{ persona.fechaInicioSesion ? (persona.fechaInicioSesion | fechaMexico) : 'No ha iniciado Sesion' }}</td>
 						<td style="width: 5%;" class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="persona.activo == 1 ? 'activo': 'inactivo'">
 								<i class="fas fa-circle " [ngClass]="persona.activo == 1 ? 'text-success': 'text-dark-gray'"></i>
 							</span></td>
@@ -205,8 +202,8 @@
 							[class.invalid]="getValidationStatus('idDependencia') == 'invalid'"
 							[class.valid]="getValidationStatus('idDependencia') == 'valid'">
 							<option value=null disabled selected>Seleccione</option>
-							<option *ngFor="let depenedencia of determinantesList"
-								[value]="depenedencia.idDeterminante">{{ depenedencia.nombreRol }}</option>
+							<option *ngFor="let depenedencia of dependenciasList"
+								[value]="depenedencia.id">{{ depenedencia.area }}</option>
 						</select>
 					</div>
 					<p *ngIf="getValidationStatus('idDependencia') == 'invalid'" class="invalid-field">Campo
