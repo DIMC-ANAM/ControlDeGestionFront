@@ -27,6 +27,15 @@ export class UsuarioService {
   obtenerUsuarioAdmin(data:any) {
     return this.http.post(this.urlBase + "/getUsuariosAdmin", data);
   }
+  actualizarUsuario(data:any) {
+    return this.http.post(this.urlBase + "/actualizarUsuario", data);
+  }
+  activarUsuario(data:any) {
+    return this.http.post(this.urlBase + "/activarUsuario", data);
+  }
+  getUserlog(data:any) {
+    return this.http.post(this.urlBase + "/getUserlog", data);
+  }
 
   
 

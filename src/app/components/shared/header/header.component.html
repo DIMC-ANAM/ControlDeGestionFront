@@ -16,14 +16,19 @@
           <span class="toggle-icon"> <i class="fas fa-house"></i> </span>
 
         </div>
-        <div class="text-white">Sistema de Control de Gestión</div>
-
+        <div class="text-white">Sistema de Control de Gestión
+        
+        </div>
 
     </div>
         
         <!-- Elementos del usuario (lado derecho) -->
         <div class="header-right">
-          <span class="username">{{ usuario?.nombreCompleto || '' }} <i class="fas fa-caret-right fa-xs"></i> {{usuario.area || 'Sin área asignada'}}</span>
+          <span class="username">{{ usuario?.nombreCompleto || '' }} 
+            <i class="fas fa-caret-right fa-xs"></i>
+            {{ usuario?.nombreRol || '' }} 
+            <i class="fas fa-caret-right fa-xs"></i>
+             {{usuario.area || 'Sin área asignada'}}</span>
           
           <div class="user-menu" (click)="toggleDropdown()">
             <!-- Ícono de usuario -->

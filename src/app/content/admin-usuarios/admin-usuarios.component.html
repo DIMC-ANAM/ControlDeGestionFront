@@ -59,9 +59,9 @@
 						<td>{{ persona.correo }}</td>
 						<td>{{ persona.nombreRol }}</td>
 						<td>{{ persona.fechaRegistro  | fechaMexico}}</td>
-						<td>{{ persona.fechaInicioSesion ? (persona.fechaInicioSesion | fechaMexico) : 'No ha iniciado Sesion' }}</td>
+						<td>{{ persona.fechaInicioSesion ? (persona.fechaInicioSesion | fechaMexico:true ) : 'No ha iniciado Sesion' }}</td>
 						<td style="width: 5%;" class="text-center"> <span class="tooltip-wrapper" [attr.data-tooltip]="persona.activo == 1 ? 'activo': 'inactivo'">
-								<i class="fas fa-circle " [ngClass]="persona.activo == 1 ? 'text-success': 'text-dark-gray'"></i>
+								<i class="fas fa-circle " [ngClass]="persona.activo == 1 ? 'text-success': 'text-danger'"></i>
 							</span></td>
 						<td class="text-center">
 							<span class="tooltip-wrapper" [attr.data-tooltip]="'Ver registro'"> <i
@@ -124,7 +124,7 @@
 
 <ng-template #crearUsuarioModal let-aceptar="aceptar">
 	<div class="container-fluid p-2">
-		<form [formGroup]="miFormulario">
+		<form [formGroup]="usuarioForm">
 
 			<div class="row">
 				<!-- Nombre -->
@@ -247,7 +247,7 @@
 					<div class="input-icon-wrapper">
 						<i
 							[ngClass]="getValidationStatus('contrasena') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('contrasena') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-						<input id="contrasena" type="text" class="form-control" formControlName="contrasena"
+						<input id="contrasena" type="password" class="form-control" formControlName="contrasena"
 							[class.invalid]="getValidationStatus('contrasena') == 'invalid'"
 							[class.valid]="getValidationStatus('contrasena') == 'valid'" />
 					</div>
@@ -262,7 +262,7 @@
 	</div>
 
 	<div class="border-top d-flex justify-content-end p-2 ">
-		<button class="btn btn-primary " (click)="aceptar()" [disabled]="miFormulario.invalid"> Aceptar</button>
+		<button class="btn btn-primary " (click)="aceptar()" [disabled]="usuarioForm.invalid"> Aceptar</button>
 	</div>
 </ng-template>
 
@@ -286,6 +286,30 @@
 		
 </ng-template>
 <ng-template #logModal let-aceptar="aceptar">
+
+	<div class="log-container">
+  <table class="log-table ">
+    <thead>
+      <tr>
+        <th><i class="fas fa-user-edit"></i> Modificador</th>
+        <th><i class="fas fa-user"></i> Afectado</th>
+        <th><i class="fas fa-cog"></i> Operación</th>
+        <th><i class="fas fa-comment-dots"></i> Observaciones</th>
+        <th><i class="fas fa-clock"></i> Fecha</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of userlogs">
+        <td>{{ log.nombreModificador }}</td>
+        <td>{{ log.nombreAfectado }}</td>
+        <td><span class="log-op">{{ log.tipoOperacion }}</span></td>
+        <td>{{ log.observaciones }}</td>
+        <td>{{ log.fechaRegistro | date: 'dd/MM/yyyy HH:mm' }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
 
 
 		

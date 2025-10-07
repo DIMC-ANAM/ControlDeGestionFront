@@ -31,10 +31,12 @@ filteredPersonal: any[] = []; // Lista filtrada
   totalPages: number = 0;
   visiblePages: number[] = [];
 
-  miFormulario!: FormGroup;
+  usuarioForm!: FormGroup;
   rolesUsuario: any = [];
   usuarioSeleccionado:any = null;
   dependenciasList:any = null;
+
+  userlogs:any = [];
   constructor(
     private fb: FormBuilder,
     private catalogoApi: CatalogoService,
@@ -46,16 +48,12 @@ filteredPersonal: any[] = []; // Lista filtrada
   ) {}
 
   ngOnInit(): void {
-    this.usuario = JSON.parse(localStorage.getItem('session')!);
-
     const session =  localStorage.getItem('session');
     if (!session) {
     this.router.navigate(['/']);
     this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
     }
-
-    this.usuario = session;
-
+    this.usuario = JSON.parse(session!);
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.obtenerUsuarios();
@@ -131,7 +129,7 @@ applyFilter() {
 
 /* formularios */
 initForm(){
-      this.miFormulario = this.fb.group({
+      this.usuarioForm = this.fb.group({
       idUsuarioRol: [null, Validators.required],
       nombre: ['', Validators.required],
       primerApellido: ['', Validators.required],
@@ -140,10 +138,11 @@ initForm(){
       contrasena: ['', Validators.required],
       usuarioNombre: ['', Validators.required],
       idDependencia: [null, Validators.required],
+      idUsuario:[null,Validators.required]
     });
 }
   getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
-    const control = this.miFormulario.get(controlName);
+    const control = this.usuarioForm.get(controlName);
 
     if (!control || !control.touched) {
       return 'neutral';
@@ -158,10 +157,11 @@ initForm(){
 
 
 /*  MODALES */
-openCrearUsuarioModal(usuarioDS: {}, tramite:number) {
+openCrearUsuarioModal(usuarioDS: any, tramite:number) {
   /* 1 registro: 2 editar */
   this.consultarUsuarioRol();
   this.consultarDependencia();
+  
     let title = '';
     switch (tramite) {
       case 1:
@@ -170,9 +170,17 @@ openCrearUsuarioModal(usuarioDS: {}, tramite:number) {
         break;
         case 2:
           this.initForm();
-          this.miFormulario.patchValue(
-            usuarioDS
-          );
+
+          this.usuarioForm.get('contrasena')?.clearValidators();
+          this.usuarioForm.get('usuarioNombre')?.clearValidators();
+          this.usuarioForm.get('contrasena')?.updateValueAndValidity();
+          this.usuarioForm.get('usuarioNombre')?.updateValueAndValidity();
+          this.usuarioForm.patchValue({
+            ... usuarioDS,
+            idDependencia: usuarioDS.idDeterminante, // <-- aquí haces el match,
+            idUsuario: usuarioDS.idUsuario // <-- aquí haces el match
+            
+    });
           title= '<i class="fas fa-user-edit me-2"></i> Detalles del usuario';
         break;
     
@@ -184,12 +192,22 @@ this.modalManager.openModal({
       template: this.crearUsuarioModal,
       showFooter: false,
       onAccept: () => {
-            if (this.miFormulario.invalid) {
-              this.miFormulario.markAllAsTouched(); // Para forzar validación visual
+            if (this.usuarioForm.invalid) {
+              this.usuarioForm.markAllAsTouched(); // Para forzar validación visual
               return;
             }
             /* mandar el call swithc tambien  */
-            this.registrarUsuario();
+
+            switch (tramite) {
+              case 1:
+                this.registrarUsuario();
+              break;
+                case 2:
+                  this.actualizarUsuario();
+                break;
+              default:
+                break;
+            }
       }
         ,
       onCancel: () => null,
@@ -202,19 +220,20 @@ this.modalManager.openModal({
       title: '<i class="fas fa-user-cog me-2"></i>Control de usuario',
       template: this.eliminarUsuarioModal,
       showFooter: true,
-      onAccept: () => {},
+      onAccept: () => this.activarUsuario(),
       onCancel: () => null,
       /* width: '400px', */
     });
   }
 openLogModal() {
+  this.getUserlog();
 this.modalManager.openModal({
       title: '<i class="fas fa-clock-rotate-left me-2"></i>Actividad reciente',
       template: this.logModal,
       showFooter: false,
       onAccept: () => {},
       onCancel: () => null,
-      /* width: '400px', */
+      width: '400px',
     });
   }
 
@@ -272,12 +291,79 @@ this.modalManager.openModal({
     }
 
     registrarUsuario(){
-        let payload = this.miFormulario.value;
-        payload.idUsuario = this.usuario.idUsuario;
+        let payload = this.usuarioForm.value;
+        console.log(this.usuario.idUsuario);
+        console.log(this.usuario);
+
+        payload.idUsuarioModifica = this.usuario.idUsuario;
+        console.log(payload);
+        
         this.usuarioApi.registrarUsuario(payload).subscribe(
           (data:any) => {
             if(data.status == 200){
               this.utils.MuestrasToast(TipoToast.Success, data.message);
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            }
+            this.obtenerUsuarios();
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+
+    }
+    actualizarUsuario(){
+        let payload = this.usuarioForm.value;
+        payload.idUsuarioModifica = this.usuario.idUsuario;
+        this.usuarioApi.actualizarUsuario(payload).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.utils.MuestrasToast(TipoToast.Success, data.message);
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            }
+            this.obtenerUsuarios();
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+
+    }
+    activarUsuario(){
+       
+      this.usuarioApi.activarUsuario({
+          idUsuario: this.usuarioSeleccionado.idUsuario,
+          idUsuarioModifica: this.usuario.idUsuario
+
+        }).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.utils.MuestrasToast(TipoToast.Success, data.message);
+            }else{
+             this.utils.MuestrasToast(TipoToast.Warning, data.message);
+            }
+            this.obtenerUsuarios();
+          },
+          (ex) => {
+            this.utils.MuestraErrorInterno(ex);
+          }
+        );
+
+    }
+    getUserlog(){
+       
+      this.usuarioApi.getUserlog({
+          fechaInicio: null,
+          fechaFin: null,
+          limit: 20
+        }).subscribe(
+          (data:any) => {
+            if(data.status == 200){
+              this.userlogs = data.model
+              this.utils.MuestrasToast(TipoToast.Success, data.message);
+
             }else{
              this.utils.MuestrasToast(TipoToast.Warning, data.message);
             }

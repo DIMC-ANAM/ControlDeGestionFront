@@ -559,10 +559,16 @@ export class DetalleAsuntosComponent {
     }
   }
   consultarDependencia() {
+
+    /* if is gestor entonces:  {1,1}*/
+
     this.catalogoApi
-      .consultarDependencia({
+      .consultarDependencia(/* {
         idDependencia: this.usuario.idDeterminante,
         opcion: 2
+      } */ {
+        idDependencia: 1,
+        opcion: 1
       })
       .subscribe(
         (data) => {

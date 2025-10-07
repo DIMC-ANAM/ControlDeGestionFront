@@ -142,13 +142,12 @@ ngOnInit(): void {
     }
     if (this.loginForm.value.usuario === 'admin' && this.loginForm.value.password === 'demo') {
   localStorage.setItem('session', JSON.stringify({
-    nombreUsuario: 'admin',
+    nombreCompleto: 'admin',
     idUsuario: 9999,
     unidadAdscripcion: 'ROOT',
-    idDeterminante: 21,
-    accesos:{
-      idUsuarioRol: 9999,
-    }
+    idDeterminante: 1,
+    idUsuarioRol:1,
+    area: "Súper administrador"
   }));
 
   setTimeout(() => {
