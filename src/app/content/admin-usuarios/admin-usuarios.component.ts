@@ -191,8 +191,10 @@ openCrearUsuarioModal(usuarioDS: any, tramite:number) {
               ... usuarioDS,
               idDependencia: usuarioDS.idDeterminante, // <-- aquí haces el match,
               idUsuario: usuarioDS.idUsuario, // <-- aquí haces el match
-              idUsuarioModifica: this.usuario.idUsuario
+              idUsuarioModifica: this.usuario.idUsuario,
+              contrasena: usuarioDS.contrasena, // <-- aquí haces el match
           });
+          
           title= '<i class="fas fa-user-edit me-2"></i> Detalles del usuario';
         break;
     
@@ -321,7 +323,7 @@ this.modalManager.openModal({
 
     }
     actualizarUsuario(){
-        let payload = this.usuarioForm.value;
+        let payload = this.usuarioForm.getRawValue();
         this.usuarioApi.actualizarUsuario(payload).subscribe(
           (data:any) => {
             if(data.status == 200){
