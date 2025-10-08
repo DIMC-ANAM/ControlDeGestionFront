@@ -625,15 +625,65 @@
 
                     <!-- Historial -->
                     <div *ngIf="tabActiva === 'historial'">
-                        <h6 class="fw-bold mb-3">Historial de Actividades</h6>
-                        <!-- <div class="d-flex gap-3 align-items-start mb-3">
-                            <div class="icon-circle bg-primary"></div>
-                            <div>
-                                <p class="mb-0 fw-semibold">Asunto creado</p>
-                                <small class="text-muted">Por {{ asuntoSeleccionado.unidadAdministrativa }} • {{
-                                    asuntoSeleccionado.fechaRegistro }}</small>
+                        <h6 class="fw-bold mb-3">Historial del asunto</h6>
+                        <div class="trazabilidad-container">
+
+                        <!-- 🟢 Sección Asunto Registrado -->
+                        <section class="asunto-section">
+                            <div class="etiqueta">
+                            <div class="circle asunto">
+                                <i class="fas fa-file-arrow-down"></i>
                             </div>
-                        </div> -->
+                            <div class="connector" *ngIf="historial.asuntoRegistrado.idStatusAsunto === 2"></div>
+                            <div class="texto">
+                                <div class="titulo">Asunto registrado</div>
+                                <div>Oficio: {{ historial.asuntoRegistrado.numeroOficio }}</div>
+                                <div>Fecha: {{ historial.asuntoRegistrado.fechaRegistro | fechaMexico:true }}</div>
+                                <div>Registró: {{ historial.asuntoRegistrado.usuarioRegistra }}</div>
+                            </div>
+                            </div>
+                        </section>
+
+                        <!-- 🟡 Sección Turnados (horizontal) -->
+                        <section class="turnados-section">
+                            <div class="turnado" *ngFor="let t of historial.turnados">
+                            <div class="turnado-title">Turnado {{ t.numeroTurnado }}</div>
+
+                            <div class="fases">
+                                <ng-container *ngFor="let f of t.fases; let i = index">
+                                <div class="etiqueta">
+                                    <div class="circle turnado" [ngClass]="statusClass(f.idStatusTurnado)">
+                                    <i [class]="f.icon"></i>
+                                    </div>
+                                   <!--  <div class="connector" *ngIf="i < t.fases.length - 1"></div> -->
+                                    <div class="texto">
+                                    <div class="titulo">{{ f.statusTurnado }}</div>
+                                    <div>Fecha:<strong> {{ f.fecha | fechaMexico:true }}</strong></div>
+                                    <div>Usuario:<strong> {{ f.usuario }}</strong></div>
+                                    <div>Responsable:<strong> {{ t.areaResponsable }}</strong></div>
+                                    </div>
+                                </div>
+                                </ng-container>
+                            </div>
+                            </div>
+                        </section>
+
+                        <!-- 🔵 Sección Asunto Concluido -->
+                        <section class="asunto-section" *ngIf="historial.asuntoRegistrado.idStatusAsunto === 3">
+                            <div class="etiqueta">
+                            <div class="circle asunto final">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div class="texto">
+                                <div class="titulo">Asunto concluido</div>
+                                <div>Oficio: {{ historial.asuntoRegistrado.numeroOficio }}</div>
+                                <div>Fecha: {{ historial.asuntoRegistrado.fechaConclusion | fechaMexico:true }}</div>
+                                <div>Concluye: {{ historial.asuntoRegistrado.usuarioConcluye }}</div>
+                            </div>
+                            </div>
+                        </section>
+                        </div>
+
                         
                     </div>
             </div>

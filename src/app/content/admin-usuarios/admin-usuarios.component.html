@@ -247,9 +247,9 @@
 					<div class="input-icon-wrapper">
 						<i
 							[ngClass]="getValidationStatus('contrasena') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('contrasena') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-						<input id="contrasena" type="password" class="form-control" formControlName="contrasena"
+						<input   id="contrasena" type="password" class="form-control " formControlName="contrasena"
 							[class.invalid]="getValidationStatus('contrasena') == 'invalid'"
-							[class.valid]="getValidationStatus('contrasena') == 'valid'" />
+							[class.valid]="getValidationStatus('contrasena') == 'valid'"  />
 					</div>
 					<p *ngIf="getValidationStatus('contrasena') == 'invalid'" class="invalid-field">Campo obligatorio.
 					</p>

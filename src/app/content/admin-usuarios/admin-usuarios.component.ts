@@ -130,6 +130,7 @@ applyFilter() {
 /* formularios */
 initForm(){
       this.usuarioForm = this.fb.group({
+      idUsuario:[null],
       idUsuarioRol: [null, Validators.required],
       nombre: ['', Validators.required],
       primerApellido: ['', Validators.required],
@@ -138,7 +139,7 @@ initForm(){
       contrasena: ['', Validators.required],
       usuarioNombre: ['', Validators.required],
       idDependencia: [null, Validators.required],
-      idUsuario:[null,Validators.required]
+      idUsuarioModifica:[null,Validators.required]
     });
 }
   getValidationStatus(controlName: string): 'valid' | 'invalid' | 'neutral' {
@@ -166,21 +167,32 @@ openCrearUsuarioModal(usuarioDS: any, tramite:number) {
     switch (tramite) {
       case 1:
         this.initForm();
+        this.usuarioForm.get('idUsuario')?.clearValidators();
+          this.usuarioForm.get('idUsuario')?.updateValueAndValidity();
+        this.usuarioForm.patchValue({
+              idUsuarioModifica: this.usuario.idUsuario
+          });
         title = '<i class="fas fa-user-plus me-2"></i> Crear nuevo usuario';
         break;
         case 2:
           this.initForm();
+
+          this.usuarioForm.get('contrasena')?.disable();
+
+          this.usuarioForm.get('idUsuario')?.clearValidators();
+          this.usuarioForm.get('idUsuario')?.setValidators(Validators.required);
+          this.usuarioForm.get('idUsuario')?.updateValueAndValidity();
 
           this.usuarioForm.get('contrasena')?.clearValidators();
           this.usuarioForm.get('usuarioNombre')?.clearValidators();
           this.usuarioForm.get('contrasena')?.updateValueAndValidity();
           this.usuarioForm.get('usuarioNombre')?.updateValueAndValidity();
           this.usuarioForm.patchValue({
-            ... usuarioDS,
-            idDependencia: usuarioDS.idDeterminante, // <-- aquí haces el match,
-            idUsuario: usuarioDS.idUsuario // <-- aquí haces el match
-            
-    });
+              ... usuarioDS,
+              idDependencia: usuarioDS.idDeterminante, // <-- aquí haces el match,
+              idUsuario: usuarioDS.idUsuario, // <-- aquí haces el match
+              idUsuarioModifica: this.usuario.idUsuario
+          });
           title= '<i class="fas fa-user-edit me-2"></i> Detalles del usuario';
         break;
     
@@ -291,12 +303,7 @@ this.modalManager.openModal({
     }
 
     registrarUsuario(){
-        let payload = this.usuarioForm.value;
-        console.log(this.usuario.idUsuario);
-        console.log(this.usuario);
-
-        payload.idUsuarioModifica = this.usuario.idUsuario;
-        console.log(payload);
+        let payload = this.usuarioForm.value;        
         
         this.usuarioApi.registrarUsuario(payload).subscribe(
           (data:any) => {
@@ -315,7 +322,6 @@ this.modalManager.openModal({
     }
     actualizarUsuario(){
         let payload = this.usuarioForm.value;
-        payload.idUsuarioModifica = this.usuario.idUsuario;
         this.usuarioApi.actualizarUsuario(payload).subscribe(
           (data:any) => {
             if(data.status == 200){

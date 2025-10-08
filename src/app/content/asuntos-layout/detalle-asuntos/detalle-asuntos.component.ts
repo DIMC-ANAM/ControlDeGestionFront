@@ -73,6 +73,7 @@ export class DetalleAsuntosComponent {
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
 
+  historial: any =  null;
 
   constructor(
     private fb: FormBuilder,
@@ -92,6 +93,119 @@ export class DetalleAsuntosComponent {
       this.consultarTipoDocumento();
     this.consultarTema();
     this.consultarMedioRecepcion();
+
+    /*  */
+      this.historial = {
+        asuntoRegistrado: {
+          idAsunto: 101,
+          numeroOficio: "OF/2025/123",
+          fechaRegistro: "2025-10-06T09:30:00",
+          usuarioRegistra: "María López",
+          fechaConclusion: "2025-10-08T15:45:00",
+          usuarioConcluye: "Luis Hernández",
+          idStatusAsunto: 3,
+          statusAsunto: "Concluido"
+        },
+        turnados: [
+          {
+            idTurnado: 1,
+            numeroTurnado: 1,
+            fechaRegistro: "2025-10-06T10:00:00",
+            usuarioTurno: "María López",
+            areaResponsable: "Dirección de Planeación",
+            idStatusTurnado: 3,
+            statusTurnado: "Atendido",
+            fases: [
+              {
+                idStatusTurnado: 1,
+                statusTurnado: "Recibido",
+                icon: "fas fa-share",
+                fecha: "2025-10-06T10:00:00",
+                usuario: "María López",
+                nota: "Se turna el asunto por primera vez."
+              },
+              {
+                idStatusTurnado: 2,
+                statusTurnado: "En trámite",
+                icon: "fa-regular fa-clock",
+                fecha: "2025-10-06T11:30:00",
+                usuario: "Carlos Méndez",
+                nota: "Recibido por el área responsable."
+              },
+              {
+                idStatusTurnado: 3,
+                statusTurnado: "Atendido",
+                icon: "fas fa-check",
+                fecha: "2025-10-07T17:00:00",
+                usuario: "Carlos Méndez",
+                nota: "Se entrega respuesta al oficio."
+              }
+            ]
+          },
+          {
+            idTurnado: 2,
+            numeroTurnado: 2,
+            fechaRegistro: "2025-10-07T09:00:00",
+            usuarioTurno: "Luis Hernández",
+            areaResponsable: "Unidad Jurídica",
+            idStatusTurnado: 4,
+            statusTurnado: "Rechazado",
+            fases: [
+              {
+                idStatusTurnado: 1,
+                statusTurnado: "Recibido",
+                icon: "fas fa-share",
+                fecha: "2025-10-07T09:00:00",
+                usuario: "Luis Hernández",
+                nota: "Turno a revisión jurídica."
+              },
+              {
+                idStatusTurnado: 2,
+                statusTurnado: "En trámite",
+                icon: "fa-regular fa-clock",
+                fecha: "2025-10-07T10:15:00",
+                usuario: "Laura Torres",
+                nota: "Revisión en curso."
+              },
+              {
+                idStatusTurnado: 4,
+                statusTurnado: "Rechazado",
+                icon: "fas fa-circle-xmark",
+                fecha: "2025-10-07T16:00:00",
+                usuario: "Laura Torres",
+                nota: "El asunto no procede legalmente."
+              }
+            ]
+          },
+          {
+            idTurnado: 3,
+            numeroTurnado: 3,
+            fechaRegistro: "2025-10-08T08:45:00",
+            usuarioTurno: "María López",
+            areaResponsable: "Dirección de Comunicación",
+            idStatusTurnado: 2,
+            statusTurnado: "En trámite",
+            fases: [
+              {
+                idStatusTurnado: 1,
+                statusTurnado: "Recibido",
+                icon: "fas fa-share",
+                fecha: "2025-10-08T08:45:00",
+                usuario: "María López",
+                nota: "Se turna para difusión."
+              },
+              {
+                idStatusTurnado: 2,
+                statusTurnado: "En trámite",
+                icon: "fa-regular fa-clock",
+                fecha: "2025-10-08T09:10:00",
+                usuario: "Rafael Díaz",
+                nota: "En proceso de redacción del comunicado."
+              }
+            ]
+          }
+        ]
+      };
   }
 
   ngOnChanges() {
@@ -934,5 +1048,17 @@ setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): voi
   notificarCambio() {
     this.cambio.emit('Se detectó un cambio');
   }
+
+  statusClass(idStatus: number): string {
+    switch (idStatus) {
+      case 1: return 'inicio';
+      case 2: return 'tramite';
+      case 3: return 'atendido';
+      case 4: return 'rechazado';
+      default: return '';
+    }
+  }
+
+
 
 }

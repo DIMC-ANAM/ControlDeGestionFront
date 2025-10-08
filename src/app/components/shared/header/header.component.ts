@@ -71,7 +71,7 @@ export class HeaderComponent {
 
   ngOnInit() {
     document.addEventListener('click', this.onDocumentClick.bind(this));
-    this.consultarDependencia();
+    
   }
 
   ngOnDestroy() {
@@ -80,27 +80,5 @@ export class HeaderComponent {
 
   goHome(){
     this.router.navigate(['/dashboard']);
-  }
-  consultarDependencia() {
-    this.catalogoApi
-      .consultarDependencia({
-        idDependencia: this.usuario.idDependencia || 18 ,
-        opcion: 3
-      })
-      .subscribe(
-        (data) => {
-          this.onSuccessconsultarDependencia(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
-  }
-  onSuccessconsultarDependencia(data: any) {
-    if (data.status == 200) {
-      this.dependenciaDS = data.model;
-    } else {
-      this.utils.MuestrasToast(TipoToast.Warning, data.message);
-    }
   }
 }
