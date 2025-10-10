@@ -45,7 +45,7 @@ export class RegistroAsuntoComponent {
   /* respuesta del registro de asunto */
 
   response: any = null;
-  today = new Date().toISOString().split('T')[0];
+  today = new Date().toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
   usuario: any= null;
   constructor(
     private fb: FormBuilder,
@@ -104,7 +104,7 @@ export class RegistroAsuntoComponent {
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
       idUsuarioRegistra:  this.usuario.idUsuario,
-      usuarioRegistra: this.usuario.nombreUsuario,
+      usuarioRegistra: this.usuario.nombreCompleto,
       idUnidadAdministrativa: 1 /* falta */,
       unidadAdministrativa: 'Recursos Humanos',
       observaciones: '',

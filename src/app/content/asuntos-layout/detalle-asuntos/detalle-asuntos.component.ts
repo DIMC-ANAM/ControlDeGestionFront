@@ -215,7 +215,7 @@ export class DetalleAsuntosComponent {
       this.consultarTurnadosAsunto(this.idAsunto);
       this.asuntoSeleccionadoModificado = false;
       this.editar = false;
-      /*this.consultarHistorialAsunto(this.idAsunto); */
+      this.consultarHistorial(this.idAsunto);
     }
   }
 
@@ -369,7 +369,9 @@ export class DetalleAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Success, data.message);
       this.resetFormularioArchivo(this.conclusionForm);
       this.clearFile('concluir');
+      this.consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto);
       this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+      this.notificarCambio();
     } else {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
@@ -593,10 +595,10 @@ export class DetalleAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
   }
-  consultarHistorialAsunto(id: number) {
-    this.asuntoApi.consultarHistorialAsunto({ idAsunto: id }).subscribe(
+  consultarHistorial(id: number) {
+    this.asuntoApi.consultarHistorial({ idAsunto: id }).subscribe(
       (data) => {
-        this.onSuccessconsultarHistorialAsunto(data);
+        this.onSuccessconsultarHistorial(data);
       },
       (ex) => {
         this.utils.MuestrasToast(TipoToast.Info,"Funcionalidad en desarrollo.");
@@ -604,10 +606,12 @@ export class DetalleAsuntosComponent {
       }
     );
   }
-  onSuccessconsultarHistorialAsunto(data: any) {
+  onSuccessconsultarHistorial(data: any) {
     if (data.status == 200) {
-      /* this.asuntoSeleccionado = data.model */
       /* objeto historial */
+      this.historial = data.model;
+      console.log(this.historial);
+      
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -754,6 +758,7 @@ export class DetalleAsuntosComponent {
     if (data.status == 200) {
       this.consultarTurnadosAsunto(this.idAsunto);
       this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.notificarCambio();
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -1046,7 +1051,7 @@ setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): voi
 
   /* event emmiter */
   notificarCambio() {
-    this.cambio.emit('Se detectó un cambio');
+    this.cambio.emit('Not');
   }
 
   statusClass(idStatus: number): string {

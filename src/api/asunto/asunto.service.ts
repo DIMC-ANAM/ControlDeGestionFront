@@ -39,9 +39,6 @@ export class AsuntoService {
     return this.http.post(this.urlBase + 'consultarTurnados', data);
   }
   
-  consultarHistorialAsunto(data:any) {
-    return this.http.post(this.urlBase + 'consultarHistorialAsunto', data);
-  }
   turnarAsunto(data:any) {
     return this.http.post(this.urlBase + 'turnarAsunto', data);
   }
@@ -59,5 +56,8 @@ export class AsuntoService {
   }
   editarAsunto(data:any) {
     return this.http.post(this.urlBase + 'editarAsunto', data);
+  }
+  consultarHistorial(data:any) {
+    return this.http.post(this.urlBase + 'consultarHistorial', data);
   }
 }

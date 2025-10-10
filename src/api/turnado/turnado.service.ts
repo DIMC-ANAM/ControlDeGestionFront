@@ -31,4 +31,8 @@ export class TurnadoService {
     return this.http.post(this.urlBase + 'rechazarTurnado', data);
   }
   
+  verTurnado(data:any) {
+    return this.http.post(this.urlBase + 'verTurnado', data);
+  }
+  
 }

@@ -80,7 +80,7 @@
     
     <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
       [ngClass]="{'seleccionado': turnadoSeleccionadoItem?.idTurnado === asunto.idTurnado , 'card-animada': cambio}"
-      (click)="seleccionarTurnado(asunto)">
+      (click)="seleccionarTurnado(asunto); verTurnado();">
       <div class="card-body">
         <div class="d-flex justify-content-between align-items-start">
           <div class="asunto-info">

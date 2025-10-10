@@ -59,8 +59,8 @@ export class ListaAsuntosComponent {
           })
         : true;
 
-      const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
-      const filtroPrioridadNum = this.filtroPrioridad ? +this.filtroPrioridad : null;
+      const filtroEstadoNum = this.filtroEstado ? + this.filtroEstado : null;
+      const filtroPrioridadNum = this.filtroPrioridad ? + this.filtroPrioridad : null;
 
       const coincideEstado = filtroEstadoNum !== null
         ? a.idStatusAsunto === filtroEstadoNum
@@ -111,16 +111,18 @@ toDateOnly(date: Date): string {
         },
       (ex) => {
         this.utils.MuestraErrorInterno(ex);
+        this.asuntos  = [];
       } 
-  );
+    );
   }
-
+  
   onSuccessconsultarAsuntosUR(data:any){
-
+    
     if(data.status == 200){
       this.asuntos = data.model;
     }else{
       this.utils.MuestrasToast(TipoToast.Error,data.message);
+      this.asuntos  = [];
     }
   }
     consultarTema() {

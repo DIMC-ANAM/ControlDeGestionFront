@@ -105,7 +105,7 @@ baseurl = environment.baseurl;
   }
   private createconclusionForm(): FormGroup {
   return this.fb.group({
-    documento: [null, this.getDocumentoValidators()],
+    documento: [null, /* this.getDocumentoValidators() */ Validators.required],
     respuesta: [null, Validators.required]
     });
   }
@@ -165,6 +165,11 @@ baseurl = environment.baseurl;
   }
 
   openResponderModal() {
+    if ([3, 4].includes(this.turnadoDS.idStatusTurnado) || this.turnadoDS.idinstruccion == 1 || this.turnadoDS.puedeResponder == 0 ) {
+      this.utils.MuestrasToast(TipoToast.Error, "¡Este turnado no puede responderse!");
+      this.utils.MuestrasToast(TipoToast.Warning, "Advertencia, se detectó el uso de manipulación del DOM.");
+      return;
+    }
     this.initFormConcluir();
     this.modalManager.openModal({
       title: '<i class ="fas fa-share m-2"> </i> Dar respuesta al turnado',
@@ -225,7 +230,7 @@ baseurl = environment.baseurl;
 
     contestarTurnado(): void {
       const estado = this.fileState.get('concluir');
-      if (this.conclusionForm.valid && (this.usuario.idUsuarioRol === 7 ? estado?.file : true)) {      
+      if (this.conclusionForm.valid && (/* this.usuario.idUsuarioRol === 7 ?  */estado?.file /* : true */)) {      
         this.construirPayloadRespuestaTurnado().then((payload) => {   
         this.turnadoApi.contestarTurnado(payload).subscribe(
           (data) => {
@@ -247,7 +252,7 @@ baseurl = environment.baseurl;
       this.utils.MuestrasToast(TipoToast.Success, data.message)
       this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
       this.consultarExpedienteAsunto(this.turnadoDS.idTurnado)
-      
+      this.notificarCambio();
     }else{
       this.utils.MuestrasToast(TipoToast.Error, data.message)
       
@@ -273,7 +278,8 @@ baseurl = environment.baseurl;
   onSuccessRechazarTurnado(data:any){
     if (data.status== 200) {
       this.utils.MuestrasToast(TipoToast.Success, data.message);
-      this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
+      this.consultarDetalleTurnado(this.turnadoDS.idTurnado);
+      this.notificarCambio();
     } else {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
@@ -283,7 +289,7 @@ baseurl = environment.baseurl;
   consultarDependencia() {
     this.catalogoApi
       .consultarDependencia({
-        idDependencia: this.usuario.idDependencia || 18 ,
+        idDependencia: this.usuario.idDeterminante ,
         opcion: 2
       })
       .subscribe(
@@ -485,7 +491,6 @@ baseurl = environment.baseurl;
     onSuccessconsultarDetalleTurnado(data: any) {
       if (data.status == 200) {
         this.turnadoDS = data.model
-        this.notificarCambio();
       } else {
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
       }
@@ -527,8 +532,7 @@ baseurl = environment.baseurl;
       this.documentoPrincipal = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Documento principal');
       this.documentoConclusion = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Conclusión');
       this.anexos = data.model.anexos;
-      this.respuestasDocs = data.model.respuestas;
-      console.log(data.model.respuestas, this.turnadoDS.idTurnado);
+      this.respuestasDocs = data.model.respuestas;      
       
       this.documentoRespuesta = data.model.respuestas.find( (doc:any) =>  doc.idTurnado === this.turnadoDS.idTurnado);
     } else {
@@ -543,11 +547,11 @@ baseurl = environment.baseurl;
     
   }
 
-    consultarHistorialAsunto(id:number) {
+    consultarHistorial(id:number) {
 
-        this.asuntoApi.consultarHistorialAsunto({idAsunto: id}).subscribe(
+        this.asuntoApi.consultarHistorial({idAsunto: id}).subscribe(
           (data) => {
-            this.onSuccessconsultarHistorialAsunto(data);
+            this.onSuccessconsultarHistorial(data);
           },
           (ex) => {
           this.utils.MuestraErrorInterno(ex);
@@ -555,7 +559,7 @@ baseurl = environment.baseurl;
     );
 
     }
-    onSuccessconsultarHistorialAsunto(data: any) {
+    onSuccessconsultarHistorial(data: any) {
       if (data.status == 200) {
         /* this.turnadoSeleccionado = data.model */
         /* objeto historial */
@@ -680,7 +684,8 @@ baseurl = environment.baseurl;
       folio: this.turnadoSeleccionado.folio,
       documentos: [documentoPayload],
       respuesta: this.conclusionForm.get('respuesta')?.value || null,
-      atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false 
+      /* atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false  */
+      atendedor: false 
     };
     return payload;
   }
@@ -688,6 +693,6 @@ baseurl = environment.baseurl;
 
   /* event emmiter */
   notificarCambio() {
-    this.cambio.emit('Se detectó un cambio');
+    this.cambio.emit('Not');
   }
 }

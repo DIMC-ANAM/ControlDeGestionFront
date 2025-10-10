@@ -82,7 +82,7 @@
                     <div class="input-icon-wrapper">
                         <i
                             [ngClass]="getValidationStatus('fechaRecepcion') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('fechaRecepcion') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-                        <input type="date" id="fechaRecepcion" class="form-control" formControlName="fechaRecepcion"
+                        <input type="datetime-local" id="fechaRecepcion" class="form-control" formControlName="fechaRecepcion"
                             [class.invalid]="getValidationStatus('fechaRecepcion') == 'invalid'"
                             [class.valid]="getValidationStatus('fechaRecepcion') == 'valid'" />
                     </div>
@@ -312,7 +312,7 @@
       <p><strong>Número de oficio:</strong> {{ documentoForm.value.noOficio }}</p>
       <p><strong>Tema:</strong> {{ encontrarPorId(temas, 'idTema', documentoForm.value.idTema, 'tema') || ''}}</p>
       <p><strong>Fecha del documento:</strong> {{ documentoForm.value.fechaDocumento | fechaMexico }}</p>
-      <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico }}</p>
+      <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico:true }}</p>
       <p><strong>Fecha de cumplimiento:</strong> {{ documentoForm.value.fechaCumplimiento | fechaMexico:true || ''}} </p>
       <p><strong>Prioridad:</strong> {{ encontrarPorId(prioridad, 'idPrioridad', documentoForm.value.idPrioridad,'prioridad') || ''}}</p>
     </div>
