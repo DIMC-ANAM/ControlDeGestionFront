@@ -19,12 +19,14 @@ export class ListaTurnadosComponent {
   filtroTema = '';
   filtroFechaInicio: Date | null = null;
   filtroFechaFin: Date | null = null;
+  cantidades:any =[];
 
   turnados: any[] = [];
   turnadoSeleccionadoItem: any = null;
   temaDS: any[] = [];
   cambio = false;
   usuario: any = true;
+  Math = Math;
 
   constructor(
     private turnadoApi: TurnadoService,
@@ -39,6 +41,7 @@ export class ListaTurnadosComponent {
     //Add 'implements OnInit' to the class.
     this.consultarTurnados();
     this.consultarTema();
+	this.consultarCantidadesStatus();
   }
   seleccionarTurnado(asuntoTurnado: any): void {
     this.turnadoSeleccionado.emit({
@@ -48,7 +51,6 @@ export class ListaTurnadosComponent {
     this.turnadoSeleccionadoItem =
       this.turnados.find((a) => a.idTurnado === asuntoTurnado.idTurnado) ||
       null;
-    
   }
 
   get asuntosFiltrados() {
@@ -69,7 +71,7 @@ export class ListaTurnadosComponent {
         : null;
 
       const coincideEstado =
-        filtroEstadoNum !== null ? a.idStatusAsunto === filtroEstadoNum : true;
+        filtroEstadoNum !== null ? a.idStatusTurnado === filtroEstadoNum : true;
 
       const coincidePrioridad =
         filtroPrioridadNum !== null
@@ -108,7 +110,7 @@ export class ListaTurnadosComponent {
   toDateOnly(date: Date): string {
     return date.toISOString().split('T')[0]; // '2025-08-14'
   }
-  consultarTurnados(mensaje ='') {
+  consultarTurnados(mensaje = '') {
     this.turnadoApi
       .consultarTurnados({
         idUnidadAdministrativa:
@@ -116,17 +118,17 @@ export class ListaTurnadosComponent {
             .idDeterminante /* this.usuario.idDependencia */ /* hay que cambiarlo  */,
       })
       .subscribe(
-        (data:any) => {
+        (data: any) => {
           if (data.status == 200) {
             this.turnados = data.model;
           } else {
             this.utils.MuestrasToast(TipoToast.Error, data.message);
-            this.turnados = []
+            this.turnados = [];
           }
-            if (mensaje!='Not' ) {
-              this.cambio = true;
-              setTimeout(() => this.cambio = false, 500); 
-            }
+          if (mensaje != 'Not') {
+            this.cambio = true;
+            setTimeout(() => (this.cambio = false), 500);
+          }
         },
         (ex) => {
           this.utils.MuestraErrorInterno(ex);
@@ -135,9 +137,7 @@ export class ListaTurnadosComponent {
       );
   }
 
-  onSuccessconsultarTurnados(data: any) {
-    
-  }
+  onSuccessconsultarTurnados(data: any) {}
 
   consultarTema() {
     this.catalogoApi.consultarTema().subscribe(
@@ -158,18 +158,20 @@ export class ListaTurnadosComponent {
   }
 
   verTurnado() {
-    if ( this.turnadoSeleccionadoItem.idStatusTurnado != 1) return;
-    this.turnadoApi.verTurnado({
-      idTurnado: this.turnadoSeleccionadoItem.idTurnado,
-      idUsuarioModifica: this.usuario.idUsuario
-    }).subscribe(
-      (data) => {
-        this.onSuccessverTurnado(data);
-      },
-      (ex) => {
-        this.utils.MuestraErrorInterno(ex);
-      }
-    );
+    if (this.turnadoSeleccionadoItem.idStatusTurnado != 1) return;
+    this.turnadoApi
+      .verTurnado({
+        idTurnado: this.turnadoSeleccionadoItem.idTurnado,
+        idUsuarioModifica: this.usuario.idUsuario,
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessverTurnado(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
   }
   onSuccessverTurnado(data: any) {
     if (data.status == 200) {
@@ -185,4 +187,89 @@ export class ListaTurnadosComponent {
   refrescar(mensaje: string) {
     this.consultarTurnados(mensaje);
   }
+
+  consultarCantidadesStatus() {
+    this.catalogoApi
+      .consultarCantidadesStatus({
+        opcion: 2,
+        idUnidadResponsable: this.usuario.idDeterminante,
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessconsultarCantidadesStatus(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccessconsultarCantidadesStatus(data: any) {
+    if (data.status == 200) {
+      this.cantidades = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+  }
+
+  
+  pageSize: number = 10; // cantidad de asuntos por página
+  currentPage: number = 1; // página actual
+  
+
+  get totalPages(): number {
+    return Math.ceil(this.asuntosFiltrados.length / this.pageSize);
+  }
+
+	get asuntosPaginados() {
+	// Si la página actual queda fuera de rango al cambiar el pageSize o filtros, reajústala
+	const totalPages = this.totalPages;
+	if (this.currentPage > totalPages && totalPages > 0) {
+		this.currentPage = totalPages;
+	}
+
+  const startIndex = (this.currentPage - 1) * this.pageSize;
+  const endIndex = startIndex + this.pageSize;
+  return this.asuntosFiltrados.slice(startIndex, endIndex);
+}
+
+  cambiarPagina(page: number | string) {
+	if (typeof page === 'string') return; // evita intentar navegar con '...'
+	if (page >= 1 && page <= this.totalPages) {
+		this.currentPage = page;
+	}
+  }
+
+  get paginasMostradas(): (number | string)[] {
+    const total = this.totalPages;
+    const actual = this.currentPage;
+    const maxVisible = 5;
+    const pages: (number | string)[] = [];
+
+/*     if (total <= maxVisible) {
+      for (let i = 1; i <= total; i++) pages.push(i);
+    } else {
+      if (actual <= 2) {
+        // Primeros tres
+        pages.push(1, 2, 3);
+      } else if (actual >= total - 1) {
+        // Últimos tres
+        pages.push('...', total - 2, total - 1, total);
+      } else {
+        // Tres en medio
+        pages.push('...', actual - 1, actual, actual + 1, '...');
+      }
+    } */
+    if (actual <= 2) {
+      return [1, 2, 3];
+    }
+    if (actual >= total - 1) {
+      return ['...', total - 2, total - 1, total];
+    }
+    return ['...', actual - 1, actual, actual + 1, '...'];
+  }
+
+onPageSizeChange(newSize: number) {
+  this.pageSize = newSize || 10;
+  this.currentPage = 1;
+}
 }

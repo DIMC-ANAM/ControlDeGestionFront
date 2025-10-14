@@ -35,5 +35,8 @@ export class CatalogoService {
   consultarUsuarioRol(data:any) {
     return this.http.post(this.urlBase + 'consultarUsuarioRol', data);
   }
+  consultarCantidadesStatus(data:any) {
+    return this.http.post(this.urlBase + 'consultarCantidadesStatus', data);
+  }
 }
 

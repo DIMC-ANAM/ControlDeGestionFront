@@ -1,5 +1,5 @@
 <div class="d-flex flex-column h-100 content-resistant">  
-  <div class="m-4 border-bottom">
+  <div class="mx-4 my-2 border-bottom">
     <div class="d-flex justify-content-between align-items-start mb-1">
       <div>
         <h1 class="fw-bold mb-1 text-muted">Asuntos registrados</h1>
@@ -9,6 +9,15 @@
 
     <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
       <div class="p-2 bg-light">
+		<!-- cantidades -->
+		<div class="d-flex flex-row justify-content-around mb-4">	
+			 <span (click)="filtroEstado = item.idStatusAsunto" role="button" *ngFor="let item of cantidades" class="badge rounded-3 px-3 py-2" [ngClass]="item.idStatusAsunto == '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto)">
+				 <i class="fas" [ngClass]="item.idStatusAsunto == '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)" ></i>
+				 <span class="ms-1 ">
+				 {{ item.statusAsunto }} {{item.cantidad}}
+				 </span>
+			   </span>
+		 </div>
         <div class="row pb-3">
           <div class="col-md-12">
             <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto" />
@@ -68,12 +77,63 @@
           </div>
         </div>
       </div>
+	  	  <!-- Paginado -->
+		<div class="d-flex flex-row justify-content-end align-items-center pb-3">
+
+			<!-- Controles del paginado -->
+			<nav *ngIf="totalPages > 1" class="me-2" >
+			<ul class="pagination pagination-sm mb-2">
+				<!-- Botón anterior -->
+				<li class="page-item" [class.disabled]="currentPage === 1">
+				<button class="page-link" (click)="cambiarPagina(currentPage - 1)">
+					<i class="fas fa-chevron-circle-left"></i>
+				</button>
+				</li>
+
+				<!-- Números de página con abreviación -->
+				<li class="page-item" *ngFor="let page of paginasMostradas" [class.active]="page === currentPage">
+				<button class="page-link" (click)="cambiarPagina(page)" *ngIf="page !== '...'">{{ page }}</button>
+				<span class="page-link text-muted bg-transparent border-0" *ngIf="page === '...'">...</span>
+				</li>
+
+				<!-- Botón siguiente -->
+				<li class="page-item" [class.disabled]="currentPage === totalPages">
+				<button class="page-link" (click)="cambiarPagina(currentPage + 1)">
+					<i class="fas fa-chevron-circle-right"></i>
+				</button>
+				</li>
+			</ul>
+			</nav>
+
+			<!-- Contador de asuntos visibles -->
+			<div class="text-muted small text-center">
+			Mostrando
+		{{ asuntosFiltrados.length === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}
+		-
+		{{ Math.min(currentPage * pageSize, asuntosFiltrados.length) }}
+		de {{ asuntosFiltrados.length }} asuntos
+			</div>
+
+			<!-- Selector de cantidad por página -->
+		<!--     <div class="text-center mt-2">
+				<label for="pageSize" class="small me-2">Mostrar:</label>
+				<select id="pageSize"
+						[(ngModel)]="pageSize"
+						(ngModelChange)="onPageSizeChange($event)"
+						class="form-select d-inline w-auto small">
+					<option [value]="5">5</option>
+					<option [value]="10">10</option>
+					<option [value]="20">20</option>
+				</select>
+				</div>
+		-->
+		</div>
   </div>
 
   <!-- Lista de tarjetas -->
-  <div class="p-4 overflow-auto">
+  <div class="mx-4 my-2 px-4 py-2 h-100 overflow-auto ">
     <ng-container *ngIf="asuntosFiltrados.length != 0; else elseTemplate">
-      <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
+      <div *ngFor="let asunto of asuntosPaginados" class="card card-asunto mb-3 cursor-pointer"
     
     [ngClass]="{'seleccionado': asuntoSeleccionadoItem?.idAsunto === asunto.idAsunto, 'card-animada': cambio}"
     (click)="seleccionarAsunto(asunto.idAsunto)">
@@ -133,7 +193,6 @@
             <p class="text-muted frmlabel pt-3 " style="transform: translateX(-6%);">No se encontraron asuntos</p>
         </div>
     </ng-template>
-    
   
-</div>
+	</div>
 </div>

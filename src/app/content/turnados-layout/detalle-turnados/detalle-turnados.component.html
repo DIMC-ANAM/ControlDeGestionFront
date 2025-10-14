@@ -567,10 +567,69 @@
                     
                 </div>
 
-                <!-- Historial -->
-                <div *ngIf="tabActiva === 'historial'">
-                    <h6 class="fw-bold mb-3">Historial de Actividades</h6>
-                </div>
+                                    <!-- Historial -->
+                    <div *ngIf="tabActiva === 'historial'">
+                        <h6 class="fw-bold mb-3">Historial del asunto</h6>
+                        <div class="trazabilidad-container">
+
+                        <!-- Sección Asunto Registrado -->
+                        <section class="asunto-section">
+                            <div class="etiqueta">
+                            <div class="circle asunto">
+                                <i class="fas fa-file-arrow-down"></i>
+                            </div>
+                            <div class="connector" *ngIf="historial.asuntoRegistrado.idStatusAsunto === 2"></div>
+                            <div class="texto">
+                                <div class="titulo">Asunto registrado</div>
+                                <div>Oficio: {{ historial.asuntoRegistrado.numeroOficio }}</div>
+                                <div>Fecha: {{ historial.asuntoRegistrado.fechaRegistro | fechaMexico:true }}</div>
+                                <div>Registró: {{ historial.asuntoRegistrado.usuarioRegistra }}</div>
+                            </div>
+                            </div>
+                        </section>
+
+                        <!-- 🟡 Sección Turnados (horizontal) -->
+                        <section class="turnados-section">
+                            <div class="turnado" *ngFor="let t of historial.turnados">
+                            <div class="turnado-title"> {{ t.numeroTurnado }}. {{ t.areaResponsable }} - <small class="text-deep-blue">{{t.instruccion}}</small> <br> <span class="small text-deep-blue">{{t.fechaRegistro | fechaMexico:true}}</span> </div>
+
+								<div class="fases">
+									<ng-container *ngFor="let f of t.fases; let i = index">
+									<div class="etiqueta">
+										<div class="circle turnado" [ngClass]="statusClass(f.idStatusTurnado)">
+										<i [class]="f.icon || 'fas fa-times' "></i>
+										</div>
+									<!--  <div class="connector" *ngIf="i < t.fases.length - 1"></div> -->
+										<div class="texto">
+										<div class="titulo">{{ f.statusTurnado  }}</div>
+										<div>Fecha: <strong> {{ f.fechaModificacion | fechaMexico:true }}</strong></div>
+										<div>Usuario: <strong> {{ f.usuarioModifico }}</strong></div>
+										<!-- <div>Responsable: <strong> {{ t.areaResponsable }}</strong></div> -->
+										</div>
+									</div>
+									</ng-container>
+								</div>
+                            </div>
+                        </section>
+
+                        <!-- 🔵 Sección Asunto Concluido -->
+                        <section class="asunto-section" *ngIf="historial.asuntoRegistrado.idStatusAsunto === 3">
+                            <div class="etiqueta">
+                            <div class="circle asunto final">
+                                <i class="fas fa-check-double"></i>
+                            </div>
+                            <div class="texto">
+                                <div class="titulo">Asunto concluido</div>
+                                <!-- <div>Oficio: <strong>{{ historial.asuntoRegistrado.numeroOficio }} </strong> </div> -->
+                                <div>Fecha: <strong>{{ historial.asuntoRegistrado.fechaConclusion | fechaMexico:true }} </strong> </div>
+                                <div>Concluye: <strong>{{ historial.asuntoRegistrado.usuarioConcluye }} </strong> </div>
+                            </div>
+                            </div>
+                        </section>
+                        </div>
+
+                        
+                    </div>
             </div>
         </div>
     </ng-container>

@@ -1,3 +1,4 @@
+
 @import 'bootstrap/dist/css/bootstrap.min.css';
 /* ========================================
            SISTEMA DE DISEÑO - HOJA DE ESTILO BASE
@@ -974,4 +975,59 @@ input::-ms-clear {
         word-wrap: break-word; /* Manejo de texto largo */
         /* overflow: hidden; */
     }
+}
+
+.pagination {
+  /* Espaciado, fondo, border-radius, etc. */
+  padding: 2px;
+}
+
+.page-item.active .page-link {
+  background-color: var(--color-primary);
+  color: #fff;
+
+}
+
+.page-item .page-link {
+  color: var(--color-primary);
+  border: 1px solid #dee2e6;
+  transition: background 0.2s;
+}
+
+.page-item .page-link:hover {
+  background: #f5f5f5;
+  color: var(--color-deep-blue);
+
+}
+
+.page-item.disabled .page-link {
+  color: #ccc;
+  background: #f8f9fa;
+  border-color: #dee2e6;
+  cursor: not-allowed;
+      &:focus{
+	outline: none;
+  }
+}
+
+.pagination .fa-chevron-circle-left,
+.pagination .fa-chevron-circle-right {
+  color: var(--color-primary);
+  font-size: 1.2em;
+  transition: color 0.2s;
+}
+
+.page-item.disabled .fa-chevron-circle-left,
+.page-item.disabled .fa-chevron-circle-right {
+  color: #ccc;
+}
+
+.page-link:hover .fa-chevron-circle-left,
+.page-link:hover .fa-chevron-circle-right {
+  color: var(--color-deep-blue);
+}
+// Quitar outline azul de los botones de paginación
+.pagination .page-link:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }

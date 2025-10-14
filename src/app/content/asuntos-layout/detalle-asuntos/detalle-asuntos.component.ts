@@ -1,4 +1,11 @@
-import { Component, EventEmitter, Input, Output, TemplateRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -26,7 +33,8 @@ export class DetalleAsuntosComponent {
   reemplazarDocumentoModal!: TemplateRef<any>;
   @ViewChild('verDocumentoModal', { static: true })
   verDocumentoModal!: TemplateRef<any>;
-  @ViewChild('eliminarDocumentoModal', { static: true }) eliminarDocumentoModal!: TemplateRef<any>;
+  @ViewChild('eliminarDocumentoModal', { static: true })
+  eliminarDocumentoModal!: TemplateRef<any>;
 
   @Input() idAsunto: number | null = null;
   @Output() cambio = new EventEmitter<string>();
@@ -44,14 +52,11 @@ export class DetalleAsuntosComponent {
   temaDS: any[] = [];
   medioDS: any[] = [];
   dependenciaDS: any[] = [];
-  
-
-
 
   turnados: any[] = []; /* turnados por cargar */
   turnadosAsunto: any[] = [];
 
-  documentoReemplazo:any = null;
+  documentoReemplazo: any = null;
   anexosCargados: any[] = [];
   fileState = new Map<string, { file: File | null; name: string | null }>();
 
@@ -65,7 +70,7 @@ export class DetalleAsuntosComponent {
   asuntoSeleccionadoModificado: Boolean = false;
 
   tabActiva = 'detalles';
-  usuario:any = null;
+  usuario: any = null;
   asuntoSeleccionado: any = null;
 
   documentoPrincipal: any = null;
@@ -73,7 +78,7 @@ export class DetalleAsuntosComponent {
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
 
-  historial: any =  null;
+  historial: any = null;
 
   constructor(
     private fb: FormBuilder,
@@ -87,125 +92,138 @@ export class DetalleAsuntosComponent {
 
   ngOnInit(): void {
     this.usuario = JSON.parse(localStorage.getItem('session')!);
-    
+
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();
-      this.consultarTipoDocumento();
+    this.consultarTipoDocumento();
     this.consultarTema();
     this.consultarMedioRecepcion();
 
     /*  */
-      this.historial = {
-        asuntoRegistrado: {
-          idAsunto: 101,
-          numeroOficio: "OF/2025/123",
-          fechaRegistro: "2025-10-06T09:30:00",
-          usuarioRegistra: "María López",
-          fechaConclusion: "2025-10-08T15:45:00",
-          usuarioConcluye: "Luis Hernández",
-          idStatusAsunto: 3,
-          statusAsunto: "Concluido"
+    this.historial = {
+      asuntoRegistrado: {
+        idAsunto: 101,
+        numeroOficio: 'OF/2025/123',
+        fechaRegistro: '2025-10-06T09:30:00',
+        usuarioRegistra: 'María López',
+        fechaConclusion: '2025-10-08T15:45:00',
+        usuarioConcluye: 'Luis Hernández',
+        idStatusAsunto: 3,
+        statusAsunto: 'Concluido',
+      },
+      turnados: [
+        {
+          idTurnado: 1,
+          numeroTurnado: 1,
+          fechaRegistro: '2025-10-06T10:00:00',
+          usuarioTurno: 'María López',
+          areaResponsable: 'Dirección de Planeación',
+          idStatusTurnado: 3,
+          statusTurnado: 'Atendido',
+          fases: [
+            {
+              idStatusTurnado: 1,
+              statusTurnado: 'Recibido',
+              icon: 'fas fa-share',
+              fecha: '2025-10-06T10:00:00',
+              usuario: 'María López',
+              nota: 'Se turna el asunto por primera vez.',
+            },
+            {
+              idTurnado: 3,
+              tipoOperacion: 'ASUNTO_TURNADO',
+              numeroTurnado: 1,
+              fechaModificacion: '2025-10-09 18:54:15',
+              usuarioModifico: 'Jose Andres Reyes Cerdaa',
+              areaResponsable: 'Dirección de Organización',
+              idStatusTurnado: 1,
+              statusTurnado: 'Recibido',
+              nota: 'Se turna el asunto a: Área responsable',
+            },
+
+            ,
+            {
+              idStatusTurnado: 2,
+              statusTurnado: 'En trámite',
+              icon: 'fa-regular fa-clock',
+              fecha: '2025-10-06T11:30:00',
+              usuario: 'Carlos Méndez',
+              nota: 'Recibido por el área responsable.',
+            },
+            {
+              idStatusTurnado: 3,
+              statusTurnado: 'Atendido',
+              icon: 'fas fa-check',
+              fecha: '2025-10-07T17:00:00',
+              usuario: 'Carlos Méndez',
+              nota: 'Se entrega respuesta al oficio.',
+            },
+          ],
         },
-        turnados: [
-          {
-            idTurnado: 1,
-            numeroTurnado: 1,
-            fechaRegistro: "2025-10-06T10:00:00",
-            usuarioTurno: "María López",
-            areaResponsable: "Dirección de Planeación",
-            idStatusTurnado: 3,
-            statusTurnado: "Atendido",
-            fases: [
-              {
-                idStatusTurnado: 1,
-                statusTurnado: "Recibido",
-                icon: "fas fa-share",
-                fecha: "2025-10-06T10:00:00",
-                usuario: "María López",
-                nota: "Se turna el asunto por primera vez."
-              },
-              {
-                idStatusTurnado: 2,
-                statusTurnado: "En trámite",
-                icon: "fa-regular fa-clock",
-                fecha: "2025-10-06T11:30:00",
-                usuario: "Carlos Méndez",
-                nota: "Recibido por el área responsable."
-              },
-              {
-                idStatusTurnado: 3,
-                statusTurnado: "Atendido",
-                icon: "fas fa-check",
-                fecha: "2025-10-07T17:00:00",
-                usuario: "Carlos Méndez",
-                nota: "Se entrega respuesta al oficio."
-              }
-            ]
-          },
-          {
-            idTurnado: 2,
-            numeroTurnado: 2,
-            fechaRegistro: "2025-10-07T09:00:00",
-            usuarioTurno: "Luis Hernández",
-            areaResponsable: "Unidad Jurídica",
-            idStatusTurnado: 4,
-            statusTurnado: "Rechazado",
-            fases: [
-              {
-                idStatusTurnado: 1,
-                statusTurnado: "Recibido",
-                icon: "fas fa-share",
-                fecha: "2025-10-07T09:00:00",
-                usuario: "Luis Hernández",
-                nota: "Turno a revisión jurídica."
-              },
-              {
-                idStatusTurnado: 2,
-                statusTurnado: "En trámite",
-                icon: "fa-regular fa-clock",
-                fecha: "2025-10-07T10:15:00",
-                usuario: "Laura Torres",
-                nota: "Revisión en curso."
-              },
-              {
-                idStatusTurnado: 4,
-                statusTurnado: "Rechazado",
-                icon: "fas fa-circle-xmark",
-                fecha: "2025-10-07T16:00:00",
-                usuario: "Laura Torres",
-                nota: "El asunto no procede legalmente."
-              }
-            ]
-          },
-          {
-            idTurnado: 3,
-            numeroTurnado: 3,
-            fechaRegistro: "2025-10-08T08:45:00",
-            usuarioTurno: "María López",
-            areaResponsable: "Dirección de Comunicación",
-            idStatusTurnado: 2,
-            statusTurnado: "En trámite",
-            fases: [
-              {
-                idStatusTurnado: 1,
-                statusTurnado: "Recibido",
-                icon: "fas fa-share",
-                fecha: "2025-10-08T08:45:00",
-                usuario: "María López",
-                nota: "Se turna para difusión."
-              },
-              {
-                idStatusTurnado: 2,
-                statusTurnado: "En trámite",
-                icon: "fa-regular fa-clock",
-                fecha: "2025-10-08T09:10:00",
-                usuario: "Rafael Díaz",
-                nota: "En proceso de redacción del comunicado."
-              }
-            ]
-          }
-        ]
-      };
+        {
+          idTurnado: 2,
+          numeroTurnado: 2,
+          fechaRegistro: '2025-10-07T09:00:00',
+          usuarioTurno: 'Luis Hernández',
+          areaResponsable: 'Unidad Jurídica',
+          idStatusTurnado: 4,
+          statusTurnado: 'Rechazado',
+          fases: [
+            {
+              idStatusTurnado: 1,
+              statusTurnado: 'Recibido',
+              icon: 'fas fa-share',
+              fecha: '2025-10-07T09:00:00',
+              usuario: 'Luis Hernández',
+              nota: 'Turno a revisión jurídica.',
+            },
+            {
+              idStatusTurnado: 2,
+              statusTurnado: 'En trámite',
+              icon: 'fa-regular fa-clock',
+              fecha: '2025-10-07T10:15:00',
+              usuario: 'Laura Torres',
+              nota: 'Revisión en curso.',
+            },
+            {
+              idStatusTurnado: 4,
+              statusTurnado: 'Rechazado',
+              icon: 'fas fa-circle-xmark',
+              fecha: '2025-10-07T16:00:00',
+              usuario: 'Laura Torres',
+              nota: 'El asunto no procede legalmente.',
+            },
+          ],
+        },
+        {
+          idTurnado: 3,
+          numeroTurnado: 3,
+          fechaRegistro: '2025-10-08T08:45:00',
+          usuarioTurno: 'María López',
+          areaResponsable: 'Dirección de Comunicación',
+          idStatusTurnado: 2,
+          statusTurnado: 'En trámite',
+          fases: [
+            {
+              idStatusTurnado: 1,
+              statusTurnado: 'Recibido',
+              icon: 'fas fa-share',
+              fecha: '2025-10-08T08:45:00',
+              usuario: 'María López',
+              nota: 'Se turna para difusión.',
+            },
+            {
+              idStatusTurnado: 2,
+              statusTurnado: 'En trámite',
+              icon: 'fa-regular fa-clock',
+              fecha: '2025-10-08T09:10:00',
+              usuario: 'Rafael Díaz',
+              nota: 'En proceso de redacción del comunicado.',
+            },
+          ],
+        },
+      ],
+    };
   }
 
   ngOnChanges() {
@@ -253,8 +271,14 @@ export class DetalleAsuntosComponent {
 
   openConcluirModal() {
     if (this.asuntoSeleccionado.puedeConcluir == 0) {
-      this.utils.MuestrasToast(TipoToast.Error, "Este asunto no puede concluirse!");
-      this.utils.MuestrasToast(TipoToast.Warning, "Advertencia, se detectó el uso de manipulación del DOM.");
+      this.utils.MuestrasToast(
+        TipoToast.Error,
+        'Este asunto no puede concluirse!'
+      );
+      this.utils.MuestrasToast(
+        TipoToast.Warning,
+        'Advertencia, se detectó el uso de manipulación del DOM.'
+      );
       return;
     }
     this.initFormConcluir();
@@ -269,16 +293,15 @@ export class DetalleAsuntosComponent {
     });
   }
 
-  openeliminarDocumentoModal(idDocumento:any){/* id del documento!!!  */
-    this.modalManager.openModal(
-      {
-        title: " <i class= 'fas fa-warning me-2 text-warning'> </i> ¿Eliminar este documento?",
-        template: this.eliminarDocumentoModal,
-        showFooter: true,
-        onAccept: () => this.eliminarDocumento(idDocumento)
-      }
-    );
-
+  openeliminarDocumentoModal(idDocumento: any) {
+    /* id del documento!!!  */
+    this.modalManager.openModal({
+      title:
+        " <i class= 'fas fa-warning me-2 text-warning'> </i> ¿Eliminar este documento?",
+      template: this.eliminarDocumentoModal,
+      showFooter: true,
+      onAccept: () => this.eliminarDocumento(idDocumento),
+    });
   }
   openReemplazarModal() {
     this.initFormReemplazar();
@@ -347,7 +370,6 @@ export class DetalleAsuntosComponent {
   concluirAsunto(): void {
     const estado = this.fileState.get('concluir');
     if (this.conclusionForm.valid && estado?.file) {
-    
       this.construirPayloadConcluirAsunto().then((payload) => {
         this.asuntoApi.concluirAsunto(payload).subscribe(
           (data) => {
@@ -358,13 +380,12 @@ export class DetalleAsuntosComponent {
           }
         );
       });
-      
     } else {
       this.conclusionForm.markAllAsTouched();
     }
   }
 
-  onSuccessConcluirAsunto(data:any){
+  onSuccessConcluirAsunto(data: any) {
     if (data.status == 200) {
       this.utils.MuestrasToast(TipoToast.Success, data.message);
       this.resetFormularioArchivo(this.conclusionForm);
@@ -376,9 +397,6 @@ export class DetalleAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
   }
-
-  
-
 
   cancelarTurnado(): void {
     this.turnados = [];
@@ -484,13 +502,17 @@ export class DetalleAsuntosComponent {
   ): 'valid' | 'invalid' | 'none' {
     const control = form.get(controlName);
     if (!control) return 'none';
-    return control.valid && (control.dirty || control.touched) ? 'valid' : control.invalid && (control.dirty || control.touched) ? 'invalid' : 'none';
+    return control.valid && (control.dirty || control.touched)
+      ? 'valid'
+      : control.invalid && (control.dirty || control.touched)
+      ? 'invalid'
+      : 'none';
   }
 
   addTurnado(): void {
     if (this.turnadoForm.valid) {
       const unidad = this.dependenciaDS.find(
-		(u) =>  u.id ==  this.turnadoForm.get('idUnidadResponsable')?.value
+        (u) => u.id == this.turnadoForm.get('idUnidadResponsable')?.value
       );
       const instruccion = this.instruccionesDS.find(
         (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
@@ -501,7 +523,10 @@ export class DetalleAsuntosComponent {
         idInstruccion: instruccion?.idInstruccion,
       };
 
-      if ( unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
+      if (
+        unidad &&
+        instruccion &&
+        !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
       ) {
         this.turnados.push({
           unidadResponsable: unidad.area,
@@ -523,7 +548,9 @@ export class DetalleAsuntosComponent {
     }
   }
   private esTurnadoIgual(a: any, b: any): boolean {
-    return ( a.idUnidadResponsable == b.idUnidadResponsable && a.idInstruccion == b.idInstruccion
+    return (
+      a.idUnidadResponsable == b.idUnidadResponsable &&
+      a.idInstruccion == b.idInstruccion
     );
   }
 
@@ -565,8 +592,12 @@ export class DetalleAsuntosComponent {
   }
   onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
     if (data.status == 200) {
-      this.documentoPrincipal = data.model.documentos.find( (doc:any) => doc.tipoDocumento === 'Documento principal');
-      this.documentoConclusion = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Conclusión' );
+      this.documentoPrincipal = data.model.documentos.find(
+        (doc: any) => doc.tipoDocumento === 'Documento principal'
+      );
+      this.documentoConclusion = data.model.documentos.find(
+        (doc: any) => doc.tipoDocumento === 'Conclusión'
+      );
       this.anexos = data.model.anexos;
       this.respuestasDocs = data.model.respuestas;
     } else {
@@ -601,8 +632,11 @@ export class DetalleAsuntosComponent {
         this.onSuccessconsultarHistorial(data);
       },
       (ex) => {
-        this.utils.MuestrasToast(TipoToast.Info,"Funcionalidad en desarrollo.");
-       /*  this.utils.MuestraErrorInterno(ex); */
+        this.utils.MuestrasToast(
+          TipoToast.Info,
+          'Funcionalidad en desarrollo.'
+        );
+        /*  this.utils.MuestraErrorInterno(ex); */
       }
     );
   }
@@ -611,7 +645,6 @@ export class DetalleAsuntosComponent {
       /* objeto historial */
       this.historial = data.model;
       console.log(this.historial);
-      
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -658,16 +691,14 @@ export class DetalleAsuntosComponent {
     }
   }
   consultarTipoDocumento() {
-    this.catalogoApi
-      .consultarTipoDocumento()
-      .subscribe(
-        (data) => {
-          this.onSuccessconsultarTipoDocumento(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
+    this.catalogoApi.consultarTipoDocumento().subscribe(
+      (data) => {
+        this.onSuccessconsultarTipoDocumento(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   onSuccessconsultarTipoDocumento(data: any) {
     if (data.status == 200) {
@@ -677,17 +708,18 @@ export class DetalleAsuntosComponent {
     }
   }
   consultarDependencia() {
-
     /* if is gestor entonces:  {1,1}*/
 
     this.catalogoApi
-      .consultarDependencia(/* {
+      .consultarDependencia(
+        /* {
         idDependencia: this.usuario.idDeterminante,
         opcion: 2
       } */ {
-        idDependencia: 1,
-        opcion: 1
-      })
+          idDependencia: 1,
+          opcion: 1,
+        }
+      )
       .subscribe(
         (data) => {
           this.onSuccessconsultarDependencia(data);
@@ -705,16 +737,14 @@ export class DetalleAsuntosComponent {
     }
   }
   consultarTema() {
-    this.catalogoApi
-      .consultarTema()
-      .subscribe(
-        (data) => {
-          this.onSuccessconsultarTema(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
+    this.catalogoApi.consultarTema().subscribe(
+      (data) => {
+        this.onSuccessconsultarTema(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   onSuccessconsultarTema(data: any) {
     if (data.status == 200) {
@@ -724,16 +754,14 @@ export class DetalleAsuntosComponent {
     }
   }
   consultarMedioRecepcion() {
-    this.catalogoApi
-      .consultarMedioRecepcion()
-      .subscribe(
-        (data) => {
-          this.onSuccessconsultarMedioRecepcion(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
+    this.catalogoApi.consultarMedioRecepcion().subscribe(
+      (data) => {
+        this.onSuccessconsultarMedioRecepcion(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   onSuccessconsultarMedioRecepcion(data: any) {
     if (data.status == 200) {
@@ -743,9 +771,8 @@ export class DetalleAsuntosComponent {
     }
   }
   turnarAsunto() {
-    console.log("this.turnados", this.turnados);
+    console.log('this.turnados', this.turnados);
     this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
-      
       (data) => {
         this.onSuccessturnarAsunto(data);
       },
@@ -766,7 +793,7 @@ export class DetalleAsuntosComponent {
   }
 
   reemplazarDocumento() {
-    this.construirPayloadReemplazoDocumento().then((payload) => {   
+    this.construirPayloadReemplazoDocumento().then((payload) => {
       this.asuntoApi.reemplazarDocumento(payload).subscribe(
         (data) => {
           this.onSuccessreemplazarDocumento(data);
@@ -784,52 +811,52 @@ export class DetalleAsuntosComponent {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
     this.resetFormularioArchivo(this.reemplazarDocumentoForm);
-	this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
-}
-
-cargarAnexos() {
-	this.construirPayloadAnexo().then((payload) => {   
-		
-		this.asuntoApi.cargarAnexos(payload).subscribe(
-			(data) => {
-				this.onSuccesscargarAnexos(data);
-			},
-			(ex) => {
-				this.utils.MuestraErrorInterno(ex);
-			}
-		);
-    });
-}
-onSuccesscargarAnexos(data: any) {
-	if (data.status == 200) {
-		this.utils.MuestrasToast(TipoToast.Success, data.message);      
-    } else {
-		this.utils.MuestrasToast(TipoToast.Error, data.message);
-    }
-	this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
-	this.resetFormularioArchivo(this.agregarAnexoForm);
-	this.anexosCargados = [];
+    this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
   }
 
+  cargarAnexos() {
+    this.construirPayloadAnexo().then((payload) => {
+      this.asuntoApi.cargarAnexos(payload).subscribe(
+        (data) => {
+          this.onSuccesscargarAnexos(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+    });
+  }
+  onSuccesscargarAnexos(data: any) {
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
+    }
+    this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+    this.resetFormularioArchivo(this.agregarAnexoForm);
+    this.anexosCargados = [];
+  }
 
-  eliminarDocumento(idDocumento: number){
-	this.asuntoApi.eliminarDocumento({ idDocumentAsunto: idDocumento }).subscribe(
-      (data) => {
-        this.onSuccesseliminarDocumento(data);
-		},
-		(ex) => {
-			this.utils.MuestraErrorInterno(ex);
-		}
-		);
-	}
-	onSuccesseliminarDocumento(data: any) {
-		if (data.status == 200) {
-			this.utils.MuestrasToast(TipoToast.Success, data.message);			
-		} else {
-		this.utils.MuestrasToast(TipoToast.Warning, data.message);
-		}
-		this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
-	}
+  eliminarDocumento(idDocumento: number) {
+    this.asuntoApi
+      .eliminarDocumento({ idDocumentAsunto: idDocumento })
+      .subscribe(
+        (data) => {
+          this.onSuccesseliminarDocumento(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+  onSuccesseliminarDocumento(data: any) {
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    }
+    this.consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto);
+  }
 
   /* auxiliares turnado  */
   /**
@@ -843,7 +870,10 @@ onSuccesscargarAnexos(data: any) {
     const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
 
     for (let i = 0; i < sortedTurnados.length; i++) {
-      if ( sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable || sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
+      if (
+        sortedTurnados[i].idUnidadResponsable !==
+          sortedAsuntos[i].idUnidadResponsable ||
+        sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
       ) {
         return true;
       }
@@ -894,7 +924,7 @@ onSuccesscargarAnexos(data: any) {
 
   async construirPayloadReemplazoDocumento(): Promise<any> {
     let documentoPayload = null;
-	let documentoReemplazo = this.fileState.get('reemplazar');
+    let documentoReemplazo = this.fileState.get('reemplazar');
 
     if (documentoReemplazo?.file) {
       const base64 = await this.fileToBase64(documentoReemplazo.file);
@@ -907,13 +937,12 @@ onSuccesscargarAnexos(data: any) {
     }
 
     const payload = {
-		idAsunto: this.asuntoSeleccionado.idAsunto,
-		folio: this.asuntoSeleccionado.folio,
-		idDocumentoReemplazo: this.documentoPrincipal.idDocumentoAsunto,   
-		documento: documentoPayload,
-		urlReemplazo: this.documentoPrincipal.ruta,	
-		idUsuarioRegistra: this.usuario.idUsuario
-
+      idAsunto: this.asuntoSeleccionado.idAsunto,
+      folio: this.asuntoSeleccionado.folio,
+      idDocumentoReemplazo: this.documentoPrincipal.idDocumentoAsunto,
+      documento: documentoPayload,
+      urlReemplazo: this.documentoPrincipal.ruta,
+      idUsuarioRegistra: this.usuario.idUsuario,
     };
 
     return payload;
@@ -924,10 +953,9 @@ onSuccesscargarAnexos(data: any) {
     const anexosPayload = await this.convertirAnexos();
 
     const payload = {
-		idAsunto: this.asuntoSeleccionado.idAsunto,
-		idUsuarioRegistra: this.usuario.idUsuario,
-		anexos: anexosPayload
-
+      idAsunto: this.asuntoSeleccionado.idAsunto,
+      idUsuarioRegistra: this.usuario.idUsuario,
+      anexos: anexosPayload,
     };
 
     return payload;
@@ -935,7 +963,7 @@ onSuccesscargarAnexos(data: any) {
 
   async construirPayloadConcluirAsunto(): Promise<any> {
     let documentoPayload = null;
-	let documentoConclusion = this.fileState.get('concluir');
+    let documentoConclusion = this.fileState.get('concluir');
 
     if (documentoConclusion?.file) {
       const base64 = await this.fileToBase64(documentoConclusion.file);
@@ -948,21 +976,27 @@ onSuccesscargarAnexos(data: any) {
     }
 
     const payload = {
-		idAsunto: this.asuntoSeleccionado.idAsunto,
-		folio: this.asuntoSeleccionado.folio,		   
-		documentos: [documentoPayload],		
-		idUsuarioRegistra: this.usuario.idUsuario
-
+      idAsunto: this.asuntoSeleccionado.idAsunto,
+      folio: this.asuntoSeleccionado.folio,
+      documentos: [documentoPayload],
+      idUsuarioRegistra: this.usuario.idUsuario,
     };
 
     return payload;
   }
 
-   encontrarPorId(lista: any[], campo: string, valor: number,target:string): string | undefined {
-      return lista.find(item => item[campo] == valor)?.[target] as string | undefined;
-    }
+  encontrarPorId(
+    lista: any[],
+    campo: string,
+    valor: number,
+    target: string
+  ): string | undefined {
+    return lista.find((item) => item[campo] == valor)?.[target] as
+      | string
+      | undefined;
+  }
 
-  guardarCambios(){
+  guardarCambios() {
     let payload = {
       idAsunto: this.asuntoSeleccionado.idAsunto,
       idTipoDocumento: this.asuntoSeleccionado.idTipoDocumento,
@@ -972,25 +1006,32 @@ onSuccesscargarAnexos(data: any) {
       observaciones: this.asuntoSeleccionado.observaciones,
       descripcionAsunto: this.asuntoSeleccionado.descripcionAsunto,
       idUsuarioModifica: this.usuario.idUsuario,
-      fechaCumplimiento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaCumplimiento == '' ? null:this.asuntoSeleccionado.fechaCumplimiento),
-      fechaDocumento: this.formatearFechaParaBD(this.asuntoSeleccionado.fechaDocumento == '' ? null: this.asuntoSeleccionado.fechaDocumento),
+      fechaCumplimiento: this.formatearFechaParaBD(
+        this.asuntoSeleccionado.fechaCumplimiento == ''
+          ? null
+          : this.asuntoSeleccionado.fechaCumplimiento
+      ),
+      fechaDocumento: this.formatearFechaParaBD(
+        this.asuntoSeleccionado.fechaDocumento == ''
+          ? null
+          : this.asuntoSeleccionado.fechaDocumento
+      ),
       remitenteNombre: this.asuntoSeleccionado.remitenteNombre,
       remitenteCargo: this.asuntoSeleccionado.remitenteCargo,
       remitenteDependencia: this.asuntoSeleccionado.remitenteDependencia,
       dirigidoA: this.asuntoSeleccionado.dirigidoA,
-      dirigidoACargo: this.asuntoSeleccionado.dirigidoACargo
-
-    }
+      dirigidoACargo: this.asuntoSeleccionado.dirigidoACargo,
+    };
     this.asuntoApi.editarAsunto(payload).subscribe(
-        (data) => {
-          this.onSuccesseditarAsunto(data);
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        }
-      );
+      (data) => {
+        this.onSuccesseditarAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
-  onSuccesseditarAsunto(data:any){
+  onSuccesseditarAsunto(data: any) {
     if (data.status == 200) {
       this.utils.MuestrasToast(TipoToast.Success, data.message);
       this.asuntoSeleccionadoModificado = false;
@@ -1000,54 +1041,59 @@ onSuccesscargarAnexos(data: any) {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
   }
-  
-getFechaSoloFecha(key: keyof typeof this.asuntoSeleccionado): string {
-  const fecha = this.asuntoSeleccionado?.[key];
-  if (!fecha) return '';
 
-  // Puede venir con espacio ' ' o 'T', separar y tomar solo fecha
-  if (fecha.includes('T')) {
-    return fecha.split('T')[0];
+  getFechaSoloFecha(key: keyof typeof this.asuntoSeleccionado): string {
+    const fecha = this.asuntoSeleccionado?.[key];
+    if (!fecha) return '';
+
+    // Puede venir con espacio ' ' o 'T', separar y tomar solo fecha
+    if (fecha.includes('T')) {
+      return fecha.split('T')[0];
+    }
+    if (fecha.includes(' ')) {
+      return fecha.split(' ')[0];
+    }
+    return fecha; // ya solo fecha
   }
-  if (fecha.includes(' ')) {
-    return fecha.split(' ')[0];
+  setFechaSoloFecha(
+    key: keyof typeof this.asuntoSeleccionado,
+    nuevaFecha: string
+  ): void {
+    if (!nuevaFecha) return;
+
+    // Asumimos que la hora será 00:00:00 para completar el timestamp
+    const valorCompleto = `${nuevaFecha} 00:00:00`;
+
+    this.asuntoSeleccionado[key] = valorCompleto;
+    this.asuntoSeleccionadoModificado = true;
   }
-  return fecha; // ya solo fecha
-}
-setFechaSoloFecha(key: keyof typeof this.asuntoSeleccionado, nuevaFecha: string): void {
-  if (!nuevaFecha) return;
 
-  // Asumimos que la hora será 00:00:00 para completar el timestamp
-  const valorCompleto = `${nuevaFecha} 00:00:00`;
+  getFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado): string {
+    const fechaISO = this.asuntoSeleccionado?.[key];
+    if (!fechaISO) return '';
 
-  this.asuntoSeleccionado[key] = valorCompleto;
-  this.asuntoSeleccionadoModificado = true;
-}
+    // Extraemos directamente 'YYYY-MM-DDTHH:mm' sin conversión de zona horaria
+    return fechaISO.substring(0, 16);
+  }
 
-getFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado): string {
-  const fechaISO = this.asuntoSeleccionado?.[key];
-  if (!fechaISO) return '';
+  setFechaHoraLocal(
+    key: keyof typeof this.asuntoSeleccionado,
+    valor: string
+  ): void {
+    if (!valor) return;
 
-  // Extraemos directamente 'YYYY-MM-DDTHH:mm' sin conversión de zona horaria
-  return fechaISO.substring(0, 16);
-}
+    // Convertimos 'YYYY-MM-DDTHH:mm' a 'YYYY-MM-DD HH:mm:00' para el timestamp
+    const valorParaGuardar = valor.replace('T', ' ') + ':00';
 
-setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): void {
-  if (!valor) return;
+    this.asuntoSeleccionado[key] = valorParaGuardar;
+    this.asuntoSeleccionadoModificado = true;
+  }
 
-  // Convertimos 'YYYY-MM-DDTHH:mm' a 'YYYY-MM-DD HH:mm:00' para el timestamp
-  const valorParaGuardar = valor.replace('T', ' ') + ':00';
-
-  this.asuntoSeleccionado[key] = valorParaGuardar;
-  this.asuntoSeleccionadoModificado = true;
-}
-
- formatearFechaParaBD(fechaISO: string): string | null {
-  if (!fechaISO) return null;
-  // Quita la 'T' y la 'Z', y corta los milisegundos
-  return fechaISO.replace('T', ' ').substring(0, 19);
-}
-
+  formatearFechaParaBD(fechaISO: string): string | null {
+    if (!fechaISO) return null;
+    // Quita la 'T' y la 'Z', y corta los milisegundos
+    return fechaISO.replace('T', ' ').substring(0, 19);
+  }
 
   /* event emmiter */
   notificarCambio() {
@@ -1056,14 +1102,16 @@ setFechaHoraLocal(key: keyof typeof this.asuntoSeleccionado, valor: string): voi
 
   statusClass(idStatus: number): string {
     switch (idStatus) {
-      case 1: return 'inicio';
-      case 2: return 'tramite';
-      case 3: return 'atendido';
-      case 4: return 'rechazado';
-      default: return '';
+      case 1:
+        return 'inicio';
+      case 2:
+        return 'tramite';
+      case 3:
+        return 'atendido';
+      case 4:
+        return 'rechazado';
+      default:
+        return '';
     }
   }
-
-
-
 }

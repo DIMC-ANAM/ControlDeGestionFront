@@ -47,7 +47,7 @@ baseurl = environment.baseurl;
   usuario: any = null;
   turnadoSeleccionado: any = null;
   turnadoDS:any = null
-  
+  historial :any =[];
   documentoPrincipal: any = null;
   anexos: any[] = [];
   respuestasDocs: any[] = [];
@@ -547,26 +547,29 @@ baseurl = environment.baseurl;
     
   }
 
-    consultarHistorial(id:number) {
-
-        this.asuntoApi.consultarHistorial({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarHistorial(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarHistorial(data: any) {
-      if (data.status == 200) {
-        /* this.turnadoSeleccionado = data.model */
-        /* objeto historial */
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+    consultarHistorial(id: number) {
+    this.asuntoApi.consultarHistorial({ idAsunto: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarHistorial(data);
+      },
+      (ex) => {
+        this.utils.MuestrasToast(
+          TipoToast.Info,
+          'Funcionalidad en desarrollo.'
+        );
+        /*  this.utils.MuestraErrorInterno(ex); */
       }
+    );
+  }
+  onSuccessconsultarHistorial(data: any) {
+    if (data.status == 200) {
+      /* objeto historial */
+      this.historial = data.model;
+      console.log(this.historial);
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
+  }
 
     /* documentosRespuesta */
     
@@ -694,5 +697,21 @@ baseurl = environment.baseurl;
   /* event emmiter */
   notificarCambio() {
     this.cambio.emit('Not');
+  }
+
+
+    statusClass(idStatus: number): string {
+    switch (idStatus) {
+      case 1:
+        return 'inicio';
+      case 2:
+        return 'tramite';
+      case 3:
+        return 'atendido';
+      case 4:
+        return 'rechazado';
+      default:
+        return '';
+    }
   }
 }
