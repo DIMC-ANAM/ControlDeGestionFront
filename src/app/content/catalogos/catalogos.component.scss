@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+
+.table {
+  font-size: 0.875rem;     
+}
+
+.table th,
+.table td {
+  padding: .05rem .5rem;   
+  border: 1px solid #dee2e6;
+  vertical-align: middle;
+}
+
+.table-burgundy {
+  background-color: #a52a48 !important;
+  color: white !important;
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(165, 42, 72, 0.08) !important;
+}
+
