@@ -178,7 +178,9 @@ Math: Math;
   /* event emmiter */
   refrescar(mensaje: string) {
     this.cambio = false;
+	this.consultarCantidadesStatus();
     this.consultarAsuntosUR();
+
   }
 
   pageSize: number = 10; // cantidad de asuntos por página

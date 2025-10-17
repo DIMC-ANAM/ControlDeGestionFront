@@ -453,6 +453,16 @@ export class DetalleAsuntosComponent {
 
     if (lista) {
       Array.from(files).forEach((file) => {
+		if (
+      file.size > 5 * 1024 * 1024 ||
+		!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+		) {
+		this.utils.MuestrasToast(
+			TipoToast.Warning,
+			'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+		);
+		return;
+		}
         if (!this.anexosCargados.some((anexo) => anexo.name === file.name)) {
           this.anexosCargados.push(file);
         }
@@ -461,6 +471,16 @@ export class DetalleAsuntosComponent {
       this.updateDocumentoControl(form, first, controlName);
     } else {
       const file = files[0];
+	  if (
+		file.size > 5 * 1024 * 1024 ||
+		!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+		) {
+		this.utils.MuestrasToast(
+			TipoToast.Warning,
+			'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+		);
+		return;
+		}
       this.fileState.set(key, { file, name: file.name });
       this.updateDocumentoControl(form, file.name, controlName);
     }
@@ -644,7 +664,7 @@ export class DetalleAsuntosComponent {
     if (data.status == 200) {
       /* objeto historial */
       this.historial = data.model;
-      console.log(this.historial);
+      
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }

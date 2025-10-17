@@ -31,8 +31,8 @@
       
       <div class="text-muted small">
         <i class="fa-solid fa-hourglass-half text-deep-blue me-1"></i>
-        <span class="fw-semibold">Días transcurridos:</span>
-        <span class="fw-bolder">{{ asuntoSeleccionado.diasTranscurridos }}</span>
+        <span class="fw-semibold">Tiempo transcurrido: </span>
+        <span class="fw-bolder">{{ asuntoSeleccionado.tiempoTranscurrido }}</span>
       </div>
     </div>
 
@@ -55,7 +55,7 @@
       <i class="fas fa-check-double me-2"></i> Concluir
     </button>
     <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
-                    (click)="consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto); consultarExpedienteAsunto(this.asuntoSeleccionado.idTurnado); consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto); consultarHistorial(this.asuntoSeleccionado.idTurnado);">
+                    (click)="consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto); consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto); consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto); consultarHistorial(this.asuntoSeleccionado.idAsunto);">
                     <i class="fa-solid fa-rotate-right me-2"></i>
     </div>
   </div>
@@ -807,7 +807,7 @@
                             <p class="mt-3 mb-0 text-muted">Haz clic o arrastra varios archivos aquí</p>
                         </div>
 
-                        <input multiple type="file" (change)="onFileSelectedAnexos(agregarAnexoForm, $event)"
+                        <input multiple type="file"  accept=".pdf, .jpg, .jpeg, .png"  (change)="onFileSelectedAnexos(agregarAnexoForm, $event)"
                             id="documento" class="hidden-input">
                     </label>
                 </div>
@@ -869,7 +869,7 @@
                             <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
                         </div>
 
-                        <input type="file" (change)="onFileSelected(conclusionForm, $event)" id="documentoCierre"
+                        <input type="file"  accept=".pdf, .jpg, .jpeg, .png"  (change)="onFileSelected(conclusionForm, $event)" id="documentoCierre"
                             class="hidden-input">
                     </label>
                 </div>
@@ -908,7 +908,7 @@
                             <p class="mt-3 mb-0 text-muted">Haz clic o arrastra un archivo aquí</p>
                         </div>
 
-                        <input type="file" (change)="onFileSelected(reemplazarDocumentoForm, $event)"
+                        <input type="file"  accept=".pdf, .jpg, .jpeg, .png"  (change)="onFileSelected(reemplazarDocumentoForm, $event)"
                             id="documentoReemplazo" class="hidden-input">
                     </label>
                 </div>

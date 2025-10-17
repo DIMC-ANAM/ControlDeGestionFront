@@ -20,14 +20,14 @@ export class RegistroAsuntoComponent {
   respuestaRegistroModal!: TemplateRef<any>;
 
   documentoForm!: FormGroup;
-  temas:any[] = [];
+  temas: any[] = [];
 
-  tipoDocumentoDS:any[] = [];
+  tipoDocumentoDS: any[] = [];
 
   selectFields: any = ['medio', 'recepcion'];
-  medio:any[] = [];
-  recepcion:any[] = [];
-  prioridad:any[] = [];
+  medio: any[] = [];
+  recepcion: any[] = [];
+  prioridad: any[] = [];
 
   remitenteFields = [
     { name: 'remitenteNombre', label: 'Nombre del remitente' },
@@ -45,8 +45,14 @@ export class RegistroAsuntoComponent {
   /* respuesta del registro de asunto */
 
   response: any = null;
-  today = new Date().toISOString().slice(0, 16); // "YYYY-MM-DDTHH:mm"
-  usuario: any= null;
+	date:any = new Date();
+
+	// Calculamos la fecha restando 6 horas para UTC-6
+	offsetDate:any = new Date(this.date.getTime() - 6 * 60 * 60 * 1000);
+
+	// Usamos toISOString y cortamos para	 obtener "YYYY-MM-DDTHH:mm"
+today:any = this.offsetDate.toISOString().slice(0, 16);
+  usuario: any = null;
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -103,7 +109,7 @@ export class RegistroAsuntoComponent {
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra:  this.usuario.idUsuario,
+      idUsuarioRegistra: this.usuario.idUsuario,
       usuarioRegistra: this.usuario.nombreCompleto,
       idUnidadAdministrativa: 1 /* falta */,
       unidadAdministrativa: 'Recursos Humanos',
@@ -188,6 +194,16 @@ export class RegistroAsuntoComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      if (
+        file.size > 5 * 1024 * 1024 ||
+        !['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+      ) {
+        this.utils.MuestrasToast(
+          TipoToast.Warning,
+          'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+        );
+        return;
+      }
       const originalName = file.name;
       const extension = originalName.substring(originalName.lastIndexOf('.')); // incluye el punto, ej: '.pdf'
 
@@ -213,6 +229,16 @@ export class RegistroAsuntoComponent {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
+      if (
+        file.size > 5 * 1024 * 1024 ||
+        !['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+      ) {
+        this.utils.MuestrasToast(
+          TipoToast.Warning,
+          'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+        );
+        return;
+      }
 
       // Evitar duplicados por nombre de archivo
       if (!this.anexos.some((f) => f.name === file.name)) {
@@ -269,67 +295,66 @@ export class RegistroAsuntoComponent {
 
   /* web services */
   consultarTema() {
-      this.catalogoApi.consultarTema().subscribe(
-        (data:any) => {
-          if(data.status == 200){
-            this.temas = data.model
-          }else{
-           this.utils.MuestrasToast(TipoToast.Warning, data.message)
-          }
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
+    this.catalogoApi.consultarTema().subscribe(
+      (data: any) => {
+        if (data.status == 200) {
+          this.temas = data.model;
+        } else {
+          this.utils.MuestrasToast(TipoToast.Warning, data.message);
         }
-      );
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   consultarPrioridad() {
-      this.catalogoApi.consultarPrioridad().subscribe(
-        (data:any) => {
-          if(data.status == 200){
-            this.prioridad = data.model
-          }else{
-           this.utils.MuestrasToast(TipoToast.Warning, data.message)
-          }
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
+    this.catalogoApi.consultarPrioridad().subscribe(
+      (data: any) => {
+        if (data.status == 200) {
+          this.prioridad = data.model;
+        } else {
+          this.utils.MuestrasToast(TipoToast.Warning, data.message);
         }
-      );
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   consultarTipoDocumento() {
-      this.catalogoApi.consultarTipoDocumento().subscribe(
-        (data:any) => {
-          if(data.status == 200){
-            this.tipoDocumentoDS = data.model
-          }else{
-           this.utils.MuestrasToast(TipoToast.Warning, data.message)
-          }
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
+    this.catalogoApi.consultarTipoDocumento().subscribe(
+      (data: any) => {
+        if (data.status == 200) {
+          this.tipoDocumentoDS = data.model;
+        } else {
+          this.utils.MuestrasToast(TipoToast.Warning, data.message);
         }
-      );
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
   consultarMedioRecepcion() {
-      this.catalogoApi.consultarMedioRecepcion().subscribe(
-        (data:any) => {
-          if(data.status == 200){
-            this.medio = data.model
-          }else{
-           this.utils.MuestrasToast(TipoToast.Warning, data.message)
-          }
-        },
-        (ex) => {
-          this.utils.MuestraErrorInterno(ex);
+    this.catalogoApi.consultarMedioRecepcion().subscribe(
+      (data: any) => {
+        if (data.status == 200) {
+          this.medio = data.model;
+        } else {
+          this.utils.MuestrasToast(TipoToast.Warning, data.message);
         }
-      );
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
   }
 
   /* catalogos
    */
   registrarAsunto() {
-    this.construirPayload().then((payload) => {      
-
+    this.construirPayload().then((payload) => {
       this.asuntoApi.registrarAsunto(payload).subscribe(
         (data) => {
           this.onSuccessregistrarAsunto(data);
@@ -344,6 +369,9 @@ export class RegistroAsuntoComponent {
     if (data.status == 200) {
       this.response = data;
       this.openrespuestaRegistroModal();
+	  this.documentoForm.reset();
+	  this.documento = null;
+	  this.anexos = [];
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -412,7 +440,14 @@ export class RegistroAsuntoComponent {
     return payload;
   }
 
-   encontrarPorId(lista: any[], campo: string, valor: number,target:string): string | undefined {
-      return lista.find(item => item[campo] == valor)?.[target] as string | undefined;
-    }
+  encontrarPorId(
+    lista: any[],
+    campo: string,
+    valor: number,
+    target: string
+  ): string | undefined {
+    return lista.find((item) => item[campo] == valor)?.[target] as
+      | string
+      | undefined;
+  }
 }
