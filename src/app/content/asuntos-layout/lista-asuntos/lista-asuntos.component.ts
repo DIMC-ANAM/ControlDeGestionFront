@@ -77,7 +77,7 @@ Math: Math;
           : true;
 
       const coincideTema = this.filtroTema
-        ? a.idTema === this.filtroTema
+        ? a.Tema === this.filtroTema
         : true;
 
       const fechaRegistro = new Date(a.fechaRegistro);

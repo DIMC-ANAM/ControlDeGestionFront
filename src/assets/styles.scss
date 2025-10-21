@@ -36,6 +36,7 @@
 
     /* Colores de apoyo */
     --color-dark-gray: #6F7271;
+    --color-not-selected: #3d3f3e7e;
     --color-light-gray: #98989A;
     --color-light-bg: #ffffff;
     --color-deep-blue: #0D324D;
@@ -218,6 +219,7 @@ body {
 .bg-light { background-color: var(--bg-primary) !important; }
 .bg-white { background-color: var(--bg-white) !important; }
 .bg-gray { background-color: #b6b2b217 !important; }
+.bg-dark-gray { background-color: var(--color-not-selected) !important; }
 .bg-deep-blue { background-color: var(--color-deep-blue) !important; }
 .bg-purple { background-color: var(--color-purple) !important; }
 .bg-light-blue { background-color: var(--color-light-blue) !important; }
@@ -1010,20 +1012,20 @@ input::-ms-clear {
   }
 }
 
-.pagination .fa-chevron-circle-left,
-.pagination .fa-chevron-circle-right {
+.pagination .fa-caret-left,
+.pagination .fa-caret-right {
   color: var(--color-primary);
   font-size: 1.2em;
   transition: color 0.2s;
 }
 
-.page-item.disabled .fa-chevron-circle-left,
-.page-item.disabled .fa-chevron-circle-right {
+.page-item.disabled .fa-caret-left,
+.page-item.disabled .fa-caret-right {
   color: #ccc;
 }
 
-.page-link:hover .fa-chevron-circle-left,
-.page-link:hover .fa-chevron-circle-right {
+.page-link:hover .fa-caret-left,
+.page-link:hover .fa-caret-right {
   color: var(--color-deep-blue);
 }
 // Quitar outline azul de los botones de paginación
