@@ -114,6 +114,7 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
       idUnidadAdministrativa: 1 /* falta */,
       unidadAdministrativa: 'Recursos Humanos',
       observaciones: '',
+	  autoTurnar: 0,
     });
   }
 
@@ -139,6 +140,33 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
     });
   }
 
+toggleFechasValidators(checked: boolean): void {
+  const fechaDocumentoControl = this.documentoForm.get('fechaDocumento');
+  const fechaCumplimientoControl = this.documentoForm.get('fechaCumplimiento');
+
+  if (!fechaDocumentoControl || !fechaCumplimientoControl) return;
+
+  if (checked) {
+    // Si está marcado el checkbox, quitamos los validadores
+    fechaDocumentoControl.clearValidators();
+    fechaCumplimientoControl.clearValidators();
+  } else {
+    // Si NO está marcado, aplicamos los validadores
+    fechaDocumentoControl.setValidators([
+      Validators.required,
+      this.fechaMaximaValidator(),
+    ]);
+    fechaCumplimientoControl.setValidators([
+      Validators.required,
+      this.fechaMinimaValidator(),
+    ]);
+  }
+
+  fechaDocumentoControl.updateValueAndValidity();
+  fechaCumplimientoControl.updateValueAndValidity();
+}
+
+	
   fechaMaximaValidator() {
     return (control: any) => {
       const inputDate = new Date(control.value);

@@ -231,7 +231,7 @@ Math: Math;
       }
     } */
     if (actual <= 2) {
-      return [1, 2, 3];
+      return [1, 2];
     }
     if (actual >= total - 1) {
       return ['...', total - 2, total - 1, total];

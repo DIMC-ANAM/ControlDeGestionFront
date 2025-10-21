@@ -67,6 +67,8 @@ export class DetalleTurnadosComponent {
   turnadosAsunto: any[] = [];
   instruccionesDS: any[] = [];
 
+  noRequiereDocumento: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -185,6 +187,7 @@ export class DetalleTurnadosComponent {
       );
       return;
     }
+	this.noRequiereDocumento = false;
     this.initFormConcluir();
     this.modalManager.openModal({
       title: '<i class ="fas fa-share m-2"> </i> Dar respuesta al turnado',
@@ -210,6 +213,25 @@ export class DetalleTurnadosComponent {
       },
       width: '',
     });
+  }
+
+  toggleNoRequiereDocumento(event: Event) {
+    this.noRequiereDocumento = (event.target as HTMLInputElement).checked;
+    const control = this.conclusionForm.get('documento');
+    if (!control) return;
+
+    if (this.noRequiereDocumento) {
+      // quitar validador y limpiar valor/estado de archivo
+      control.clearValidators();
+      control.setValue(null);
+		this.clearFile('concluir');
+		this.resetFormularioArchivo(this.conclusionForm);
+
+    } else {
+      // restaurar validador obligatorio
+      control.setValidators([Validators.required]);
+    }
+    control.updateValueAndValidity();
   }
 
   // Modal Abstraction
@@ -757,7 +779,7 @@ export class DetalleTurnadosComponent {
       documentos: [documentoPayload],
       respuesta: this.conclusionForm.get('respuesta')?.value || null,
       /* atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false  */
-      atendedor: false,
+      requiereTurnado: !this.noRequiereDocumento,
     };
     return payload;
   }

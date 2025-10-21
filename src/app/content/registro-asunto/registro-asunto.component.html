@@ -153,6 +153,26 @@
                         Campo obligatorio.
                     </p>
                 </div>
+
+                <div class="col-md-3 ">
+                    <label class="form-label frmlabel" for="esHistorico">
+                        Es histórico
+					</label>
+					<div>
+                        <input class="form-check-input" type="checkbox" id="esHistorico" (change)="toggleFechasValidators($any($event.target)?.checked)" />
+
+					</div>
+                </div>
+                <div class="col-md-3 ">
+                    <label class="form-label frmlabel" for="autoTurnar">
+                       <i class="fas fa-share-square"></i> Auto turnar
+					</label>
+					<div>
+                        <input class="form-check-input" type="checkbox" id="autoTurnar" formControlName="autoTurnar" [value]="1" />
+
+					</div>
+                </div>
+
             </div>
 
             <!-- Cuarta fila: Descripción del asunto -->
