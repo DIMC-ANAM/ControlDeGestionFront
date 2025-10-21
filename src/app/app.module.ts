@@ -18,6 +18,7 @@ import { ToastrModule } from 'ngx-toastr';
 import { HttpClientModule } from '@angular/common/http';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { LoaderInterceptor } from './components/shared/interceptors/loader.interceptor';
+import { TokenInterceptor } from './components/shared/interceptors/token.interceptor';
 import { DataTablesModule } from 'angular-datatables';
 import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
 
@@ -53,9 +54,14 @@ import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.
     HttpClientModule     
   ],
   providers: [
-      {
+    {
       provide: HTTP_INTERCEPTORS,
       useClass: LoaderInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: TokenInterceptor,
       multi: true
     }
   ],
