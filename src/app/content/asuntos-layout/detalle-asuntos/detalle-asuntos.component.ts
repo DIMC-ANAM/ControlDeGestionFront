@@ -80,6 +80,8 @@ export class DetalleAsuntosComponent {
 
   historial: any = null;
 
+  noRequiereDocumento: boolean = false;
+
   constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
@@ -98,132 +100,6 @@ export class DetalleAsuntosComponent {
     this.consultarTipoDocumento();
     this.consultarTema();
     this.consultarMedioRecepcion();
-
-    /*  */
-    this.historial = {
-      asuntoRegistrado: {
-        idAsunto: 101,
-        numeroOficio: 'OF/2025/123',
-        fechaRegistro: '2025-10-06T09:30:00',
-        usuarioRegistra: 'María López',
-        fechaConclusion: '2025-10-08T15:45:00',
-        usuarioConcluye: 'Luis Hernández',
-        idStatusAsunto: 3,
-        statusAsunto: 'Concluido',
-      },
-      turnados: [
-        {
-          idTurnado: 1,
-          numeroTurnado: 1,
-          fechaRegistro: '2025-10-06T10:00:00',
-          usuarioTurno: 'María López',
-          areaResponsable: 'Dirección de Planeación',
-          idStatusTurnado: 3,
-          statusTurnado: 'Atendido',
-          fases: [
-            {
-              idStatusTurnado: 1,
-              statusTurnado: 'Recibido',
-              icon: 'fas fa-share',
-              fecha: '2025-10-06T10:00:00',
-              usuario: 'María López',
-              nota: 'Se turna el asunto por primera vez.',
-            },
-            {
-              idTurnado: 3,
-              tipoOperacion: 'ASUNTO_TURNADO',
-              numeroTurnado: 1,
-              fechaModificacion: '2025-10-09 18:54:15',
-              usuarioModifico: 'Jose Andres Reyes Cerdaa',
-              areaResponsable: 'Dirección de Organización',
-              idStatusTurnado: 1,
-              statusTurnado: 'Recibido',
-              nota: 'Se turna el asunto a: Área responsable',
-            },
-
-            ,
-            {
-              idStatusTurnado: 2,
-              statusTurnado: 'En trámite',
-              icon: 'fa-regular fa-clock',
-              fecha: '2025-10-06T11:30:00',
-              usuario: 'Carlos Méndez',
-              nota: 'Recibido por el área responsable.',
-            },
-            {
-              idStatusTurnado: 3,
-              statusTurnado: 'Atendido',
-              icon: 'fas fa-check',
-              fecha: '2025-10-07T17:00:00',
-              usuario: 'Carlos Méndez',
-              nota: 'Se entrega respuesta al oficio.',
-            },
-          ],
-        },
-        {
-          idTurnado: 2,
-          numeroTurnado: 2,
-          fechaRegistro: '2025-10-07T09:00:00',
-          usuarioTurno: 'Luis Hernández',
-          areaResponsable: 'Unidad Jurídica',
-          idStatusTurnado: 4,
-          statusTurnado: 'Rechazado',
-          fases: [
-            {
-              idStatusTurnado: 1,
-              statusTurnado: 'Recibido',
-              icon: 'fas fa-share',
-              fecha: '2025-10-07T09:00:00',
-              usuario: 'Luis Hernández',
-              nota: 'Turno a revisión jurídica.',
-            },
-            {
-              idStatusTurnado: 2,
-              statusTurnado: 'En trámite',
-              icon: 'fa-regular fa-clock',
-              fecha: '2025-10-07T10:15:00',
-              usuario: 'Laura Torres',
-              nota: 'Revisión en curso.',
-            },
-            {
-              idStatusTurnado: 4,
-              statusTurnado: 'Rechazado',
-              icon: 'fas fa-circle-xmark',
-              fecha: '2025-10-07T16:00:00',
-              usuario: 'Laura Torres',
-              nota: 'El asunto no procede legalmente.',
-            },
-          ],
-        },
-        {
-          idTurnado: 3,
-          numeroTurnado: 3,
-          fechaRegistro: '2025-10-08T08:45:00',
-          usuarioTurno: 'María López',
-          areaResponsable: 'Dirección de Comunicación',
-          idStatusTurnado: 2,
-          statusTurnado: 'En trámite',
-          fases: [
-            {
-              idStatusTurnado: 1,
-              statusTurnado: 'Recibido',
-              icon: 'fas fa-share',
-              fecha: '2025-10-08T08:45:00',
-              usuario: 'María López',
-              nota: 'Se turna para difusión.',
-            },
-            {
-              idStatusTurnado: 2,
-              statusTurnado: 'En trámite',
-              icon: 'fa-regular fa-clock',
-              fecha: '2025-10-08T09:10:00',
-              usuario: 'Rafael Díaz',
-              nota: 'En proceso de redacción del comunicado.',
-            },
-          ],
-        },
-      ],
-    };
   }
 
   ngOnChanges() {
@@ -281,6 +157,7 @@ export class DetalleAsuntosComponent {
       );
       return;
     }
+	this.noRequiereDocumento = false;
     this.initFormConcluir();
     this.openModal({
       title: 'Concluir asunto',
@@ -367,9 +244,36 @@ export class DetalleAsuntosComponent {
     this.agregarAnexoForm = this.createDocumentoForm();
   }
 
+  toggleNoRequiereDocumento(event: Event) {
+    this.noRequiereDocumento = (event.target as HTMLInputElement).checked;
+    const control = this.conclusionForm.get('documento');
+    if (!control) return;
+
+    if (this.noRequiereDocumento) {
+      // quitar validador y limpiar valor/estado de archivo
+      control.clearValidators();
+      control.setValue(null);
+		this.clearFile('concluir');
+		this.resetFormularioArchivo(this.conclusionForm);
+
+    } else {
+      // restaurar validador obligatorio
+      control.setValidators([Validators.required]);
+    }
+    control.updateValueAndValidity();
+  }
+
+  canConclude(): boolean {
+    // permite concluir si se marca "no requiere documento" 
+    // o si el formulario es válido y hay archivo cargado
+    const hasFile = !!this.fileState.get('concluir')?.file;
+    return this.noRequiereDocumento || (this.conclusionForm.valid && hasFile);
+  }
+
   concluirAsunto(): void {
-    const estado = this.fileState.get('concluir');
-    if (this.conclusionForm.valid && estado?.file) {
+    const estado = !!this.fileState.get('concluir');
+	/* a veces es opcional estado */
+    if (this.noRequiereDocumento || (this.conclusionForm.valid && estado)) {
       this.construirPayloadConcluirAsunto().then((payload) => {
         this.asuntoApi.concluirAsunto(payload).subscribe(
           (data) => {
@@ -453,6 +357,16 @@ export class DetalleAsuntosComponent {
 
     if (lista) {
       Array.from(files).forEach((file) => {
+		if (
+      file.size > 5 * 1024 * 1024 ||
+		!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+		) {
+		this.utils.MuestrasToast(
+			TipoToast.Warning,
+			'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+		);
+		return;
+		}
         if (!this.anexosCargados.some((anexo) => anexo.name === file.name)) {
           this.anexosCargados.push(file);
         }
@@ -461,6 +375,16 @@ export class DetalleAsuntosComponent {
       this.updateDocumentoControl(form, first, controlName);
     } else {
       const file = files[0];
+	  if (
+		file.size > 5 * 1024 * 1024 ||
+		!['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+		) {
+		this.utils.MuestrasToast(
+			TipoToast.Warning,
+			'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+		);
+		return;
+		}
       this.fileState.set(key, { file, name: file.name });
       this.updateDocumentoControl(form, file.name, controlName);
     }
@@ -644,7 +568,7 @@ export class DetalleAsuntosComponent {
     if (data.status == 200) {
       /* objeto historial */
       this.historial = data.model;
-      console.log(this.historial);
+      
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -839,7 +763,9 @@ export class DetalleAsuntosComponent {
 
   eliminarDocumento(idDocumento: number) {
     this.asuntoApi
-      .eliminarDocumento({ idDocumentAsunto: idDocumento })
+      .eliminarDocumento({ idDocumentAsunto: idDocumento ,
+		idUsuarioModifica: this.usuario.idUsuario
+	  })
       .subscribe(
         (data) => {
           this.onSuccesseliminarDocumento(data);
@@ -961,29 +887,29 @@ export class DetalleAsuntosComponent {
     return payload;
   }
 
-  async construirPayloadConcluirAsunto(): Promise<any> {
-    let documentoPayload = null;
-    let documentoConclusion = this.fileState.get('concluir');
+async construirPayloadConcluirAsunto(): Promise<any> {
+  const documentoConclusion = this.fileState.get('concluir') || null;
+  let documentos = [];
 
-    if (documentoConclusion?.file) {
-      const base64 = await this.fileToBase64(documentoConclusion.file);
-      documentoPayload = {
-        fileName: documentoConclusion.name,
-        fileEncode64: base64,
-        size: documentoConclusion.file.size,
-        tipoDocumento: 'Conclusión',
-      };
-    }
-
-    const payload = {
-      idAsunto: this.asuntoSeleccionado.idAsunto,
-      folio: this.asuntoSeleccionado.folio,
-      documentos: [documentoPayload],
-      idUsuarioRegistra: this.usuario.idUsuario,
-    };
-
-    return payload;
+  if (documentoConclusion?.file) {
+    const base64 = await this.fileToBase64(documentoConclusion.file);
+    documentos.push({
+      fileName: documentoConclusion.name,
+      fileEncode64: base64,
+      size: documentoConclusion.file.size,
+      tipoDocumento: 'Conclusión',
+    });
   }
+
+  return {
+    idAsunto: this.asuntoSeleccionado.idAsunto,
+    folio: this.asuntoSeleccionado.folio,
+    documentos,
+    idUsuarioRegistra: this.usuario.idUsuario,
+	requiereDocumento: !this.noRequiereDocumento
+  };
+}
+
 
   encontrarPorId(
     lista: any[],

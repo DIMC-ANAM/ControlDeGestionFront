@@ -11,12 +11,17 @@
       <div class="p-2 bg-light">
 		<!-- cantidades -->
 		<div class="d-flex flex-row justify-content-around mb-4">	
-			 <span (click)="filtroEstado = item.idStatusAsunto" role="button" *ngFor="let item of cantidades" class="badge rounded-3 px-3 py-2" [ngClass]="item.idStatusAsunto == '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto)">
-				 <i class="fas" [ngClass]="item.idStatusAsunto == '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)" ></i>
-				 <span class="ms-1 ">
-				 {{ item.statusAsunto }} {{item.cantidad}}
-				 </span>
-			   </span>
+			 <span  
+				(click)="filtroEstado = item.idStatusAsunto"  role="button"  *ngFor="let item of cantidades" 
+				class="badge rounded-3 px-3 py-2"
+				[ngClass]=" filtroEstado === item.idStatusAsunto  ? (item.idStatusAsunto === '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto))  : 'bg-dark-gray text-white'">
+			
+				<i class="fas" 	[ngClass]=" filtroEstado === item.idStatusAsunto ? (item.idStatusAsunto === '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)) : 'fa-folder'">
+				</i>
+				<span class="ms-1">
+					{{ item.statusAsunto }} {{ item.cantidad }}
+				</span>
+			</span>
 		 </div>
         <div class="row pb-3">
           <div class="col-md-12">
@@ -25,16 +30,16 @@
         </div>
 
         <div class="row g-3 p-1">
-          <div class="col-md-4">
+          <!-- <div class="col-md-4">
             <select class="form-control" [(ngModel)]="filtroEstado">
               <option value="">Todos los estatus</option>
               <option value="1">Registrado</option>
               <option value="2">En curso</option>
               <option value="3">Concluido</option>
             </select>
-          </div>
+          </div> -->
 
-          <div class="col-md-4">
+          <div class="col-md-6">
             <select class="form-control" [(ngModel)]="filtroPrioridad">
               <option value="">Todas las prioridades</option>
               <option value="3">Alta</option>
@@ -43,10 +48,10 @@
             </select>
           </div>
 
-          <div class="col-md-4">
+          <div class="col-md-6">
             <select class="form-control" [(ngModel)]="filtroTema">
               <option value="">Todos los temas</option>
-              <option *ngFor="let t of temaDS" [value]="t.idTema">{{ t.tema }}</option>
+              <option *ngFor="let t of temaDS" [value]="t.tema">{{ t.tema }}</option>
             </select>
           </div>
 
@@ -86,7 +91,7 @@
 				<!-- Botón anterior -->
 				<li class="page-item" [class.disabled]="currentPage === 1">
 				<button class="page-link" (click)="cambiarPagina(currentPage - 1)">
-					<i class="fas fa-chevron-circle-left"></i>
+					<i class="fas fa-caret-left"></i>
 				</button>
 				</li>
 
@@ -99,7 +104,7 @@
 				<!-- Botón siguiente -->
 				<li class="page-item" [class.disabled]="currentPage === totalPages">
 				<button class="page-link" (click)="cambiarPagina(currentPage + 1)">
-					<i class="fas fa-chevron-circle-right"></i>
+					<i class="fas fa-caret-right"></i>
 				</button>
 				</li>
 			</ul>

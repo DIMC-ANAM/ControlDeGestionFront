@@ -27,14 +27,19 @@
 			<div (click)="openCrearUsuarioModal({}, 1)" role="button" class="rounded-3 bg-primary text-white p-2 "> <i
 					class="fas fa fa-plus-circle me-2"></i>Crear</div>
 	</div>
-	<div class="container-fluid mt-4 p-3 bg-gray rounded-3 border-4">
+	<div class="container-fluid mt-4 p-3 bg-gray rounded-3 border-4 ">
 		
-
-		<div class="mb-3 d-flex gap-2 ">
+		<div class="d-flex justify-content-between align-items-center w-100 mb-3">
+			<div class="w-90">
 			<input type="text" placeholder="Buscar por nombre, correo, rol..." [(ngModel)]="searchTerm"
-				(input)="applyFilter()" class="form-control" />
+					(input)="applyFilter()" class="form-control" />
+			</div>
+			<div class="w-10 text-center">
+				<i role="button" class="fas fa-sync-alt text-success" (click)="obtenerUsuarios()"></i>
+			</div>
 
 		</div>
+		
 		<div class="col-md-12 right align-items-right">
 
 			<table class="w-100 table-responsive  table-border-colapse ">
@@ -95,7 +100,7 @@
 				de <strong>{{ filteredPersonal.length }}</strong> registros
 			</div>
 			<div class="pagination">
-				<button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
+				<button (click)="prevPage()" [disabled]="currentPage === 0"> <i class="fas fa-caret-left"></i></button>
 
 				<ng-container *ngIf="visiblePages[0] > 0">
 					<span>...</span>
@@ -111,7 +116,7 @@
 					<span>...</span>
 				</ng-container>
 
-				<button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Siguiente &gt;</button>
+				<button (click)="nextPage()" [disabled]="currentPage === totalPages - 1"><i class="fas fa-caret-right"></i></button>
 			</div>
 		</div>
 

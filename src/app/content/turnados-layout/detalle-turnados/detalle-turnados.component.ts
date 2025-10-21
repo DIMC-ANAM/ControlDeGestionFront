@@ -1,4 +1,11 @@
-import { Component, Input, TemplateRef, ViewChild,  EventEmitter, Output } from '@angular/core';
+import {
+  Component,
+  Input,
+  TemplateRef,
+  ViewChild,
+  EventEmitter,
+  Output,
+} from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ModalManagerService } from '../../../components/shared/modal-manager.service';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
@@ -10,24 +17,25 @@ import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { environment } from '../../../../environments/environment';
 import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
 
-
 @Component({
   selector: 'app-detalle-turnados',
   standalone: false,
   templateUrl: './detalle-turnados.component.html',
-  styleUrl: './detalle-turnados.component.scss'
+  styleUrl: './detalle-turnados.component.scss',
 })
 export class DetalleTurnadosComponent {
-  
-@Input() asuntoInput: any | null = null;
-@Output() cambio = new EventEmitter<string>();
-baseurl = environment.baseurl;
+  @Input() asuntoInput: any | null = null;
+  @Output() cambio = new EventEmitter<string>();
+  baseurl = environment.baseurl;
 
   @ViewChild('turnarModal', { static: true }) turnarModal!: TemplateRef<any>;
-  @ViewChild('responderModal', { static: true }) responderModal!: TemplateRef<any>;
-  @ViewChild('rechazarModal', { static: true }) rechazarModal!: TemplateRef<any>;
+  @ViewChild('responderModal', { static: true })
+  responderModal!: TemplateRef<any>;
+  @ViewChild('rechazarModal', { static: true })
+  rechazarModal!: TemplateRef<any>;
   @ViewChild('confirmModal', { static: true }) confirmModal!: TemplateRef<any>;
-  @ViewChild('verDocumentoModal', { static: true }) verDocumentoModal!: TemplateRef<any>;
+  @ViewChild('verDocumentoModal', { static: true })
+  verDocumentoModal!: TemplateRef<any>;
 
   turnados: any[] = []; /* turnados por cargar */
   conclusionForm!: FormGroup;
@@ -46,47 +54,44 @@ baseurl = environment.baseurl;
   tabActiva = 'detalles';
   usuario: any = null;
   turnadoSeleccionado: any = null;
-  turnadoDS:any = null
-  historial :any =[];
+  turnadoDS: any = null;
+  historial: any = [];
   documentoPrincipal: any = null;
   anexos: any[] = [];
   respuestasDocs: any[] = [];
   documentoConclusion: any = null;
   documentoRespuesta: any = null;
-  
+
   dependenciaDS: any[] = [];
   turnadoForm!: FormGroup;
   turnadosAsunto: any[] = [];
   instruccionesDS: any[] = [];
-  
-  
-    constructor(
+
+  noRequiereDocumento: boolean = false;
+
+  constructor(
     private fb: FormBuilder,
     private modalManager: ModalManagerService,
     private sanitizer: DomSanitizer,
     public colors: ColorsEnum,
-    private asuntoApi: AsuntoService, 
+    private asuntoApi: AsuntoService,
     private utils: UtilsService,
     private catalogoApi: CatalogoService,
-    private turnadoApi: TurnadoService    
-
+    private turnadoApi: TurnadoService
   ) {}
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.usuario = JSON.parse(localStorage.getItem('session')!);
-
-
   }
-  
-  
- async  ngOnChanges() {
+
+  async ngOnChanges() {
     if (this.asuntoInput) {
       try {
-         this.consultarDetalleTurnado(this.asuntoInput.idTurnado);
-         this.consultarDetallesAsunto(this.asuntoInput.idAsunto);
-         this.consultarExpedienteAsunto(this.asuntoInput.idAsunto);
+        this.consultarDetalleTurnado(this.asuntoInput.idTurnado);
+        this.consultarDetallesAsunto(this.asuntoInput.idAsunto);
+        this.consultarExpedienteAsunto(this.asuntoInput.idAsunto);
       } catch (error) {
         // Manejo de error si alguna falla
         console.error('Error en la cadena de consultas', error);
@@ -94,19 +99,22 @@ baseurl = environment.baseurl;
     }
   }
 
-    initFormTurnado(): void {
+  initFormTurnado(): void {
     this.turnadoForm = this.fb.group({
       idUnidadResponsable: [null, Validators.required],
       idInstruccion: [null, Validators.required],
     });
   }
-   private createDocumentoForm(): FormGroup {
+  private createDocumentoForm(): FormGroup {
     return this.fb.group({ documento: [null, Validators.required] });
   }
   private createconclusionForm(): FormGroup {
-  return this.fb.group({
-    documento: [null, /* this.getDocumentoValidators() */ Validators.required],
-    respuesta: [null, Validators.required]
+    return this.fb.group({
+      documento: [
+        null,
+        /* this.getDocumentoValidators() */ Validators.required,
+      ],
+      respuesta: [null, Validators.required],
     });
   }
 
@@ -118,15 +126,14 @@ baseurl = environment.baseurl;
   }
   initFormRechazar() {
     this.rechazarForm = this.fb.group({
-        motivoRechazo: [null, [Validators.required]]
+      motivoRechazo: [null, [Validators.required]],
     });
   }
   initFormReemplazar() {
     this.reemplazarDocumentoForm = this.createDocumentoForm();
   }
 
-
-   openDocumentoVisor(file: any) {
+  openDocumentoVisor(file: any) {
     if (!file) return;
     this.documentoStringURL = environment.baseurl + file.ruta;
     this.documentVisorURL = this.sanitizer.bypassSecurityTrustResourceUrl(
@@ -142,7 +149,7 @@ baseurl = environment.baseurl;
       width: '400px',
     });
   }
-    getValidationStatus(
+  getValidationStatus(
     form: FormGroup,
     controlName: string
   ): 'valid' | 'invalid' | 'none' {
@@ -155,7 +162,7 @@ baseurl = environment.baseurl;
       : 'none';
   }
 
-    getFileName(key: string): string | null {
+  getFileName(key: string): string | null {
     const fileData = this.fileState.get(key);
     return fileData?.name || null;
   }
@@ -165,18 +172,32 @@ baseurl = environment.baseurl;
   }
 
   openResponderModal() {
-    if ([3, 4].includes(this.turnadoDS.idStatusTurnado) || this.turnadoDS.idinstruccion == 1 || this.turnadoDS.puedeResponder == 0 ) {
-      this.utils.MuestrasToast(TipoToast.Error, "¡Este turnado no puede responderse!");
-      this.utils.MuestrasToast(TipoToast.Warning, "Advertencia, se detectó el uso de manipulación del DOM.");
+    if (
+      [3, 4].includes(this.turnadoDS.idStatusTurnado) ||
+      this.turnadoDS.idinstruccion == 1 ||
+      this.turnadoDS.puedeResponder == 0
+    ) {
+      this.utils.MuestrasToast(
+        TipoToast.Error,
+        '¡Este turnado no puede responderse!'
+      );
+      this.utils.MuestrasToast(
+        TipoToast.Warning,
+        'Advertencia, se detectó el uso de manipulación del DOM.'
+      );
       return;
     }
+	this.noRequiereDocumento = false;
     this.initFormConcluir();
     this.modalManager.openModal({
       title: '<i class ="fas fa-share m-2"> </i> Dar respuesta al turnado',
       template: this.responderModal,
       showFooter: false,
       onAccept: () => this.contestarTurnado(),
-      onCancel: () => {this.resetFormularioArchivo(this.conclusionForm); this.clearFile('concluir')},
+      onCancel: () => {
+        this.resetFormularioArchivo(this.conclusionForm);
+        this.clearFile('concluir');
+      },
       width: '',
     });
   }
@@ -187,12 +208,33 @@ baseurl = environment.baseurl;
       template: this.rechazarModal,
       showFooter: false,
       onAccept: () => this.rechazarTurnado(),
-      onCancel: () => {this.resetFormularioArchivo(this.rechazarForm)},
+      onCancel: () => {
+        this.resetFormularioArchivo(this.rechazarForm);
+      },
       width: '',
     });
   }
 
-    // Modal Abstraction
+  toggleNoRequiereDocumento(event: Event) {
+    this.noRequiereDocumento = (event.target as HTMLInputElement).checked;
+    const control = this.conclusionForm.get('documento');
+    if (!control) return;
+
+    if (this.noRequiereDocumento) {
+      // quitar validador y limpiar valor/estado de archivo
+      control.clearValidators();
+      control.setValue(null);
+		this.clearFile('concluir');
+		this.resetFormularioArchivo(this.conclusionForm);
+
+    } else {
+      // restaurar validador obligatorio
+      control.setValidators([Validators.required]);
+    }
+    control.updateValueAndValidity();
+  }
+
+  // Modal Abstraction
   private openModal(options: {
     title: string;
     template: TemplateRef<any>;
@@ -210,7 +252,7 @@ baseurl = environment.baseurl;
     });
   }
 
-    openTurnarModal() {
+  openTurnarModal() {
     this.consultarDependencia();
     this.consultarInstruccion();
     this.initFormTurnado();
@@ -228,10 +270,13 @@ baseurl = environment.baseurl;
     this.turnadoForm.reset();
   }
 
-    contestarTurnado(): void {
-      const estado = this.fileState.get('concluir');
-      if (this.conclusionForm.valid && (/* this.usuario.idUsuarioRol === 7 ?  */estado?.file /* : true */)) {      
-        this.construirPayloadRespuestaTurnado().then((payload) => {   
+  contestarTurnado(): void {
+    const estado = this.fileState.get('concluir');
+    if (
+      this.conclusionForm.valid &&
+      /* this.usuario.idUsuarioRol === 7 ?  */ estado?.file /* : true */
+    ) {
+      this.construirPayloadRespuestaTurnado().then((payload) => {
         this.turnadoApi.contestarTurnado(payload).subscribe(
           (data) => {
             this.onSuccessContestarTurnado(data);
@@ -241,42 +286,41 @@ baseurl = environment.baseurl;
           }
         );
       });
-        
-      } else {
-        this.conclusionForm.markAllAsTouched();
-      }
+    } else {
+      this.conclusionForm.markAllAsTouched();
     }
-  
-  onSuccessContestarTurnado(data:any){
-    if(data.status == 200){
-      this.utils.MuestrasToast(TipoToast.Success, data.message)
-      this.consultarDetalleTurnado(this.turnadoDS.idTurnado)
-      this.consultarExpedienteAsunto(this.turnadoDS.idTurnado)
+  }
+
+  onSuccessContestarTurnado(data: any) {
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.consultarDetalleTurnado(this.turnadoDS.idTurnado);
+      this.consultarExpedienteAsunto(this.turnadoDS.idTurnado);
       this.notificarCambio();
-    }else{
-      this.utils.MuestrasToast(TipoToast.Error, data.message)
-      
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
     this.resetFormularioArchivo(this.conclusionForm);
   }
-  
-  
-  rechazarTurnado(){    
-    this.turnadoApi.rechazarTurnado({
-      idTurnado: this.turnadoDS.idTurnado, 
-      idUsuarioModifica: this.usuario.idUsuario,
-      motivoRechazo: this.rechazarForm.get('motivoRechazo')?.value
-    }).subscribe(
-      (data) => {
-        this.onSuccessRechazarTurnado(data);
-      },
-      (ex) => {
-        this.utils.MuestraErrorInterno(ex);
-      }
-    );
+
+  rechazarTurnado() {
+    this.turnadoApi
+      .rechazarTurnado({
+        idTurnado: this.turnadoDS.idTurnado,
+        idUsuarioModifica: this.usuario.idUsuario,
+        motivoRechazo: this.rechazarForm.get('motivoRechazo')?.value,
+      })
+      .subscribe(
+        (data) => {
+          this.onSuccessRechazarTurnado(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
   }
-  onSuccessRechazarTurnado(data:any){
-    if (data.status== 200) {
+  onSuccessRechazarTurnado(data: any) {
+    if (data.status == 200) {
       this.utils.MuestrasToast(TipoToast.Success, data.message);
       this.consultarDetalleTurnado(this.turnadoDS.idTurnado);
       this.notificarCambio();
@@ -289,8 +333,8 @@ baseurl = environment.baseurl;
   consultarDependencia() {
     this.catalogoApi
       .consultarDependencia({
-        idDependencia: this.usuario.idDeterminante ,
-        opcion: 2
+        idDependencia: this.usuario.idDeterminante,
+        opcion: 2,
       })
       .subscribe(
         (data) => {
@@ -308,7 +352,7 @@ baseurl = environment.baseurl;
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
   }
-    turnarAsunto() {
+  turnarAsunto() {
     this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
       (data) => {
         this.onSuccessturnarAsunto(data);
@@ -327,7 +371,7 @@ baseurl = environment.baseurl;
     }
     this.turnados = [];
   }
-    consultarTurnadosAsunto(id: number | any) {
+  consultarTurnadosAsunto(id: number | any) {
     this.asuntoApi.consultarTurnados({ idAsunto: id }).subscribe(
       (data) => {
         this.onSuccessconsultarTurnadosAsunto(data);
@@ -345,7 +389,7 @@ baseurl = environment.baseurl;
     }
   }
 
-    consultarInstruccion() {
+  consultarInstruccion() {
     this.catalogoApi
       .consultarInstruccion({ esUnidadAdministrativa: 1, esUnidadDeNegocio: 1 })
       .subscribe(
@@ -364,10 +408,10 @@ baseurl = environment.baseurl;
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
   }
-    addTurnado(): void {
+  addTurnado(): void {
     if (this.turnadoForm.valid) {
       const unidad = this.dependenciaDS.find(
-		(u) =>  u.id ==  this.turnadoForm.get('idUnidadResponsable')?.value
+        (u) => u.id == this.turnadoForm.get('idUnidadResponsable')?.value
       );
       const instruccion = this.instruccionesDS.find(
         (i) => i.idInstruccion == this.turnadoForm.get('idInstruccion')?.value
@@ -378,7 +422,10 @@ baseurl = environment.baseurl;
         idInstruccion: instruccion?.idInstruccion,
       };
 
-      if ( unidad && instruccion && !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
+      if (
+        unidad &&
+        instruccion &&
+        !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
       ) {
         this.turnados.push({
           unidadResponsable: unidad.area,
@@ -387,7 +434,7 @@ baseurl = environment.baseurl;
           idUnidadResponsable: unidad.id,
           idInstruccion: instruccion.idInstruccion,
           idUsuarioAsigna: this.usuario.idUsuario,
-          idTurnadoPadre: this.turnadoDS.idTurnado
+          idTurnadoPadre: this.turnadoDS.idTurnado,
         });
         this.turnadoForm.reset();
       } else {
@@ -401,7 +448,9 @@ baseurl = environment.baseurl;
     }
   }
   private esTurnadoIgual(a: any, b: any): boolean {
-    return ( a.idUnidadResponsable == b.idUnidadResponsable && a.idInstruccion == b.idInstruccion
+    return (
+      a.idUnidadResponsable == b.idUnidadResponsable &&
+      a.idInstruccion == b.idInstruccion
     );
   }
 
@@ -421,7 +470,10 @@ baseurl = environment.baseurl;
     const sortedAsuntos = [...this.turnadosAsunto].sort(this.comparadorTurnado);
 
     for (let i = 0; i < sortedTurnados.length; i++) {
-      if ( sortedTurnados[i].idUnidadResponsable !== sortedAsuntos[i].idUnidadResponsable || sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
+      if (
+        sortedTurnados[i].idUnidadResponsable !==
+          sortedAsuntos[i].idUnidadResponsable ||
+        sortedTurnados[i].idInstruccion !== sortedAsuntos[i].idInstruccion
       ) {
         return true;
       }
@@ -440,78 +492,91 @@ baseurl = environment.baseurl;
   }
   /*  */
   consultarDetallesAsuntoPromise(id: number): Promise<any> {
-  return new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
+      this.asuntoApi.consultarDetallesAsunto({ idAsunto: id }).subscribe(
+        (data) => {
+          this.onSuccessconsultarDetallesAsunto(data);
+          resolve(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+          reject(ex);
+        }
+      );
+    });
+  }
+  consultarDetallesAsunto(id: number) {
     this.asuntoApi.consultarDetallesAsunto({ idAsunto: id }).subscribe(
-      (data) => { this.onSuccessconsultarDetallesAsunto(data); resolve(data); },
-      (ex) => { this.utils.MuestraErrorInterno(ex); reject(ex); }
-    );
-  });
-}
-    consultarDetallesAsunto(id:number) {
-
-        this.asuntoApi.consultarDetallesAsunto({idAsunto: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarDetallesAsunto(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
-    );
-
-    }
-    onSuccessconsultarDetallesAsunto(data: any) {
-      if (data.status == 200) {
-        this.turnadoSeleccionado = data.model
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      (data) => {
+        this.onSuccessconsultarDetallesAsunto(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
       }
-    }
-
-    consultarDetalleTurnadoPromise(id: number): Promise<any> {
-      return new Promise((resolve, reject) => {
-        this.turnadoApi.consultarDetalleTurnado({ idTurnado: id }).subscribe(
-          (data) => { this.onSuccessconsultarDetalleTurnado(data); resolve(data); },
-          (ex) => { this.utils.MuestraErrorInterno(ex); reject(ex); }
-        );
-      });
-    }
-    consultarDetalleTurnado(id:number) {
-
-        this.turnadoApi.consultarDetalleTurnado({idTurnado: id}).subscribe(
-          (data) => {
-            this.onSuccessconsultarDetalleTurnado(data);
-          },
-          (ex) => {
-          this.utils.MuestraErrorInterno(ex);
-        } 
     );
-
+  }
+  onSuccessconsultarDetallesAsunto(data: any) {
+    if (data.status == 200) {
+      this.turnadoSeleccionado = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
+  }
 
-    onSuccessconsultarDetalleTurnado(data: any) {
-      if (data.status == 200) {
-        this.turnadoDS = data.model
-      } else {
-        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+  consultarDetalleTurnadoPromise(id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.turnadoApi.consultarDetalleTurnado({ idTurnado: id }).subscribe(
+        (data) => {
+          this.onSuccessconsultarDetalleTurnado(data);
+          resolve(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+          reject(ex);
+        }
+      );
+    });
+  }
+  consultarDetalleTurnado(id: number) {
+    this.turnadoApi.consultarDetalleTurnado({ idTurnado: id }).subscribe(
+      (data) => {
+        this.onSuccessconsultarDetalleTurnado(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
       }
-    }
+    );
+  }
 
-    consultarExpedienteAsuntoPromise(id: number): Promise<any> {
-      return new Promise((resolve, reject) => {
-        this.asuntoApi.consultarExpedienteAsunto({ idAsunto: id }).subscribe(
-          (data) => { this.onSuccessconsultarExpedienteAsunto(data, false); resolve(data); },
-          (ex) => { this.utils.MuestraErrorInterno(ex); 
-             this.documentoPrincipal = null;
-              this.documentoConclusion = null;
-              this.anexos = [];
-              this.respuestasDocs = [];/* validar rol de usuario */
-              this.documentoRespuesta = null;
-            reject(ex); }
-        );
-      });
+  onSuccessconsultarDetalleTurnado(data: any) {
+    if (data.status == 200) {
+      this.turnadoDS = data.model;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
+  }
 
-      consultarExpedienteAsunto(id: number, muestraToast: boolean = false) {
+  consultarExpedienteAsuntoPromise(id: number): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.asuntoApi.consultarExpedienteAsunto({ idAsunto: id }).subscribe(
+        (data) => {
+          this.onSuccessconsultarExpedienteAsunto(data, false);
+          resolve(data);
+        },
+        (ex) => {
+          this.utils.MuestraErrorInterno(ex);
+          this.documentoPrincipal = null;
+          this.documentoConclusion = null;
+          this.anexos = [];
+          this.respuestasDocs = []; /* validar rol de usuario */
+          this.documentoRespuesta = null;
+          reject(ex);
+        }
+      );
+    });
+  }
+
+  consultarExpedienteAsunto(id: number, muestraToast: boolean = false) {
     this.asuntoApi.consultarExpedienteAsunto({ idAsunto: id }).subscribe(
       (data) => {
         this.onSuccessconsultarExpedienteAsunto(data, muestraToast);
@@ -520,7 +585,7 @@ baseurl = environment.baseurl;
         this.documentoPrincipal = null;
         this.documentoConclusion = null;
         this.anexos = [];
-        this.respuestasDocs = [];/* validar rol de usuario */
+        this.respuestasDocs = []; /* validar rol de usuario */
         this.documentoRespuesta = null;
         if (muestraToast) this.utils.MuestraErrorInterno(ex);
       }
@@ -528,13 +593,18 @@ baseurl = environment.baseurl;
   }
   onSuccessconsultarExpedienteAsunto(data: any, muestraToast: boolean) {
     if (data.status == 200) {
-      
-      this.documentoPrincipal = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Documento principal');
-      this.documentoConclusion = data.model.documentos.find((doc:any) => doc.tipoDocumento === 'Conclusión');
+      this.documentoPrincipal = data.model.documentos.find(
+        (doc: any) => doc.tipoDocumento === 'Documento principal'
+      );
+      this.documentoConclusion = data.model.documentos.find(
+        (doc: any) => doc.tipoDocumento === 'Conclusión'
+      );
       this.anexos = data.model.anexos;
-      this.respuestasDocs = data.model.respuestas;      
-      
-      this.documentoRespuesta = data.model.respuestas.find( (doc:any) =>  doc.idTurnado === this.turnadoDS.idTurnado);
+      this.respuestasDocs = data.model.respuestas;
+
+      this.documentoRespuesta = data.model.respuestas.find(
+        (doc: any) => doc.idTurnado === this.turnadoDS.idTurnado
+      );
     } else {
       this.documentoPrincipal = null;
       this.anexos = [];
@@ -543,11 +613,9 @@ baseurl = environment.baseurl;
       if (muestraToast)
         this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
-
-    
   }
 
-    consultarHistorial(id: number) {
+  consultarHistorial(id: number) {
     this.asuntoApi.consultarHistorial({ idAsunto: id }).subscribe(
       (data) => {
         this.onSuccessconsultarHistorial(data);
@@ -571,8 +639,8 @@ baseurl = environment.baseurl;
     }
   }
 
-    /* documentosRespuesta */
-    
+  /* documentosRespuesta */
+
   onFileSelected(form: FormGroup, event: Event): void {
     const input = event.target as HTMLInputElement;
     this.processFile(form, input.files);
@@ -602,15 +670,18 @@ baseurl = environment.baseurl;
     this.processFile(form, event.dataTransfer?.files, lista);
   }
 
-  private processFile( form: FormGroup, files: FileList | null | undefined, lista: boolean = false ): void {
+  private processFile(
+    form: FormGroup,
+    files: FileList | null | undefined,
+    lista: boolean = false
+  ): void {
     const isReemplazo = form == this.reemplazarDocumentoForm;
-    
+
     const controlName = 'documento';
     const key = isReemplazo ? 'reemplazar' : 'concluir';
 
-
     if (!files || files.length === 0) {
-      if (lista && this.anexosCargados.length > 0) {   
+      if (lista && this.anexosCargados.length > 0) {
         return;
       }
       // Si lista es true pero no hay archivos cargados, o si lista es false
@@ -620,6 +691,16 @@ baseurl = environment.baseurl;
 
     if (lista) {
       Array.from(files).forEach((file) => {
+        if (
+          file.size > 5 * 1024 * 1024 ||
+          !['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+        ) {
+          this.utils.MuestrasToast(
+            TipoToast.Warning,
+            'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+          );
+          return;
+        }
         if (!this.anexosCargados.some((anexo) => anexo.name === file.name)) {
           this.anexosCargados.push(file);
         }
@@ -628,6 +709,16 @@ baseurl = environment.baseurl;
       this.updateDocumentoControl(form, first, controlName);
     } else {
       const file = files[0];
+      if (
+        file.size > 5 * 1024 * 1024 ||
+        !['application/pdf', 'image/jpeg', 'image/png'].includes(file.type)
+      ) {
+        this.utils.MuestrasToast(
+          TipoToast.Warning,
+          'El archivo debe ser PDF, JPG, JPEG o PNG y no debe exceder los 5MB.'
+        );
+        return;
+      }
       this.fileState.set(key, { file, name: file.name });
       this.updateDocumentoControl(form, file.name, controlName);
     }
@@ -668,7 +759,7 @@ baseurl = environment.baseurl;
 
   async construirPayloadRespuestaTurnado(): Promise<any> {
     let documentoPayload = null;
-	let documentoConclusion = this.fileState.get('concluir');
+    let documentoConclusion = this.fileState.get('concluir');
 
     if (documentoConclusion?.file) {
       const base64 = await this.fileToBase64(documentoConclusion.file);
@@ -682,25 +773,23 @@ baseurl = environment.baseurl;
 
     const payload = {
       idUsuario: this.usuario.idUsuario,
-      idAsunto: this.turnadoSeleccionado.idAsunto,         
-      idTurnado: this.asuntoInput.idTurnado,      
+      idAsunto: this.turnadoSeleccionado.idAsunto,
+      idTurnado: this.asuntoInput.idTurnado,
       folio: this.turnadoSeleccionado.folio,
       documentos: [documentoPayload],
       respuesta: this.conclusionForm.get('respuesta')?.value || null,
       /* atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false  */
-      atendedor: false 
+      requiereTurnado: !this.noRequiereDocumento,
     };
     return payload;
   }
-
 
   /* event emmiter */
   notificarCambio() {
     this.cambio.emit('Not');
   }
 
-
-    statusClass(idStatus: number): string {
+  statusClass(idStatus: number): string {
     switch (idStatus) {
       case 1:
         return 'inicio';

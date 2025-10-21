@@ -77,7 +77,7 @@ Math: Math;
           : true;
 
       const coincideTema = this.filtroTema
-        ? a.idTema === this.filtroTema
+        ? a.Tema === this.filtroTema
         : true;
 
       const fechaRegistro = new Date(a.fechaRegistro);
@@ -178,7 +178,9 @@ Math: Math;
   /* event emmiter */
   refrescar(mensaje: string) {
     this.cambio = false;
+	this.consultarCantidadesStatus();
     this.consultarAsuntosUR();
+
   }
 
   pageSize: number = 10; // cantidad de asuntos por página
@@ -229,7 +231,7 @@ Math: Math;
       }
     } */
     if (actual <= 2) {
-      return [1, 2, 3];
+      return [1, 2];
     }
     if (actual >= total - 1) {
       return ['...', total - 2, total - 1, total];

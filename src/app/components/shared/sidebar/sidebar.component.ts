@@ -39,14 +39,14 @@ export class SidebarComponent implements OnInit {
       label: 'Asuntos turnados',
       icon: 'fas fa-share',
       link: '/consultar-turnados',
-      rol: [1,2,3,9999],
+      rol: [1,2,3,4,9999],
     },
     {
       id: 'busquedaAvanzada',
       label: 'Búsqueda avanzada',      
       icon: 'fas fa-search',
       link: '/busqueda-avanzada',
-      rol: [1,2,3,9999],
+      rol: [1,2,3,4,9999],
     },
     {
       id: 'reportes',
