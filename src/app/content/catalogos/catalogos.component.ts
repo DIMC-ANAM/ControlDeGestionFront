@@ -397,9 +397,9 @@ export class CatalogosComponent implements OnInit {
       req$.subscribe(
         (data: any) => {
           if (data.status === 200) {
-            this.utils.MuestrasToast(TipoToast.Success, `Operación exitosa.`);
+            this.utils.MuestrasToast(TipoToast.Success, data.message ||  `Operación exitosa.`);
           } else {
-            this.utils.MuestrasToast(TipoToast.Warning, data.message || 'Operación no realizada.');
+            this.utils.MuestrasToast(TipoToast.Success, data.message || 'Operación no realizada.');
           }
           this.loadTable();
         },
@@ -420,11 +420,10 @@ export class CatalogosComponent implements OnInit {
 
       req$.subscribe(
         (data: any) => {
-          if (data.status === 200) {
-            const action = this.formMode === 'crear' ? 'registrado' : 'actualizado';
-            this.utils.MuestrasToast(TipoToast.Success, `Tema ${action} con éxito.`);
+          if (data.status === '200') {
+            this.utils.MuestrasToast(TipoToast.Success, data.message ||  `Operación exitosa.`);
           } else {
-            this.utils.MuestrasToast(TipoToast.Warning, data.message || 'Operación no realizada.');
+            this.utils.MuestrasToast(TipoToast.Success, data.message || 'Operación no realizada.');
           }
           this.loadTable();
         },
@@ -440,9 +439,9 @@ export class CatalogosComponent implements OnInit {
       req$.subscribe(
         (data: any) => {
           if (data.status === 200) {
-            this.utils.MuestrasToast(TipoToast.Success, `Operación exitosa.`);
+              this.utils.MuestrasToast(TipoToast.Success, data.message ||  `Operación exitosa.`);
           } else {
-            this.utils.MuestrasToast(TipoToast.Warning, data.message || 'Operación no realizada.');
+            this.utils.MuestrasToast(TipoToast.Success, data.message || 'Operación no realizada.');
           }
           this.loadTable();
         },
@@ -469,9 +468,9 @@ export class CatalogosComponent implements OnInit {
     req$.subscribe(
       (data: any) => {
         if (data.status === 200) {
-          this.utils.MuestrasToast(TipoToast.Success, data.message || 'Operación exitosa.');
-        } else {
-          this.utils.MuestrasToast(TipoToast.Warning, data.message || 'Operación no realizada.');
+          this.utils.MuestrasToast(TipoToast.Success, data.message ||  `Operación exitosa.`);
+          } else {
+            this.utils.MuestrasToast(TipoToast.Success, data.message || 'Operación no realizada.');
         }
         this.loadTable();
       },
