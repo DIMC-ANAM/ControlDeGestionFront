@@ -763,7 +763,9 @@ export class DetalleAsuntosComponent {
 
   eliminarDocumento(idDocumento: number) {
     this.asuntoApi
-      .eliminarDocumento({ idDocumentAsunto: idDocumento })
+      .eliminarDocumento({ idDocumentAsunto: idDocumento ,
+		idUsuarioModifica: this.usuario.idUsuario
+	  })
       .subscribe(
         (data) => {
           this.onSuccesseliminarDocumento(data);
