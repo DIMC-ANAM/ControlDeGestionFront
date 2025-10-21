@@ -1,24 +1,70 @@
-:host {
-  display: block;
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
 }
 
-.table {
-  font-size: 0.875rem;     
+.pagination button {
+  border: none;
+  padding: 0.4rem 0.8rem;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
 }
 
-.table th,
-.table td {
-  padding: .05rem .5rem;   
-  border: 1px solid #dee2e6;
-  vertical-align: middle;
+.pagination button:hover:not(:disabled) {
+  background-color: #e0e0e0;
 }
 
-.table-burgundy {
-  background-color: #a52a48 !important;
-  color: white !important;
+.pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
-.table-hover tbody tr:hover {
-  background-color: rgba(165, 42, 72, 0.08) !important;
+.pagination button.active {
+  background-color: #83002B;
+  color: #fff;
 }
+
+.pagination span {
+  font-weight: bold;
+  color: #555;
+}
+
+section.container .card.h-100{
+  min-height:160px; /* aumentar aquí para tarjetas más altas */
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+section.container .card.h-100:hover{
+  transform: translateY(-6px);
+  box-shadow: 0 18px 30px rgba(0,0,0,0.12);
+}
+
+
+.card-icon {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  flex: 0 0 auto;
+}
+
+.p-3.bg-primary.text-white.rounded {
+  width: 76px;
+  height: 76px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 14px;
+  flex: 0 0 auto;
+}
+
 

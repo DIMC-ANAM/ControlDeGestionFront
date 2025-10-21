@@ -7,9 +7,9 @@ import { RegistroAsuntoComponent } from './content/registro-asunto/registro-asun
 import { BusquedaAvanzadaComponent } from './content/busqueda-avanzada/busqueda-avanzada.component';
 import { ReportesComponent } from './content/reportes/reportes.component';
 import { UnitTestComponent } from './content/unit-test/unit-test.component';
-import { CatalogosComponent } from './content/catalogos/catalogos.component';
 import { AuthGuard } from './services/auth-guard';
 import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
+import { CatalogosComponent } from './content/catalogos/catalogos.component';
 const routes: Routes = [
   {
     path: 'auth',
@@ -55,6 +55,10 @@ const routes: Routes = [
         path: 'admin-usuarios',
         component: AdminUsuariosComponent
       },
+      {
+        path: 'catalogos',
+        component: CatalogosComponent
+      }
       
     ]
   },
