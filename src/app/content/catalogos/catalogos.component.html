@@ -1,534 +1,339 @@
-<div class="container my-4">
+<div class="container-fluid p-4">
 
-    <div class="row pt-3 ">
-        <div class="col-12 ">
-            <h1 class="pt-2 tituloBorderLeft ">Consulta de Determinantes</h1>
-        </div>
-         </div>
-
-           <!-- propuesta de header  -->
-    <!-- <div class="card shadow border-0 rounded-4 overflow-hidden">
-        <div class="card-header bg-gradient bg-light border-0 py-3">
-            <div class="d-flex align-items-center">
-                <div class="me-3">
-                    <div class="bg-primary rounded-circle p-2 d-inline-flex">
-                        <i class="fas fa-table text-white"></i>
-                    </div>
-                </div>
-                <div>
-                    <h6 class="card-title mb-0 fw-semibold text-dark">Gestión de Determinantes</h6>
-                    <small class="text-muted">Administración completa del catálogo de determinantes</small>
-                </div>
-            </div>
-        </div> -->
-
-        <div class="card-body bg-white p-4">
-                <!-- Barra de busqueda -->
-                <div class="row align-items-center g-3 mb-4">
-                    <div class="col-md-8">
-                        <div class="input-group shadow-sm">
-                            <span class="input-group-text bg-primary text-white border-0">
-                                <i class="fas fa-search"></i>
-                            </span>
-                            <input #searchBox 
-                                   type="text" 
-                                   class="form-control border-0 shadow-sm" 
-                                   placeholder="Buscar por ID, nivel, área, determinante..." 
-                                   [value]="term"
-                                   (input)="onFilter(searchBox.value)" 
-                                   aria-label="Buscar en la tabla de determinantes" />
-                            <button class="btn btn-outline-secondary border-0" 
-                                    type="button" 
-                                    (click)="clearFilter()"
-                                    [disabled]="!term"
-                                    title="Limpiar búsqueda">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                        <small class="text-muted mt-1 d-block" *ngIf="term">
-                            <i class="fas fa-filter me-1"></i>
-                            {{ totalItems }} resultado(s)
-                        </small>
-                    </div>
-
-                    <div class="col-md-4 text-md-end">
-                        <button class="btn btn-primary btn-lg shadow-sm px-4" 
-                                (click)="openRegistrarModal()"
-                                title="Registrar nuevo determinante">
-                            <i class="fas fa-plus-circle me-2"></i> 
-                            <span class="fw-semibold">Nuevo Determinante</span>
-                        </button>
-                    </div>
-                </div>
-
-                <div class="table-responsive shadow-sm rounded">
-                    <!--   * * * * * * * * * * * * * * * * * * * * * * * * * * tabla  * * * * * * * * * * * * * * * * * * * * * * * * * *-->
-                    <table class="table table-hover align-middle mb-0" style="min-width: 1200px;">
-                        <thead class="table-burgundy bg-gradient">
-                            <tr>
-                                <th scope="col" class="fw-semibold text-center" style="width: 5%;">
-                                    <i class="fas fa-hashtag me-1"></i>ID
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 12%;">
-                                    Nivel
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 12%;">
-                                    U. Negocio
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 12%;">
-                                    U. Administrativa
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 15%;">
-                                    Área
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 15%;">
-                                    Determinante
-                                </th>
-                                <th scope="col" class="fw-semibold" style="width: 8%;">
-                                    Dependencia
-                                </th>
-                                <th scope="col" class="fw-semibold text-nowrap" style="width: 8%;">
-                                    F. Registro
-                                </th>
-                                <th scope="col" class="fw-semibold text-nowrap" style="width: 8%;">
-                                    F. Modificación
-                                </th>
-                                <th scope="col" class="fw-semibold text-center" style="width: 5%;">
-                                    Modificó
-                                </th>
-                                <th scope="col" class="fw-semibold text-center" style="width: 5%;">
-                                    Creó
-                                </th>
-                                <th scope="col" class="fw-semibold text-center" style="width: 8%;">
-                                    Estado
-                                </th>
-                                <th scope="col" class="fw-semibold text-center" style="width: 7%;">
-                                    Acciones
-                                </th>
-                            </tr>
-                        </thead>
-
-                        <tbody class="table-group-divider">
-                            <tr *ngFor="let r of pageItems" class="border-bottom">
-                                <td class="text-center fw-bold text-primary">
-                                    <small class="badge bg-light text-dark rounded-pill px-2">{{ r.id }}</small>
-                                </td>
-                                <td class="fw-medium">
-                                    <span>{{ r.nivel || '-' }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ r.unidadDeNegocio || '-' }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ r.unidadAdministrativa || '-' }}</span>
-                                </td>
-                                <td class="fw-medium text-dark">
-                                    <span>{{ r.area }}</span>
-                                </td>
-                                <td class="fw-semibold text-success">
-                                    <span>{{ r.determinante }}</span>
-                                </td>
-                                <td>
-                                    <span>{{ r.dependencia || '-' }}</span>
-                                </td>
-                                <td class="text-muted small">
-                                    <i class="fas fa-calendar me-1"></i>
-                                    {{ r.fechaRegistro | date:'dd/MM/yy' }}<br>
-                                    <small class="text-secondary">{{ r.fechaRegistro | date:'HH:mm' }}</small>
-                                </td>
-                                <td class="text-muted small">
-                                    <i class="fas fa-edit me-1"></i>
-                                    {{ r.fechaModificacion | date:'dd/MM/yy' }}<br>
-                                    <small class="text-secondary">{{ r.fechaModificacion | date:'HH:mm' }}</small>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-secondary rounded-pill">{{ r.idUsuarioModifica }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge bg-info rounded-pill">{{ r.idUsuarioCreacion }}</span>
-                                </td>
-                                <td class="text-center">
-                                    <span class="badge rounded-pill" 
-                                          [class.bg-success]="r.activo"
-                                          [class.bg-danger]="!r.activo"
-                                          [class.text-white]="r.activo || !r.activo">
-                                        <i class="fas" [class.fa-check-circle]="r.activo" [class.fa-times-circle]="!r.activo"></i>
-                                        {{ r.activo ? 'Activo' : 'Inactivo' }}
-                                    </span>
-                                </td>
-                                <td class="text-center">
-                                    <div class="btn-group btn-group-sm" role="group">
-                                        <button type="button" class="btn btn-outline-primary btn-sm" 
-                                                (click)="onEdit(r)" 
-                                                [title]="'Editar determinante #' + r.id"
-                                                [disabled]="!r.activo">
-                                            <i class="fas fa-edit"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-outline-danger btn-sm" 
-                                                (click)="onDelete(r)" 
-                                                [title]="'Eliminar determinante #' + r.id"
-                                                [disabled]="!r.activo">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr *ngIf="totalItems === 0">
-                                <td colspan="13" class="text-center text-muted py-5">
-                                    <div class="d-flex flex-column align-items-center">
-                                        <i class="fas fa-search fa-3x text-muted mb-3 opacity-50"></i>
-                                        <h5 class="text-muted mb-2">No se encontraron resultados</h5>
-                                        <p class="text-muted mb-0">Intenta ajustar los filtros de búsqueda</p>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <!-- paginacion  -->
-                <div class="d-flex align-items-center justify-content-between mt-4 pt-3 border-top flex-wrap gap-3">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <label class="text-muted fw-medium small">
-                                <i class="fas fa-list me-1"></i>Mostrar:
-                            </label>
-                            <select class="form-select form-select-sm shadow-sm border-0 bg-light" 
-                                    style="width: 80px; font-weight: 500;"
-                                    (change)="onPageSizeChange($event)">
-                                <option *ngFor="let s of pageSizeOptions" [value]="s" [selected]="s === pageSize">{{ s }}</option>
-                            </select>
-                        </div>
-                        <div class="vr"></div>
-                        <span class="text-muted small fw-medium">
-                            <i class="fas fa-info-circle me-1 text-primary"></i>
-                            Mostrando <strong class="text-primary">{{ totalItems === 0 ? 0 : (startIndex + 1) }}</strong> 
-                            a <strong class="text-primary">{{ endIndex }}</strong> 
-                            de <strong class="text-primary">{{ totalItems }}</strong> registros
-                        </span>
-                    </div>
-
-                    <div class="d-flex align-items-center gap-3" *ngIf="totalPages > 1">
-                        <span class="text-muted small fw-medium">
-                            <i class="fas fa-bookmark me-1 text-dark"></i>
-                            Página <strong class="text-dark">{{ currentPage }}</strong> 
-                            de <strong class="text-dark">{{ totalPages }}</strong>
-                        </span>
-                        <nav aria-label="Navegación de páginas">
-                            <ul class="pagination pagination-sm mb-0 shadow-sm">
-                                <li class="page-item" [class.disabled]="currentPage === 1">
-                                    <button class="page-link border-0 bg-light text-dark fw-bold" 
-                                            (click)="goToFirst()" 
-                                            aria-label="Primera página"
-                                            [disabled]="currentPage === 1">
-                                        <i class="fas fa-angle-double-left"></i>
-                                    </button>
-                                </li>
-                                <li class="page-item" [class.disabled]="currentPage === 1">
-                                    <button class="page-link border-0 bg-light text-dark fw-bold" 
-                                            (click)="goToPrev()" 
-                                            aria-label="Página anterior"
-                                            [disabled]="currentPage === 1">
-                                        <i class="fas fa-angle-left"></i>
-                                    </button>
-                                </li>
-                                <li class="page-item" *ngFor="let p of pages" 
-                                    [class.active]="p === currentPage">
-                                    <button class="page-link fw-semibold" 
-                                            [class.bg-primary]="p === currentPage"
-                                            [class.text-white]="p === currentPage"
-                                            [class.border-primary]="p === currentPage"
-                                            [class.bg-light]="p !== currentPage"
-                                            [class.text-dark]="p !== currentPage"
-                                            [class.border-0]="p !== currentPage"
-                                            (click)="goToPage(p)">
-                                        {{ p }}
-                                    </button>
-                                </li>
-                                <li class="page-item" [class.disabled]="currentPage === totalPages">
-                                    <button class="page-link border-0 bg-light text-dark fw-bold" 
-                                            (click)="goToNext()" 
-                                            aria-label="Página siguiente"
-                                            [disabled]="currentPage === totalPages">
-                                        <i class="fas fa-angle-right"></i>
-                                    </button>
-                                </li>
-                                <li class="page-item" [class.disabled]="currentPage === totalPages">
-                                    <button class="page-link border-0 bg-light text-dark fw-bold" 
-                                            (click)="goToLast()" 
-                                            aria-label="Última página"
-                                            [disabled]="currentPage === totalPages">
-                                        <i class="fas fa-angle-double-right"></i>
-                                    </button>
-                                </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    </div>
- 
-    <!--   * * * * * * * * * * * * * * * * * * * * * * * * * * modal para registrar  * * * * * * * * * * * * * * * * * * * * * * * * * *  -->
-<ng-template #modalRegistrar>
-  <div class="container mt-4">
-    <form [formGroup]="determinanteForm">
-      
-      <!-- nivel -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="nivel">Nivel</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('nivel')?.valid && determinanteForm.get('nivel')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('nivel')?.invalid && determinanteForm.get('nivel')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="nivel" type="text" class="form-control" formControlName="nivel" 
-                   placeholder="Ingrese el nivel"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('nivel')?.invalid && determinanteForm.get('nivel')?.touched"
-                   [class.valid]="determinanteForm.get('nivel')?.valid && determinanteForm.get('nivel')?.touched" />
+  <!-- Header -->
+  <header class="bg-light border-bottom">
+    <div class="container py-4 px-3">
+      <div class="d-flex justify-content-between align-items-center">
+        <div class="d-flex align-items-center gap-3">
+          <div class="fa-solid fa-book" style="font-size: 4rem; color: #800020;">
           </div>
-          <p *ngIf="determinanteForm.get('nivel')?.invalid && determinanteForm.get('nivel')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-        <!--  unidad de negocio -->
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="unidadDeNegocio">Unidad de Negocio</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('unidadDeNegocio')?.valid && determinanteForm.get('unidadDeNegocio')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('unidadDeNegocio')?.invalid && determinanteForm.get('unidadDeNegocio')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="unidadDeNegocio" type="text" class="form-control" formControlName="unidadDeNegocio" 
-                   placeholder="Ingrese la unidad de negocio"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('unidadDeNegocio')?.invalid && determinanteForm.get('unidadDeNegocio')?.touched"
-                   [class.valid]="determinanteForm.get('unidadDeNegocio')?.valid && determinanteForm.get('unidadDeNegocio')?.touched" />
-          </div>
-          <p *ngIf="determinanteForm.get('unidadDeNegocio')?.invalid && determinanteForm.get('unidadDeNegocio')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-      </div>
-
-      <!-- unidad administrativa -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="unidadAdministrativa">Unidad Administrativa</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('unidadAdministrativa')?.valid && determinanteForm.get('unidadAdministrativa')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('unidadAdministrativa')?.invalid && determinanteForm.get('unidadAdministrativa')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="unidadAdministrativa" type="text" class="form-control" formControlName="unidadAdministrativa" 
-                   placeholder="Ingrese la unidad administrativa"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('unidadAdministrativa')?.invalid && determinanteForm.get('unidadAdministrativa')?.touched"
-                   [class.valid]="determinanteForm.get('unidadAdministrativa')?.valid && determinanteForm.get('unidadAdministrativa')?.touched" />
-          </div>
-          <p *ngIf="determinanteForm.get('unidadAdministrativa')?.invalid && determinanteForm.get('unidadAdministrativa')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-
-        <!-- area -->
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="area">Área</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('area')?.valid && determinanteForm.get('area')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('area')?.invalid && determinanteForm.get('area')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="area" type="text" class="form-control" formControlName="area" 
-                   placeholder="Ingrese el área"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('area')?.invalid && determinanteForm.get('area')?.touched"
-                   [class.valid]="determinanteForm.get('area')?.valid && determinanteForm.get('area')?.touched" />
-          </div>
-          <p *ngIf="determinanteForm.get('area')?.invalid && determinanteForm.get('area')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-      </div>
-
-      <!-- determinante -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="determinante">Determinante</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('determinante')?.valid && determinanteForm.get('determinante')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('determinante')?.invalid && determinanteForm.get('determinante')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="determinante" type="text" class="form-control" formControlName="determinante" 
-                   placeholder="Ingrese el determinante"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('determinante')?.invalid && determinanteForm.get('determinante')?.touched"
-                   [class.valid]="determinanteForm.get('determinante')?.valid && determinanteForm.get('determinante')?.touched" />
-          </div>
-          <p *ngIf="determinanteForm.get('determinante')?.invalid && determinanteForm.get('determinante')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-        <!-- dependencia -->
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="dependencia">Dependencia</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="determinanteForm.get('dependencia')?.valid && determinanteForm.get('dependencia')?.touched ? 'fas fa-check-circle icon valid-icon' : determinanteForm.get('dependencia')?.invalid && determinanteForm.get('dependencia')?.touched ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="dependencia" type="text" class="form-control" formControlName="dependencia" 
-                   placeholder="Ingrese la dependencia"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="determinanteForm.get('dependencia')?.invalid && determinanteForm.get('dependencia')?.touched"
-                   [class.valid]="determinanteForm.get('dependencia')?.valid && determinanteForm.get('dependencia')?.touched" />
-          </div>
-          <p *ngIf="determinanteForm.get('dependencia')?.invalid && determinanteForm.get('dependencia')?.touched" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-      </div>
-
-      <p class="text-auxiliary text-muted pt-2">* Campos obligatorios</p>
-    </form>
-  </div>
-</ng-template>
-
-<!--  * * * * * * * * * * * * * * * * * * * * * * * * * * modal para editar  * * * * * * * * * * * * * * * * * * * * * * * * * *  -->
-<ng-template #modalEditar>
-  <div class="container mt-4" aria-hidden="false">
-    <form [formGroup]="editarDeterminanteForm">
-            <input type="hidden" formControlName="id">
-      
-      <!-- primera fila nivel y unidad de Negocio -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel" for="nivelEdit">Nivel</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('nivel') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('nivel') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="nivelEdit" type="text" class="form-control" formControlName="nivel" 
-                   placeholder="Ingrese el nivel"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('nivel') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('nivel') == 'valid'" />
+          <div class="text-left">
+            <h1 class="fw-bold text-dark mb-1 px-0 ">
+              {{ mode === 'grid' ? 'Catálogos' : ('Catálogo: ' + (selectedCatalog || '')) }}
+            </h1>
+            <p class="text-muted mb-0">
+              {{ mode === 'grid'
+                ? 'Elige un catálogo para administrar sus elementos'
+                : 'Administrador del catálogos' }}
+            </p>
           </div>
         </div>
-
-        <div class="col-md-6">
-          <label class="form-label frmlabel" for="unidadDeNegocioEdit">Unidad de Negocio</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('unidadDeNegocio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('unidadDeNegocio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="unidadDeNegocioEdit" type="text" class="form-control" formControlName="unidadDeNegocio" 
-                   placeholder="Ingrese la unidad de negocio"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('unidadDeNegocio') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('unidadDeNegocio') == 'valid'" />
-          </div>
-        </div>
-      </div>
-
-      <!-- segunda fila unidad dministrativa y area -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel" for="unidadAdministrativaEdit">Unidad Administrativa</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('unidadAdministrativa') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('unidadAdministrativa') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="unidadAdministrativaEdit" type="text" class="form-control" formControlName="unidadAdministrativa" 
-                   placeholder="Ingrese la unidad administrativa"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('unidadAdministrativa') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('unidadAdministrativa') == 'valid'" />
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="areaEdit">Área</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('area') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('area') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="areaEdit" type="text" class="form-control" formControlName="area" 
-                   placeholder="Ingrese el área"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('area') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('area') == 'valid'" />
-          </div>
-          <p *ngIf="getValidationStatusEditar('area') == 'invalid'" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-      </div>
-
-      <!-- tercera fila determinante y dependencia -->
-      <div class="row mb-3">
-        <div class="col-md-6">
-          <label class="form-label frmlabel required" for="determinanteEdit">Determinante</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('determinante') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('determinante') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="determinanteEdit" type="text" class="form-control" formControlName="determinante" 
-                   placeholder="Ingrese el determinante"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('determinante') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('determinante') == 'valid'" />
-          </div>
-          <p *ngIf="getValidationStatusEditar('determinante') == 'invalid'" class="invalid-field">
-            Campo obligatorio.
-          </p>
-        </div>
-
-        <div class="col-md-6">
-          <label class="form-label frmlabel" for="dependenciaEdit">Dependencia</label>
-          <div class="input-icon-wrapper">
-            <i [ngClass]="getValidationStatusEditar('dependencia') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatusEditar('dependencia') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-            <input id="dependenciaEdit" type="text" class="form-control" formControlName="dependencia" 
-                   placeholder="Ingrese la dependencia"
-                   (keypress)="onlyNumbers($event)"
-                   autocomplete="off"
-                   [class.invalid]="getValidationStatusEditar('dependencia') == 'invalid'"
-                   [class.valid]="getValidationStatusEditar('dependencia') == 'valid'" />
-          </div>
-        </div>
-      </div>
-
-      <p class="text-auxiliary text-muted pt-2">* Campos obligatorios</p>
-    </form>
-  </div>
-</ng-template>
-
-<!-- * * * * * * * * * * * * * * * * * * * * * * * * * *  modal para eliminar  * * * * * * * * * * * * * * * * * * * * * * * * * * -->
-<ng-template #modalEliminar>
-  <div class="container mt-4" aria-hidden="false">
-    <div class="text-center py-3">
-      <h4 class="mb-3">¿Está seguro que desea eliminar este determinante?</h4>
-      
-     <!--  <div *ngIf="determinanteAEliminar" class="mt-4 p-4 bg-light rounded border">
-        <div class="row text-start">
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">ID:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.id }}</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">Nivel:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.nivel || 'N/A' }}</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">Unidad de Negocio:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.unidadDeNegocio || 'N/A' }}</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">Unidad Administrativa:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.unidadAdministrativa || 'N/A' }}</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">Área:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.area }}</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <strong class="text-muted">Determinante:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.determinante }}</span>
-          </div>
-          <div class="col-12 mb-2">
-            <strong class="text-muted">Dependencia:</strong>
-            <span class="ms-2">{{ determinanteAEliminar.dependencia || 'N/A' }}</span>
-          </div>
-        </div>
-      </div> -->
-      
-      <div class="alert alert-warning mt-4 mb-0" role="alert">
-        <i class="fas fa-info-circle me-2"></i>
-        <strong>Importante:</strong> Esta acción desactivará el determinante. No se eliminará permanentemente de la base de datos.
       </div>
     </div>
+  </header>
+
+  <!-- GRID -->
+  <section *ngIf="mode==='grid'" class="container mt-3">
+    <div class="row g-3">
+      <div class="col-12 col-sm-6 col-lg-4" *ngFor="let c of cards">
+        <div class="card h-100 shadow-sm" role="button" (click)="openCatalog(c)">
+          <div class="card-body d-flex gap-3 align-items-start">
+            <div class="p-3 bg-primary text-white rounded">
+              <i class="{{ c.icon }} fs-4"></i>
+            </div>
+            <div class="flex-grow-1">
+              <h5 class="card-title mb-1">{{ c.titulo }}</h5>
+              <p class="card-text text-muted mb-2">{{ c.descripcion }}</p>
+            </div>
+            <div class="text-muted">
+              <i class="fa-solid fa-caret-right"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLA -->
+  <section *ngIf="mode==='table'" class="container mt-3">
+
+    <div class="d-flex align-items-center justify-content-between my-3">
+      <div class="d-flex align-items-center gap-2">
+        <a class="text-decoration-none" role="button" (click)="backToGrid()">
+          <i class="fas fa-arrow-left me-2"></i> Volver a catálogos
+        </a>
+      </div>
+      <div class="d-flex gap-2">
+        <input type="text" placeholder="Buscar..." [(ngModel)]="searchTerm" (input)="applyFilter()"
+               class="form-control" style="min-width:260px" />
+        <select class="form-select" style="max-width:120px" [(ngModel)]="pageSize" (change)="onPageSizeChange()">
+          <option [ngValue]="5">5</option>
+          <option [ngValue]="10">10</option>
+          <option [ngValue]="20">20</option>
+        </select>
+        <div (click)="openCrear()" role="button" class="rounded-3 bg-primary text-white px-3 d-flex align-items-center">
+          <i class="fas fa-plus-circle me-2"></i>Crear
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid mt-2 p-3 bg-gray rounded-3 border-4">
+      <div class="col-md-12 right align-items-right">
+
+        <table class="w-100 table-responsive table-border-colapse">
+          <!-- THEAD -->
+          <thead *ngIf="selectedCatalog==='determinantes'">
+            <tr>
+              <td style="width: 3%"> <i class="fas fa-hashtag"></i> # </td>
+              <td style="width: 12%"> <i class="fas fa-layer-group"></i> Nivel </td>
+              <td style="width: 9%"> <i class="fas fa-building"></i> U. Negocio </td>
+              <td style="width: 9%"> <i class="fas fa-id-card"></i> U. Administrativa </td>
+              <td style="width: 20%"> <i class="fas fa-sitemap"></i> Área </td>
+              <td style="width: 10%"> <i class="fas fa-hashtag"></i> Determinante </td>
+              <td style="width: 10%"> <i class="fas fa-network-wired"></i> Dependencia </td>
+              <td style="width: 10%"> <i class="fas fa-calendar-alt"></i> F. Registro </td>
+              <td style="width: 10%"> <i class="fas fa-clock-rotate-left"></i> F. Modificación </td>
+              <td style="width: 7%"> <span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i class="fas fa-spinner"></i> Estatus</span></td>
+              <td style="width: 7%"> <i class="fas fa-gear"></i> Opciones</td>
+            </tr>
+          </thead>
+
+          <thead *ngIf="selectedCatalog==='tema'">
+            <tr>
+              <td style="width:60px">#</td>
+              <td><i class="fas fa-bookmark"></i> Tema</td>
+              <td><i class="fas fa-calendar-alt"></i> Fecha registro</td>
+              <td><i class="fas fa-clock-rotate-left"></i> Fecha modificación</td>
+              <td style="width:8%!important"><span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i class="fas fa-spinner"></i> Estatus</span></td>
+              <td><i class="fas fa-gear"></i> Opciones</td>
+            </tr>
+          </thead>
+
+          <thead *ngIf="selectedCatalog==='tipoDocumento'">
+            <tr>
+              <td style="width:60px">#</td>
+              <td><i class="fas fa-file-alt"></i> Tipo de Documento</td>
+              <td><i class="fas fa-calendar-alt"></i> Fecha registro</td>
+              <td><i class="fas fa-clock-rotate-left"></i> Fecha modificación</td>
+              <td style="width:8%!important"><span class="tooltip-wrapper" [attr.data-tooltip]="'Estatus'"><i class="fas fa-spinner"></i> Estatus</span></td>
+              <td><i class="fas fa-gear"></i> Opciones</td>
+            </tr>
+          </thead>
+
+          <!-- TBODY -->
+          <tbody *ngIf="paginaPersonal.length > 0; else noData">
+
+            <!-- Determinantes -->
+            <ng-container *ngIf="selectedCatalog==='determinantes'">
+              <tr *ngFor="let d of paginaPersonal">
+                <td>{{ d.id }}</td>
+                <td>{{ d.nivel }}</td>
+                <td>{{ d.unidadDeNegocio }}</td>
+                <td>{{ d.unidadAdministrativa }}</td>
+                <td>{{ d.area }}</td>
+                <td>{{ d.determinante }}</td>
+                <td>{{ d.dependencia }}</td>
+                <td>{{ d.fechaRegistro | fechaMexico }}</td>
+                <td>{{ d.fechaModificacion ? (d.fechaModificacion | fechaMexico:true) : '—' }}</td>
+                <td style="width: 5%;" class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="d.activo ? 'activo' : 'inactivo'">
+                    <i class="fas fa-circle" [ngClass]="d.activo ? 'text-success' : 'text-danger'"></i>
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="'Editar registro'">
+                    <i class="tool-icon fas fa-eye" (click)="openEditar(d)"></i>
+                  </span>
+                  <span class="tooltip-wrapper ms-2" [attr.data-tooltip]="'Activar/Desactivar'">
+                    <i class="tool-icon fas fa-cog" (click)="openToggle(d)"></i>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+
+            <!-- Tema -->
+            <ng-container *ngIf="selectedCatalog==='tema'">
+              <tr *ngFor="let t of paginaPersonal">
+                <td>{{ t.idTema }}</td>
+                <td>{{ t.tema }}</td>
+                <td>{{ t.fechaRegistro | fechaMexico }}</td>
+                <td>{{ t.fechaModificacion ? (t.fechaModificacion | fechaMexico:true) : '—' }}</td>
+                <td style="width:5%;" class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="t.activo ? 'activo' : 'inactivo'">
+                    <i class="fas fa-circle" [ngClass]="t.activo ? 'text-success' : 'text-danger'"></i>
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="'Editar registro'">
+                    <i class="tool-icon fas fa-eye" (click)="openEditar(t)"></i>
+                  </span>
+                  <span class="tooltip-wrapper ms-2" [attr.data-tooltip]="'Activar/Desactivar'">
+                    <i class="tool-icon fas fa-cog" (click)="openToggle(t)"></i>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+
+            <!-- Tipo de Documento -->
+            <ng-container *ngIf="selectedCatalog==='tipoDocumento'">
+              <tr *ngFor="let item of paginaPersonal">
+                <td>{{ item.idTipoDocumento }}</td>
+                <td>{{ item.tipoDocumento }}</td>
+                <td>{{ item.fechaRegistro | fechaMexico }}</td>
+                <td>{{ item.fechaModificacion ? (item.fechaModificacion | fechaMexico:true) : '—' }}</td>
+                <td style="width:5%;" class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="item.activo ? 'activo' : 'inactivo'">
+                    <i class="fas fa-circle" [ngClass]="item.activo ? 'text-success' : 'text-danger'"></i>
+                  </span>
+                </td>
+                <td class="text-center">
+                  <span class="tooltip-wrapper" [attr.data-tooltip]="'Editar registro'">
+                    <i class="tool-icon fas fa-eye" (click)="openEditar(item)"></i>
+                  </span>
+                  <span class="tooltip-wrapper ms-2" [attr.data-tooltip]="'Activar/Desactivar'">
+                    <i class="tool-icon fas fa-cog" (click)="openToggle(item)"></i>
+                  </span>
+                </td>
+              </tr>
+            </ng-container>
+
+          </tbody>
+
+          <ng-template #noData>
+            <tbody>
+              <tr>
+                <td colspan="11" class="text-center py-4 text-muted">
+                  <i class="fas fa-info-circle me-2"></i>
+                  No hay registros disponibles.
+                </td>
+              </tr>
+            </tbody>
+          </ng-template>
+
+        </table>
+
+        <!-- Resumen -->
+        <div class="text-end my-2" *ngIf="filteredPersonal.length > 0">
+          Mostrando del
+          <strong>{{ currentPage * pageSize + 1 }}</strong>
+          al
+          <strong>{{ Math.min((currentPage + 1) * pageSize, filteredPersonal.length) }}</strong>
+          de <strong>{{ filteredPersonal.length }}</strong> registros
+        </div>
+
+        <!-- Paginación -->
+        <div class="pagination" *ngIf="filteredPersonal.length > 0">
+          <button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
+
+          <ng-container *ngFor="let p of visiblePages">
+            <button (click)="goToPage(p)" [class.active]="p === (currentPage + 1)">
+              {{ p }}
+            </button>
+          </ng-container>
+
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Siguiente &gt;</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!--  MODALES  -->
+
+  <!-- Form crear/editar -->
+  <ng-template #modalForm>
+    <div class="container-fluid p-2">
+      <form [formGroup]="form">
+        <!-- DETERMINANTES -->
+        <ng-container *ngIf="selectedCatalog==='determinantes'; else simpleForm">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label frmlabel">Nivel</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('nivel') ? 'fas fa-check-circle icon valid-icon' : isInvalid('nivel') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="nivel"
+                       [class.invalid]="isInvalid('nivel')" [class.valid]="isValid('nivel')">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label frmlabel">Unidad de negocio</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('unidadDeNegocio') ? 'fas fa-check-circle icon valid-icon' : isInvalid('unidadDeNegocio') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="unidadDeNegocio"
+                       [class.invalid]="isInvalid('unidadDeNegocio')" [class.valid]="isValid('unidadDeNegocio')">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label frmlabel">Unidad administrativa</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('unidadAdministrativa') ? 'fas fa-check-circle icon valid-icon' : isInvalid('unidadAdministrativa') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="unidadAdministrativa"
+                       [class.invalid]="isInvalid('unidadAdministrativa')" [class.valid]="isValid('unidadAdministrativa')">
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label frmlabel required">Área</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('area') ? 'fas fa-check-circle icon valid-icon' : isInvalid('area') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="area"
+                       [class.invalid]="isInvalid('area')" [class.valid]="isValid('area')">
+              </div>
+              <p *ngIf="isInvalid('area')" class="invalid-field">Campo obligatorio.</p>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label frmlabel required">Determinante</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('determinante') ? 'fas fa-check-circle icon valid-icon' : isInvalid('determinante') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="determinante"
+                       [class.invalid]="isInvalid('determinante')" [class.valid]="isValid('determinante')">
+              </div>
+              <p *ngIf="isInvalid('determinante')" class="invalid-field">Campo obligatorio.</p>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label frmlabel">Dependencia</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('dependencia') ? 'fas fa-check-circle icon valid-icon' : isInvalid('dependencia') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="dependencia"
+                       [class.invalid]="isInvalid('dependencia')" [class.valid]="isValid('dependencia')">
+              </div>
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- TEMA / TIPO DOCUMENTO -->
+        <ng-template #simpleForm>
+          <div class="row">
+            <div class="col-md-6">
+              <label class="form-label frmlabel required">Nombre</label>
+              <div class="input-icon-wrapper">
+                <i [ngClass]="isValid('nombre') ? 'fas fa-check-circle icon valid-icon' : isInvalid('nombre') ? 'fas fa-times-circle icon invalid-icon' : 'd-none'"></i>
+                <input type="text" class="form-control" formControlName="nombre"
+                       [class.invalid]="isInvalid('nombre')" [class.valid]="isValid('nombre')">
+              </div>
+              <p *ngIf="isInvalid('nombre')" class="invalid-field">Campo obligatorio.</p>
+            </div>
+          </div>
+        </ng-template>
+      </form>
+      <p class="text-auxiliary text-muted pt-3">* Campos obligatorios</p>
+    </div>
+  </ng-template>
+
+  <!-- Activar/Desactivar -->
+  <ng-template #activarDesactivarModal>
+    <div class="p-3">
+      <ng-container *ngIf="registroSeleccionado.activo == 0; else elseTemplate">
+        <div class="alert alert-warning m-auto" role="alert">
+          <strong>Advertencia:</strong> Esta acción <strong>activará</strong> el registro seleccionado, asegúrese de que es lo que realmente quiere hacer.
+        </div>
+      </ng-container>
+      <ng-template #elseTemplate>
+        <div class="alert alert-warning m-auto" role="alert">
+          <strong>Advertencia:</strong> Esta acción <strong>desactivará</strong> el registro seleccionado, asegúrese de que es lo que realmente quiere hacer.
+        </div>
+      </ng-template>
+    </div>
+  </ng-template>
+
+  <!-- Mensaje de exito -->
+  <div class="alert alert-success" *ngIf="updateSuccess">
+    <i class="fas fa-check-circle me-2"></i>
+    {{ updateMessage }}
   </div>
-</ng-template>
+
+</div>
