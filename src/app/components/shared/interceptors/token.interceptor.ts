@@ -3,21 +3,20 @@ import {
   HttpEvent,
   HttpHandler,
   HttpInterceptor,
-  HttpRequest
+  HttpRequest,
+  HttpErrorResponse
 } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor() {}
+  constructor(private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // Si la URL es pública como login o verificar correo, no agregar token
-    if (req.url.includes('/user/logIn') || req.url.includes('/user/verificarCorreo')) {
-      return next.handle(req);
-    }
-
+  
     // Obtener token del localStorage
     const session = localStorage.getItem('session');
     if (session) {
@@ -27,12 +26,28 @@ export class TokenInterceptor implements HttpInterceptor {
       if (token) {
         req = req.clone({
           setHeaders: {
-            'authorization-ug': `Bearer-UG ${token}`
+            'authorization': `Bearer ${token}`
           }
         });
       }
     }
 
-    return next.handle(req);
+    return next.handle(req).pipe(
+      catchError((err: any) => {
+        // si se recibe 401 o 403 respuesta expirada o no autorizada 
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 401 || err.status === 403) {
+            try {
+              localStorage.removeItem('session');
+            } catch (e) {
+              
+            }
+            // Redirigir al login
+            this.router.navigate(['/cuenta/login']);
+          }
+        }
+        return throwError(() => err);
+      })
+    );
   }
 }
