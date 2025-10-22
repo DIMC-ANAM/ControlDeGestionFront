@@ -16,6 +16,7 @@ import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { environment } from '../../../../environments/environment';
 import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-detalle-turnados',
@@ -77,13 +78,14 @@ export class DetalleTurnadosComponent {
     private asuntoApi: AsuntoService,
     private utils: UtilsService,
     private catalogoApi: CatalogoService,
-    private turnadoApi: TurnadoService
+    private turnadoApi: TurnadoService,
+	private sessionS: SessionService
   ) {}
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
-    this.usuario = JSON.parse(localStorage.getItem('session')!);
+    this.usuario = this.sessionS.getUsuario();
   }
 
   async ngOnChanges() {
@@ -112,14 +114,14 @@ export class DetalleTurnadosComponent {
     return this.fb.group({
       documento: [
         null,
-        /* this.getDocumentoValidators() */ Validators.required,
+        this.getDocumentoValidators() /* Validators.required */,
       ],
       respuesta: [null, Validators.required],
     });
   }
 
   private getDocumentoValidators() {
-    return this.usuario.idUsuarioRol === 7 ? Validators.required : null;
+    return !this.noRequiereDocumento ? Validators.required : null;
   }
   initFormConcluir() {
     this.conclusionForm = this.createconclusionForm();
@@ -273,9 +275,8 @@ export class DetalleTurnadosComponent {
   contestarTurnado(): void {
     const estado = this.fileState.get('concluir');
     if (
-      this.conclusionForm.valid &&
-      /* this.usuario.idUsuarioRol === 7 ?  */ estado?.file /* : true */
-    ) {
+		this.conclusionForm.valid && (this.noRequiereDocumento || estado?.file)
+	){
       this.construirPayloadRespuestaTurnado().then((payload) => {
         this.turnadoApi.contestarTurnado(payload).subscribe(
           (data) => {

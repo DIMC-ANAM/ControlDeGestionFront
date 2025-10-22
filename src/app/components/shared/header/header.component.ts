@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-header',
@@ -36,13 +37,10 @@ export class HeaderComponent {
   constructor(
     private router: Router,
     private utils: UtilsService,
-    private catalogoApi: CatalogoService
+    private catalogoApi: CatalogoService,
+	private sessionS: SessionService
   ) {
-    const session = localStorage.getItem('session');
-    if (session) {
-      const sessionData = JSON.parse(session);
-      this.usuario = sessionData || null;
-    }
+    
   }
 
    isDropdownOpen = false;
@@ -70,6 +68,7 @@ export class HeaderComponent {
   }
 
   ngOnInit() {
+	this.usuario = this.sessionS.getUsuario();
     document.addEventListener('click', this.onDocumentClick.bind(this));
     
   }

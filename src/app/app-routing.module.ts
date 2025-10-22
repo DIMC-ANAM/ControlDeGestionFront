@@ -10,68 +10,90 @@ import { UnitTestComponent } from './content/unit-test/unit-test.component';
 import { AuthGuard } from './services/auth-guard';
 import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
 import { CatalogosComponent } from './content/catalogos/catalogos.component';
+import { AccesoDenegadoComponent } from './content/acceso-denegado/acceso-denegado.component';
 const routes: Routes = [
   {
     path: 'auth',
     loadChildren: () =>
-      import('./content/cuenta/cuenta.module').then(m => m.CuentaModule)
+      import('./content/cuenta/cuenta.module').then((m) => m.CuentaModule),
   },
   {
     path: '',
     component: GeneralComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }, // 👈 aquí el redirect
+      { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
       { path: 'dashboard', component: DashboardComponent },
+
       {
         path: 'registro-asunto',
-        component: RegistroAsuntoComponent
+        component: RegistroAsuntoComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 2, 9999] },
       },
       {
         path: 'consultar-asuntos',
-        loadChildren: () => import('./content/asuntos-layout/asuntos-layout.module').then(m => m.AsuntosLayoutModule)
+        loadChildren: () =>
+          import('./content/asuntos-layout/asuntos-layout.module').then(
+            (m) => m.AsuntosLayoutModule
+          ),
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 2, 9999] },
       },
       {
         path: 'consultar-turnados',
-         loadChildren: () => import('./content/turnados-layout/turnados-layout.module').then(m => m.TurnadosLayoutModule)
+        loadChildren: () =>
+          import('./content/turnados-layout/turnados-layout.module').then(
+            (m) => m.TurnadosLayoutModule
+          ),
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 2, 3, 4, 9999] },
       },
-      /* {
-        path: 'consultar-turnados',
-        component: ConsultarTurnadosComponent
-        }, */
-        {
-          path: 'busqueda-avanzada',
-          component: BusquedaAvanzadaComponent
-        },
+      {
+        path: 'busqueda-avanzada',
+        component: BusquedaAvanzadaComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 2, 3, 4, 9999] },
+      },
       {
         path: 'reportes',
-        component: ReportesComponent
-      },
-      {
-        path: 'test',
-        component: UnitTestComponent
-      },
-      {
-        path: 'admin-usuarios',
-        component: AdminUsuariosComponent
+        component: ReportesComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 2, 3, 9999] },
       },
       {
         path: 'catalogos',
-        component: CatalogosComponent
-      }
-      
-    ]
+        component: CatalogosComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 9999] },
+      },
+      {
+        path: 'admin-usuarios',
+        component: AdminUsuariosComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [1, 9999] },
+      },
+      {
+        path: 'test',
+        component: UnitTestComponent,
+        canActivate: [AuthGuard],
+        data: { rolesPermitidos: [9999] }, // o lo que tú consideres
+      },
+    ],
   },
-    { path: '**', redirectTo: 'auth/login' },
-
+  {
+    path: 'acceso-denegado',
+    component: AccesoDenegadoComponent,
+  },
+  { path: '**', redirectTo: 'auth/login' },
   {
     path: 'ux-design',
-    component: UxDesignComponent
-  }
+    component: UxDesignComponent,
+  },
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes)], /*, { enableTracing: true }  */
-  exports: [RouterModule]
+  imports: [RouterModule.forRoot(routes)] /*, { enableTracing: true }  */,
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

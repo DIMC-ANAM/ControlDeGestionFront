@@ -34,7 +34,7 @@
                 </div>
 
                 <div class="col-md-4">
-                    <label class="form-label frmlabel required" for="noOficio">Número de oficio</label>
+                    <label class="form-label frmlabel required" for="noOficio">Número de documento</label>
                     <div class="input-icon-wrapper">
                         <i
                             [ngClass]="getValidationStatus('noOficio') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('noOficio') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
@@ -222,17 +222,18 @@
                         <div class="col-md-9">
                             <input type="text" id="nombreDocumento" class="form-control" maxlength="100" [ngModelOptions]="{standalone: true}"
                                 [(ngModel)]="nombreDocumento" name="nombreDocumento"
-                                placeholder="Ingrese el nombre del documento" />
-                        </div>
-                        <div class="col-md-3">
-                            <label for="documento" class="form-label d-block text-center">
-                                <div id="drop-zone" class="drop-zone">
-                                    <i class="fas fa-upload"></i>
-                                </div>
-                            </label>
-                            <input type="file"  accept=".pdf, .jpg, .jpeg, .png"  id="documento" class="hidden-input"
+                                placeholder="Renombrar documento" />
+							</div>
+							<div class="col-md-3">
+								<label for="documento" class="form-label d-block text-center">
+									<div id="drop-zone" class="drop-zone">
+										<i class="fas fa-upload"></i>
+									</div>
+								</label>
+								<input type="file"  accept=".pdf, .jpg, .jpeg, .png"  id="documento" class="hidden-input"
                                 (change)="onDocumentoSeleccionado($event)">
-                        </div>
+							</div>
+						<span class="small text-muted">Si desea renombrar el documento, escribe el nombre en el cuadro de texto antes de cargarlo.</span>
                     </div>
 
                     <div class="row" *ngIf="documento">
@@ -312,7 +313,7 @@
                 <div class="col-12">
                     <div class="text-center">
                         <button type="button" class="m-2 btn btn-secondary" (click)="openModalPrev()">Previsualizar</button>
-                        <button  class="m-2 btn btn-primary" (click)="openConfirmModal()" [disabled]="documentoForm.invalid || documento == null || documento == undefined">Guardar</button>
+                        <button  class="m-2 btn btn-primary" (click)="openConfirmModal()" [disabled]="documentoForm.invalid || documento == null || documento == undefined">Enviar</button>
                     </div>
                 </div>
             </div>
@@ -329,7 +330,7 @@
   <div class="row mb-3">
     <div class="col-md-6">
       <p><strong>Tipo de documento:</strong> {{encontrarPorId(tipoDocumentoDS, 'idTipoDocumento', documentoForm.value.idTipoDocumento,'tipoDocumento') || ''}}</p>
-      <p><strong>Número de oficio:</strong> {{ documentoForm.value.noOficio }}</p>
+      <p><strong>Número de documento:</strong> {{ documentoForm.value.noOficio }}</p>
       <p><strong>Tema:</strong> {{ encontrarPorId(temas, 'idTema', documentoForm.value.idTema, 'tema') || ''}}</p>
       <p><strong>Fecha del documento:</strong> {{ documentoForm.value.fechaDocumento | fechaMexico }}</p>
       <p><strong>Fecha de recepción:</strong> {{ documentoForm.value.fechaRecepcion | fechaMexico:true }}</p>

@@ -15,6 +15,7 @@ import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { environment } from '../../../../environments/environment';
 import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-detalle-asuntos',
@@ -89,11 +90,12 @@ export class DetalleAsuntosComponent {
     public colors: ColorsEnum,
     private asuntoApi: AsuntoService,
     private utils: UtilsService,
-    private catalogoApi: CatalogoService
+    private catalogoApi: CatalogoService,
+	private sessionS: SessionService
   ) {}
 
   ngOnInit(): void {
-    this.usuario = JSON.parse(localStorage.getItem('session')!);
+    this.usuario = this.sessionS.getUsuario();
 
     this.consultarUnidadAdministrativa();
     this.consultarInstruccion();

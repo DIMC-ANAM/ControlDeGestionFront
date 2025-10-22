@@ -6,6 +6,7 @@ import { ModalManagerService } from '../../components/shared/modal-manager.servi
 import { UtilsService } from '../../services/utils.service';
 import { TipoToast } from '../../../api/entidades/enumeraciones';
 import { Router } from '@angular/router';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-admin-usuarios',
@@ -43,17 +44,12 @@ filteredPersonal: any[] = []; // Lista filtrada
     private usuarioApi: UsuarioService,
     private modalManager: ModalManagerService,
     private utils: UtilsService,
-    private router: Router
-
+    private router: Router,
+	private sessionS: SessionService
   ) {}
 
   ngOnInit(): void {
-    const session =  localStorage.getItem('session');
-    if (!session) {
-    this.router.navigate(['/']);
-    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
-    }
-    this.usuario = JSON.parse(session!);
+	this.usuario = this.sessionS.getUsuario();
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.obtenerUsuarios();

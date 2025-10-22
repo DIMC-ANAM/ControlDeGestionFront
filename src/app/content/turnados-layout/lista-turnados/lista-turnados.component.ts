@@ -4,6 +4,7 @@ import { UtilsService } from '../../../services/utils.service';
 import { ColorsEnum } from '../../../entidades/colors.enum';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { CatalogoService } from '../../../../api/catalogo/catalogo.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-lista-turnados',
@@ -32,11 +33,12 @@ export class ListaTurnadosComponent {
     private turnadoApi: TurnadoService,
     private utils: UtilsService,
     public colors: ColorsEnum,
-    private catalogoApi: CatalogoService
+    private catalogoApi: CatalogoService,
+	private sessionS: SessionService
   ) {}
 
   ngOnInit(): void {
-    this.usuario = JSON.parse(localStorage.getItem('session')!);
+    this.usuario = this.sessionS.getUsuario();
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
     //Add 'implements OnInit' to the class.
     this.consultarTurnados();

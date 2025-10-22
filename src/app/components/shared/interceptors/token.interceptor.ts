@@ -9,20 +9,21 @@ import {
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../services/session.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router) {}
+  constructor(
+	private sessionS: SessionService,
+  private router: Router) {}
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
   
     // Obtener token del localStorage
-    const session = localStorage.getItem('session');
+    const session = this.sessionS.getUsuario();
     if (session) {
-      const sessionData = JSON.parse(session);
-      const token = sessionData.tokenWs;
-
+      const token = session.tokenWs;
       if (token) {
         req = req.clone({
           setHeaders: {
@@ -38,7 +39,7 @@ export class TokenInterceptor implements HttpInterceptor {
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401 || err.status === 403) {
             try {
-              localStorage.removeItem('session');
+              this.sessionS.logout();
             } catch (e) {
               
             }

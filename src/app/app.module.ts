@@ -22,6 +22,7 @@ import { TokenInterceptor } from './components/shared/interceptors/token.interce
 import { DataTablesModule } from 'angular-datatables';
 import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
 import { CatalogosComponent } from './content/catalogos/catalogos.component';
+import { AccesoDenegadoComponent } from './content/acceso-denegado/acceso-denegado.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CatalogosComponent } from './content/catalogos/catalogos.component';
     ReportesComponent,
     UnitTestComponent,
     AdminUsuariosComponent,
-    CatalogosComponent
+    CatalogosComponent,
+    AccesoDenegadoComponent
   ],
   imports: [
     DataTablesModule,

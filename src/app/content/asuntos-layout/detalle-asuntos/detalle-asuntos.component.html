@@ -491,7 +491,7 @@
                                                 </button>                                         
                                                 </a>
 
-                                                <button class="btn btn-sm btn-light"
+                                                <button *ngIf="[1,2].includes(usuario.idUsuarioRol)" class="btn btn-sm btn-light"
                                                     (click)="openeliminarDocumentoModal(anexo.idDocumentoAsunto)">
 
                                                     <i class="fas fa-trash-alt"></i>

@@ -4,6 +4,7 @@ import { SidebarService } from '../../../services/sidebar-service.service';
 import { Router } from '@angular/router';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { UtilsService } from '../../../services/utils.service';
+import { SessionService } from '../../../services/session.service';
 
 @Component({
   selector: 'app-sidebar',
@@ -13,11 +14,12 @@ import { UtilsService } from '../../../services/utils.service';
 })
 export class SidebarComponent implements OnInit {
  // Inyección moderna (limpia y sin constructor)
-
+  usuario:any = null;
   constructor(
     private router: Router,
     public sidebarService: SidebarService,
-    private utils: UtilsService
+    private utils: UtilsService,
+	private sessionS: SessionService
   ){}
   menuItems = [
     {
@@ -72,13 +74,8 @@ export class SidebarComponent implements OnInit {
   ];
   menuUsuario:any = []
   ngOnInit(): void {
-    const session =  localStorage.getItem('session');
-    if (!session) {
-    this.router.navigate(['/']);
-    this.utils.MuestrasToast(TipoToast.Info, "¡La sesión ha caducado!"); // corregido MuestraToast
-  }
-  let usuario = JSON.parse(session!);
-      this.menuUsuario = this.menuItems.filter(item => item.rol.includes(usuario.idUsuarioRol));
+    this.usuario = this.sessionS.getUsuario();
+	this.menuUsuario = this.menuItems.filter(item => item.rol.includes(this.usuario.idUsuarioRol));
   }
 
 

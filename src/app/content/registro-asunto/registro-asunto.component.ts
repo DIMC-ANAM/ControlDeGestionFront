@@ -5,6 +5,7 @@ import { AsuntoService } from '../../../api/asunto/asunto.service';
 import { UtilsService } from '../../services/utils.service';
 import { TipoToast } from '../../../api/entidades/enumeraciones';
 import { CatalogoService } from '../../../api/catalogo/catalogo.service';
+import { SessionService } from '../../services/session.service';
 
 @Component({
   selector: 'app-registro-asunto',
@@ -30,7 +31,7 @@ export class RegistroAsuntoComponent {
   prioridad: any[] = [];
 
   remitenteFields = [
-    { name: 'remitenteNombre', label: 'Nombre del remitente' },
+    { name: 'remitenteNombre', label: 'Nombre completo del remitente' },
     { name: 'remitenteCargo', label: 'Cargo del remitente' },
     { name: 'remitenteDependencia', label: 'Dependencia del remitente' },
     { name: 'dirigidoA', label: 'Dirigido A' },
@@ -58,16 +59,15 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
     private modalManager: ModalManagerService,
     private asuntoApi: AsuntoService,
     private catalogoApi: CatalogoService,
-
+	private sessionS: SessionService,
     private utils: UtilsService
   ) {}
 
   ngOnInit(): void {
     /* session stuff */
     /* roles stuff */
-    this.usuario = JSON.parse(localStorage.getItem('session')!);
-
-    this.consultarTipoDocumento();
+    this.usuario = this.sessionS.getUsuario();
+	this.consultarTipoDocumento();
     this.consultarTema();
     this.consultarPrioridad();
     this.consultarMedioRecepcion();
@@ -111,8 +111,8 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
       idPrioridad: ['', Validators.required],
       idUsuarioRegistra: this.usuario.idUsuario,
       usuarioRegistra: this.usuario.nombreCompleto,
-      idUnidadAdministrativa: 1 /* falta */,
-      unidadAdministrativa: 'Recursos Humanos',
+      idUnidadAdministrativa: this.usuario.idDeterminante,
+      unidadAdministrativa: this.usuario.area,
       observaciones: '',
 	  autoTurnar: 0,
     });
