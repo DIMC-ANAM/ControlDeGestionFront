@@ -12,8 +12,7 @@ function initDatePicker() {
                     window.angularComponentReference.zone.run(() => {
                         window.angularComponentReference.setFechaIngreso(dateText);
                     });
-                } catch (error) {
-                    console.log("Error de fecha")
+                } catch (error) {                    
                     $('#fechaIngresoDate').val('')
                 }  
                 //$("#fechaIngresoDate").val(dateText);

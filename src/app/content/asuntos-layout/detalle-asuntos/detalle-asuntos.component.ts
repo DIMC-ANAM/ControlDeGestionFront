@@ -697,7 +697,6 @@ export class DetalleAsuntosComponent {
     }
   }
   turnarAsunto() {
-    console.log('this.turnados', this.turnados);
     this.asuntoApi.turnarAsunto({ listaTurnados: this.turnados }).subscribe(
       (data) => {
         this.onSuccessturnarAsunto(data);

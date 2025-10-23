@@ -21,13 +21,12 @@ export class BusquedaAvanzadaComponent {
 
     applyFilter(): void {
     // Lógica para aplicar el filtro
-    console.log('Aplicar filtro:', this.startDate, this.endDate);
+    /*  */
   }
 
   clearFilter(): void {
     this.startDate = '';
     this.endDate = '';
-    console.log('Filtro limpiado');
   }
 
   ngOnInit(): void {

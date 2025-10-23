@@ -197,7 +197,6 @@ toggleFechasValidators(checked: boolean): void {
 
   onSubmit(): void {
     if (this.documentoForm.valid) {
-      console.log('Formulario enviado:', this.documentoForm.value);
     } else {
       this.documentoForm.markAllAsTouched();
     }

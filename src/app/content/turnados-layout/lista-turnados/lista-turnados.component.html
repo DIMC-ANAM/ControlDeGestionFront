@@ -79,7 +79,7 @@
                 <i class="fas fa-filter me-2"></i> Limpiar Filtros
               </button>
                <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
-                (click)="consultarTurnados()">
+                (click)="consultarTurnados(); consultarCantidadesStatus()">
                 <i class="fa-solid fa-rotate-right me-2"></i>
               </div>
           </div>

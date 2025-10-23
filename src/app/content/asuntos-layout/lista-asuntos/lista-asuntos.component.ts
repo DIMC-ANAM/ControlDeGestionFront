@@ -15,11 +15,12 @@ export class ListaAsuntosComponent {
   @Output() asuntoSeleccionado = new EventEmitter<number>();
 
   filtroTexto = '';
-  filtroEstado = '';
+  filtroEstado = '1';
   filtroPrioridad = '';
   filtroTema = '';
   filtroFechaInicio: Date | null = null;
   filtroFechaFin: Date | null = null;
+  filtroConcluir = false;
   cambio = true;
   asuntos: any[] = [];
   cantidades: any[] = [];
@@ -51,60 +52,62 @@ Math: Math;
       this.asuntos.find((a) => a.idAsunto === id) || null;
   }
 
-  get asuntosFiltrados() {
-    return this.asuntos.filter((a) => {
-      const texto = this.filtroTexto?.toLowerCase() || '';
-      const coincideTexto = texto
-        ? Object.values(a).some((valor) => {
-            if (typeof valor === 'string') {
-              return valor.toLowerCase().includes(texto);
-            }
-            return false;
-          })
-        : true;
+get asuntosFiltrados() {
+  return this.asuntos.filter((a) => {
+    const texto = this.filtroTexto?.toLowerCase() || '';
+    const coincideTexto = texto
+      ? Object.values(a).some((valor) => {
+          if (typeof valor === 'string') {
+            return valor.toLowerCase().includes(texto);
+          }
+          return false;
+        })
+      : true;
 
-      const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
-      const filtroPrioridadNum = this.filtroPrioridad
-        ? +this.filtroPrioridad
-        : null;
+    const filtroEstadoNum = this.filtroEstado ? +this.filtroEstado : null;
+    const filtroPrioridadNum = this.filtroPrioridad
+      ? +this.filtroPrioridad
+      : null;
 
-      const coincideEstado =
-        filtroEstadoNum !== null ? a.idStatusAsunto === filtroEstadoNum : true;
+    const coincideEstado =
+      filtroEstadoNum !== null ? a.idStatusAsunto === filtroEstadoNum : true;
 
-      const coincidePrioridad =
-        filtroPrioridadNum !== null
-          ? a.idPrioridad === filtroPrioridadNum
-          : true;
+    const coincidePrioridad =
+      filtroPrioridadNum !== null ? a.idPrioridad === filtroPrioridadNum : true;
 
-      const coincideTema = this.filtroTema
-        ? a.Tema === this.filtroTema
-        : true;
+    const coincideTema = this.filtroTema ? a.Tema === this.filtroTema : true;
 
-      const fechaRegistro = new Date(a.fechaRegistro);
-      const fechaInicio = this.filtroFechaInicio
-        ? new Date(this.filtroFechaInicio)
-        : null;
-      const fechaFin = this.filtroFechaFin
-        ? new Date(this.filtroFechaFin)
-        : null;
+    const coincideConcluir = this.filtroConcluir
+      ? a.puedeConcluir === 1
+      : true;
 
-      const registroDateOnly = this.toDateOnly(fechaRegistro);
-      const inicioDateOnly = fechaInicio ? this.toDateOnly(fechaInicio) : null;
-      const finDateOnly = fechaFin ? this.toDateOnly(fechaFin) : null;
+    const fechaRegistro = new Date(a.fechaRegistro);
+    const fechaInicio = this.filtroFechaInicio
+      ? new Date(this.filtroFechaInicio)
+      : null;
+    const fechaFin = this.filtroFechaFin
+      ? new Date(this.filtroFechaFin)
+      : null;
 
-      const coincideFecha =
-        (!inicioDateOnly || registroDateOnly >= inicioDateOnly) &&
-        (!finDateOnly || registroDateOnly <= finDateOnly);
+    const registroDateOnly = this.toDateOnly(fechaRegistro);
+    const inicioDateOnly = fechaInicio ? this.toDateOnly(fechaInicio) : null;
+    const finDateOnly = fechaFin ? this.toDateOnly(fechaFin) : null;
 
-      return (
-        coincideTexto &&
-        coincideEstado &&
-        coincidePrioridad &&
-        coincideTema &&
-        coincideFecha
-      );
-    });
-  }
+    const coincideFecha =
+      (!inicioDateOnly || registroDateOnly >= inicioDateOnly) &&
+      (!finDateOnly || registroDateOnly <= finDateOnly);
+
+    return (
+      coincideTexto &&
+      coincideEstado &&
+      coincidePrioridad &&
+      coincideTema &&
+      coincideFecha &&
+      coincideConcluir
+    );
+  });
+}
+
 
   toDateOnly(date: Date): string {
     return date.toISOString().split('T')[0]; // '2025-08-14'
@@ -180,7 +183,6 @@ Math: Math;
     this.cambio = false;
 	this.consultarCantidadesStatus();
     this.consultarAsuntosUR();
-
   }
 
   pageSize: number = 10; // cantidad de asuntos por página

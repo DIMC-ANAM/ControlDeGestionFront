@@ -30,30 +30,50 @@
         </div>
 
         <div class="row g-3 p-1">
-          <!-- <div class="col-md-4">
-            <select class="form-control" [(ngModel)]="filtroEstado">
-              <option value="">Todos los estatus</option>
-              <option value="1">Registrado</option>
-              <option value="2">En curso</option>
-              <option value="3">Concluido</option>
-            </select>
-          </div> -->
+          <!-- Checkbox: solo visible si filtroEstado == '2' -->
+<div
+  class="col-md-4 d-flex flex-row align-items-center justify-content-center"
+  *ngIf="filtroEstado == '2'"
+>
+  <div>
+    <label for="puedeConcluir" class="form-label text-muted small">
+      Puede concluir
+    </label>
+  </div>
+  <div>
+    <input
+      class="mx-2 shadow-none"
+      [value]= true
+      type="checkbox"
+      [(ngModel)]="filtroConcluir"
+    />
+  </div>
+</div>
 
-          <div class="col-md-6">
-            <select class="form-control" [(ngModel)]="filtroPrioridad">
-              <option value="">Todas las prioridades</option>
-              <option value="3">Alta</option>
-              <option value="2">Media</option>
-              <option value="1">Baja</option>
-            </select>
-          </div>
+<!-- Select Prioridad -->
+<div
+  [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'"
+>
+  <select class="form-control" [(ngModel)]="filtroPrioridad">
+    <option value="">Todas las prioridades</option>
+    <option value="3">Alta</option>
+    <option value="2">Media</option>
+    <option value="1">Baja</option>
+  </select>
+</div>
 
-          <div class="col-md-6">
-            <select class="form-control" [(ngModel)]="filtroTema">
-              <option value="">Todos los temas</option>
-              <option *ngFor="let t of temaDS" [value]="t.tema">{{ t.tema }}</option>
-            </select>
-          </div>
+<!-- Select Tema -->
+<div
+  [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'"
+>
+  <select class="form-control" [(ngModel)]="filtroTema">
+    <option value="">Todos los temas</option>
+    <option *ngFor="let t of temaDS" [value]="t.tema">
+      {{ t.tema }}
+    </option>
+  </select>
+</div>
+
 
           <fieldset class="p-2 col-md-8 custom-fieldset">
           <legend class="custom-legend">Fecha de registro</legend>
@@ -76,7 +96,7 @@
                 <i class="fas fa-filter me-2"></i> Limpiar Filtros
               </button>
           <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
-                (click)="consultarAsuntosUR()">
+                (click)="consultarAsuntosUR(); consultarCantidadesStatus();">
                 <i class="fa-solid fa-rotate-right me-2"></i>
               </div>
           </div>

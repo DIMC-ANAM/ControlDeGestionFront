@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import * as CryptoJS from 'crypto-js';
+import { UtilsService } from './utils.service';
+import { TipoToast } from '../../api/entidades/enumeraciones';
 
 @Injectable({ providedIn: 'root' })
 export class SessionService {
@@ -7,15 +9,17 @@ export class SessionService {
   private readonly userKey = 'user';
   private readonly secretKey = '4n4m@r00t-s3cr3t!';
 
-  constructor() {}
+  constructor(
+	private utils: UtilsService
+  ) {}
 
   /**
    * Guarda la sesión encriptada y añade tiempo de expiración
    * @param data objeto de sesión devuelto por backend
-   * @param minutos tiempo de expiración en minutos (por defecto 60)
+   * @param minutos tiempo de expiración en minutos (por defecto 24hrs)
    */
-  setSession(data: any, minutos: number = 1800): void {
-    const expiraEn = Date.now() + minutos * 1800 * 1000;
+  setSession(data: any, minutos: number = 1440): void {
+    const expiraEn = Date.now() + minutos   * 60 * 1000; /* * 24 hrs */
     const session = { ...data, expiraEn };
 
     const jsonString = JSON.stringify(session);
@@ -38,7 +42,7 @@ export class SessionService {
 
       // Validar expiración
       if (session.expiraEn && Date.now() > session.expiraEn) {
-        /* console.warn('Sesión expirada automáticamente'); */
+        this.utils.MuestrasToast(TipoToast.Info, "Sesión expirada");
         this.logout();
         return null;
       }
@@ -75,10 +79,6 @@ export class SessionService {
       return true;
     }
   }
-
-  /** -------------------------
-   *  🟡 MÉTODOS DE USUARIO RECORDADO
-   *  ------------------------- */
 
   /**
    * Guarda credenciales recordadas (encriptadas)

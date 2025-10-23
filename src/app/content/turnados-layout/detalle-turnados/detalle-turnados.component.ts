@@ -634,7 +634,6 @@ export class DetalleTurnadosComponent {
     if (data.status == 200) {
       /* objeto historial */
       this.historial = data.model;
-      console.log(this.historial);
     } else {
       this.utils.MuestrasToast(TipoToast.Warning, data.message);
     }
@@ -780,7 +779,7 @@ export class DetalleTurnadosComponent {
       documentos: [documentoPayload],
       respuesta: this.conclusionForm.get('respuesta')?.value || null,
       /* atendedor: ![1,7].includes(this.usuario.idUsuarioRol) ? true : false  */
-      requiereTurnado: !this.noRequiereDocumento,
+      requiereDocumento	: !this.noRequiereDocumento,
     };
     return payload;
   }

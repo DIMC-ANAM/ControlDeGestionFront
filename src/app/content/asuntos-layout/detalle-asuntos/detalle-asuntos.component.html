@@ -55,7 +55,7 @@
       <i class="fas fa-check-double me-2"></i> Concluir
     </button>
     <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
-                    (click)="consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto); consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto); consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto); consultarHistorial(this.asuntoSeleccionado.idAsunto);">
+                    (click)="notificarCambio(); consultarDetallesAsunto(this.asuntoSeleccionado.idAsunto); consultarExpedienteAsunto(this.asuntoSeleccionado.idAsunto); consultarTurnadosAsunto(this.asuntoSeleccionado.idAsunto); consultarHistorial(this.asuntoSeleccionado.idAsunto);">
                     <i class="fa-solid fa-rotate-right me-2"></i>
     </div>
   </div>
@@ -777,7 +777,7 @@
                         <td>{{ turnado.unidadResponsable }}</td>
                         <td>{{ turnado.instruccion }}</td>
                         <td class="text-center">
-                            <i role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>
+                            <i *ngIf="!turnado.idTurnado"  role="button" class="fas fa-trash text-secondary" (click)="removeTurnado(i)"></i>
                         </td>
                     </tr>
                 </tbody>

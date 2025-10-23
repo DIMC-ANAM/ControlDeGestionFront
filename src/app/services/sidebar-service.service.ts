@@ -9,7 +9,6 @@ export class SidebarService {
 
   toggleSidebar(): void {
     this._isCollapsed.update(value => !value);
-    /* console.log('Sidebar toggled:', this._isCollapsed() ? 'collapsed' : 'expanded'); */
   }
 
   collapseSidebar(): void {

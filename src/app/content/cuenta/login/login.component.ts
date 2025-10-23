@@ -12,6 +12,7 @@ import { UsuarioService } from '../../../../api/usuario/usuario.service';
 import { UtilsService } from '../../../services/utils.service';
 import { TipoToast } from '../../../../api/entidades/enumeraciones';
 import { SessionService } from '../../../services/session.service';
+import { IdleService } from '../../../services/idle.service';
 
 @Component({
   selector: 'app-login',
@@ -40,7 +41,9 @@ export class LoginComponent {
     private fb: FormBuilder,
     private usuarioApi: UsuarioService,
     private utils: UtilsService,
-    private sessionService: SessionService
+    private sessionService: SessionService,
+	private  idleService: IdleService
+
   ) {}
   ngOnInit(): void {
 
@@ -105,8 +108,8 @@ export class LoginComponent {
       title: '<i class="fas fa-user-plus me-2"></i> Solicitar cuenta',
       template: this.crearCuentaModal,
       showFooter: false,
-      onAccept: () => this.solicitudCrearCuenta(),
-      onCancel: () => this.crearCuentaForm.reset(),
+      onAccept: () => null,
+      onCancel: () => null,
     });
   }
   solicitudCrearCuenta() {}
@@ -161,7 +164,7 @@ export class LoginComponent {
   onSuccessLogin(data: any) {
     if (data.status == 200) {
       this.sessionService.setSession(data.model);
-
+	  this.idleService.startWatching();
       if (this.recordar) {
         this.sessionService.setUserRecordado({
           usuario: this.loginForm.value.usuario,
