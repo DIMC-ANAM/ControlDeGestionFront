@@ -10,13 +10,16 @@ import {
 import { Observable, throwError, from, of } from 'rxjs';
 import { catchError, switchMap, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../services/session.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
   private cachedKey: CryptoKey | null = null;
 
-  constructor(private router: Router) {}
+  constructor(private router: Router,
+	private sessionS: SessionService
+  ) {}
 
   private async decryptData(encryptedBase64: string): Promise<any> {
     try {
@@ -91,11 +94,10 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     // Agregar token JWT al header si existe en localStorage
-    const session = localStorage.getItem('session');
+    const session = this.sessionS.getUsuario();
     if (session) {
       try {
-        const sessionData = JSON.parse(session);
-        const token = sessionData.tokenWs;
+        const token = session.tokenWs;
 
         if (token) {
           req = req.clone({
