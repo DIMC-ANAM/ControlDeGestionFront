@@ -7,7 +7,7 @@ import { TipoToast } from '../../api/entidades/enumeraciones';
 @Injectable({ providedIn: 'root' })
 export class IdleService {
   /** Tiempo máximo de inactividad (ms) — ajusta según necesidad */
-  private readonly idleTimeout = 15 * 60 * 1000; // (usa 15 * 60 * 1000 en prod)
+  private readonly idleTimeout = 30 * 60 * 1000; // (usa 15 * 60 * 1000 en prod)
 
   /** Último timestamp de actividad */
   private lastActivityTime: number = Date.now();
@@ -52,7 +52,7 @@ export class IdleService {
     this.ngZone.runOutsideAngular(() => {
       this.checkInterval = setInterval(() => {
         this.ngZone.run(() => this.checkInactivity());
-      }, 10 * 1000); // cada 1 segundo para pruebas
+      },1000); // cada 1 segundo para pruebas
     });
 
   }

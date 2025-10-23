@@ -20,6 +20,7 @@ export class SessionService {
    */
   setSession(data: any, minutos: number = 1440): void {
     const expiraEn = Date.now() + minutos   * 60 * 1000; /* * 24 hrs */
+    /* const expiraEn = Date.now()  + 10000;  *//* * 24 hrs */
     const session = { ...data, expiraEn };
 
     const jsonString = JSON.stringify(session);
