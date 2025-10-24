@@ -22,7 +22,7 @@ export class DashboardComponent {
 
     switch (type) {
       case 'manual':
-        url = '/docs/manual.pdf';
+        url = '/docs/Manual de usuario_SCG_NV.pdf';
         break;
       case 'privacy':
         url = '/docs/Aviso de privacidad SCG.pdf';
