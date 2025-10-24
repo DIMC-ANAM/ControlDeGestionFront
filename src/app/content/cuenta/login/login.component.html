@@ -80,13 +80,13 @@
 
       <div class="m-auto w-8  0 pt-3 d-flex justify-content-around align-items-center">
             <span class="tooltip-wrapper center" [attr.data-tooltip]="'Manual de usuario'">
-              <i class="info-btn-login p-2 fas fa-user-circle fa-2x"></i>
+              <i (click)="openDocument('manual')" class="info-btn-login p-2 fas fa-user-circle fa-2x"></i>
             </span>
-            <span class="tooltip-wrapper center" [attr.data-tooltip]="'Aviso de privacidad'">
-              <i class="info-btn-login p-2 fas fa-shield-alt fa-2x"></i>
+            <span class="tooltip-wrapper center" [attr.data-tooltip]="'Aviso de privacidad simplificado'">
+              <i (click)="openDocument('privacy')" class="info-btn-login p-2 fas fa-shield-alt fa-2x"></i>
             </span>
             <span class="tooltip-wrapper center" [attr.data-tooltip]="'Ayuda'">
-              <i class="info-btn-login p-2 fas fa-question-circle fa-2x"></i>
+              <i (click)="openAyudaModal()" class="info-btn-login p-2 fas fa-question-circle fa-2x"></i>
             </span>
         
       </div>
@@ -147,7 +147,7 @@
     <div class="mt-3 carta-responsiva-area">
         <p class="text-muted">Para dar de alta tu cuenta, deberás enviar tu carta responsiva firmada a la dirección de correo electrónico: <strong><a
               href="mailto:soporte_scg@anam.gob.mx">{{'soporte_scg@anam.gob.mx'}}</a> </strong>.</p>
-        <p class="text-muted">Descargar carta responsiva <strong> <a href=""> aquí</a></strong>.</p>
+        <p class="text-muted">Descargar carta responsiva <strong> <a (click)="openDocument('carta')"> aquí</a></strong>.</p>
       </div>
 
   </div>
@@ -158,6 +158,19 @@
       <strong><a
           href="mailto:soporte_scg@anam.gob.mx?subject=Recuperación de contraseña &body=Escribo para recuperar mi contraseña, mi usuario es: ...">{{'soporte_scg@anam.gob.mx'}}</a>
       </strong>.</p>
+
+  </div>
+</ng-template>
+<ng-template #ayudaModal>
+  <div class="mt-3 carta-responsiva-area">
+    <p class="text-muted">
+		Contacta al equipo de soporte 
+		<strong><a
+          href="mailto:soporte_scg@anam.gob.mx?subject=Ayuda &body=Escribo para ...">{{'soporte_scg@anam.gob.mx'}}</a>
+      </strong>
+	</p>
+     
+		
 
   </div>
 </ng-template>

@@ -111,8 +111,8 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
       idPrioridad: ['', Validators.required],
       idUsuarioRegistra: this.usuario.idUsuario,
       usuarioRegistra: this.usuario.nombreCompleto,
-      idUnidadAdministrativa: this.usuario.idDeterminante,
-      unidadAdministrativa: this.usuario.area,
+      idUnidadAdministrativa: 1, /* RRHH o this.usuario.idDeterminante -- la del gestor */
+      unidadAdministrativa: 'Dirección de Recursos Humanos',
       observaciones: '',
 	  autoTurnar: 0,
     });

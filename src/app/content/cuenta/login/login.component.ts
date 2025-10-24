@@ -25,6 +25,8 @@ export class LoginComponent {
   crearCuentaModal!: TemplateRef<any>;
   @ViewChild('olvidarContrasenaModal', { static: true })
   olvidarContrasenaModal!: TemplateRef<any>;
+  @ViewChild('ayudaModal', { static: true })
+  ayudaModal!: TemplateRef<any>;
 
   username = '';
   password = '';
@@ -124,6 +126,14 @@ export class LoginComponent {
       onAccept: () => null,
     });
   }
+  openAyudaModal() {
+    this.modalManager.openModal({
+      title: '<i class="fas fa-question-circle me-2"></i> Ayuda',
+      template: this.ayudaModal,
+      showFooter: false,
+      onAccept: () => null,
+    });
+  }
 
   /* LOGIN */
 
@@ -178,5 +188,30 @@ export class LoginComponent {
     } else {
       this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
+  }
+
+  public openDocument(type: 'manual' | 'privacy' | 'regulation' | 'carta'): void {
+    let url: string;
+
+    switch (type) {
+      case 'manual':
+        url = '/docs/manual.pdf';
+        break;
+      case 'privacy':
+        url = '/docs/Aviso de privacidad SCG simplificado.pdf';
+        break;
+      case 'regulation':
+        url = '/docs/RIANAM_2023.pdf';
+        break;
+      case 'carta':
+        url = '/docs/Carta responsiva SCG.docx';
+        break;
+      default:
+        console.error('Tipo de documento no válido');
+        return;
+    }
+
+    // Abre el documento en una nueva pestaña/ventana
+    window.open(url, '_blank');
   }
 }
