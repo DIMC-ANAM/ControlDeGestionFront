@@ -79,5 +79,14 @@ export class CatalogoService {
   desactivarTipoDocumento(data: { idTipoDocumento: number }) {
     return this.http.post(this.urlBase + 'activarTipoDocumento', data);
   }
+
+  verReporte(data: { fechaInicio: string | null; fechaFin: string | null }) {
+    return this.http.post(this.urlBase + 'verReporte', data);
+  }
+  
+    busquedaAvanzadaTurnados(data: any) {
+    return this.http.post(this.urlBase + 'busquedaAvanzadaTurnados', data);
+  }
+  
 }
 

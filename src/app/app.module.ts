@@ -23,6 +23,7 @@ import { DataTablesModule } from 'angular-datatables';
 import { AdminUsuariosComponent } from './content/admin-usuarios/admin-usuarios.component';
 import { CatalogosComponent } from './content/catalogos/catalogos.component';
 import { AccesoDenegadoComponent } from './content/acceso-denegado/acceso-denegado.component';
+import { AgGridModule } from 'ag-grid-angular';
 
 @NgModule({
   declarations: [
@@ -48,13 +49,14 @@ import { AccesoDenegadoComponent } from './content/acceso-denegado/acceso-denega
     CuentaModule,
     AppRoutingModule,
     NgbModule,  
-     BrowserAnimationsModule,
+    BrowserAnimationsModule,
     ToastrModule.forRoot({
       timeOut: 3000,
       positionClass: 'toast-top-right',
       preventDuplicates: true,
     }), 
-    HttpClientModule     
+    HttpClientModule,
+    AgGridModule
   ],
   providers: [
     {

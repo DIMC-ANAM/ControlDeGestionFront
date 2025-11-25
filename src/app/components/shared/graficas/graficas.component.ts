@@ -23,7 +23,7 @@ export class GraficasComponent implements OnInit, AfterViewInit {
   // Inputs personalizables desde el componente padre
   @Input() chartID: string = 'defaultChart';
   @Input() width: string = '100%';
-  @Input() height: string = '400px';
+  @Input() height: string = '800px';
   @Input() type: ChartType | 'multi' = 'bar'; // 'multi' para gráficas compuestas
   @Input() showLegend: boolean = true; // por defecto muestra las leyendas
   @Input() showXAxisLabels: boolean = true;
@@ -32,6 +32,11 @@ export class GraficasComponent implements OnInit, AfterViewInit {
   @Input() showYAxis: boolean = true;
   @Input() showTooltips: boolean = true;
   @Input() compact: boolean = false;
+  @Input() indexAxis: 'x' | 'y' = 'x'; // Para barras horizontales usar 'y'
+  @Input() stepSize: number = 1; // Incremento de las escalas
+  @Input() customTooltip: boolean = false; // Para tooltips personalizados con porcentaje
+  @Input() tooltipData: any[] = []; // Datos adicionales para tooltips
+  @Input() max: number | undefined; // Valor máximo del eje X
 
  @Input()
 	set datasets(data: any | undefined) {
@@ -73,44 +78,59 @@ export class GraficasComponent implements OnInit, AfterViewInit {
 	if (!ctx) return;
 
 	const resolvedType: ChartType = this.type === 'multi' ? 'bar' : this.type;
+    const isHorizontal = this.indexAxis === 'y';
 
     const config: ChartConfiguration = {
       type: resolvedType,
       data: this._datasets,
       options: {
+        indexAxis: this.indexAxis,
         responsive: true,
         maintainAspectRatio: false,
         animation: {
           duration: this.compact ? 0 : 1000,
         },
         interaction: this.compact
-          ? { mode: undefined, intersect: false }
+          ? { mode: 'nearest', intersect: true }
           : { mode: 'index', intersect: false },
         plugins: {
           legend: {
             display: !this.compact && this.showLegend,
           },
           tooltip: {
-            enabled: !this.compact && this.showTooltips,
+            enabled: false // Disable tooltips
           },
         },
-        scales: {
+        scales: resolvedType === 'pie' || resolvedType === 'doughnut' ? undefined : {
           x: {
             beginAtZero: true,
             display: !this.compact && this.showXAxis,
+            max: this.max !== undefined ? this.max : undefined,
             ticks: {
               display: !this.compact && this.showXAxisLabels,
-              autoSkip: false, // ¡Importante! Deshabilita el salto automático de etiquetas
-              maxRotation: 90, // Rota las etiquetas hasta 90 grados para que quepan
-              minRotation: 0,  // Sin rotación mínima
+              autoSkip: false,
+              maxRotation: isHorizontal ? 0 : 90,
+              minRotation: 0,
+              stepSize: isHorizontal ? this.stepSize : undefined,
             },
+            grid: {
+              display: true
+            }
           },
           y: {
             display: !this.compact && this.showYAxis,
             beginAtZero: true,
             ticks: {
               display: !this.compact && this.showYAxisLabels,
+              autoSkip: false,
+              stepSize: !isHorizontal ? this.stepSize : undefined,
+              font: {
+                size: 11
+              }
             },
+            grid: {
+              display: true
+            }
           },
         },
       },

@@ -1,28 +1,136 @@
-
-
 .card-ld-stats {
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 0; /* Elimina margen para que los hijos estén pegados */
-    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
-    text-align: center; /* Opcional: centrar texto */
+    margin: 0;
+    flex: 1;
+    text-align: center;
 }
+
 .card-charts {
     background-color: #f8f9fa;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    margin: 0; /* Elimina margen para que los hijos estén pegados */
-    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
-    text-align: center; /* Opcional: centrar texto */
+    margin: 0;
+    flex: 1;
+    text-align: center;
 }
 
 fieldset {
-  all: revert; /* Reestablece todos los estilos al estilo por defecto del navegador */
-  border: 1px solid #ccc; /* Asegura que el borde sea visible */
+  all: revert;
+  border: 1px solid #ccc;
   padding: 1rem;
   margin: 1rem 0;
+}
+
+// Estilos personalizados para AG-Grid
+.ag-grid-custom {
+  font-size: 14px;
+
+  .ag-header {
+    background-color: #f8f9fa;
+    font-weight: 600;
+  }
+
+  .ag-header-cell-label {
+    justify-content: center;
+  }
+
+  .ag-row-hover {
+    background-color: #f0f8ff !important;
+  }
+
+  .ag-row-selected {
+    background-color: #e3f2fd !important;
+  }
+
+  // Estilos para badges en la tabla
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  // Iconos en la columna de acciones
+  i[data-action] {
+    transition: all 0.2s ease-in-out;
+    
+    &:hover {
+      transform: scale(1.3);
+      filter: brightness(0.8);
+    }
+    
+    &:active {
+      transform: scale(1.1);
+    }
+  }
+}
+
+// Estilos para las cards de resumen (compactas)
+.card {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+  
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
+  }
+  
+  .card-body {
+    padding: 0.75rem;
+    
+    i {
+      opacity: 0.8;
+    }
+    
+    h5 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      margin-top: 0.25rem;
+    }
+    
+    small {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+  }
+}
+
+// Loading spinner
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
+}
+
+// Estilos para el modal de columnas
+.modal {
+  &.show {
+    display: block !important;
+  }
+  
+  .modal-dialog {
+    max-width: 500px;
+  }
+  
+  .list-group-item {
+    cursor: pointer;
+    transition: background-color 0.2s;
+    
+    &:hover:not(.disabled) {
+      background-color: #f0f8ff;
+    }
+    
+    &.disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.modal-backdrop {
+  &.show {
+    opacity: 0.5;
+  }
 }
 
