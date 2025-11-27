@@ -1,4 +1,4 @@
-.header{
+.header {
     min-height: 50px;
     background-color: #9f2241;
     align-items: center;
@@ -115,16 +115,15 @@
     color: #6a0a0a;
 }
 
-
 @media (max-width: 768px) {
     .header-content {
         padding: 0 16px;
     }
-    
+
     .username {
         display: none;
     }
-    
+
     .header-right {
         gap: 8px;
     }
@@ -136,28 +135,27 @@
 
 .toolbar-toggle-btn {
     color: white;
-      background: none;
-      /* border: 1px solid #ddd; */
-      border-radius: 50%;
-      padding: 8px 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
+    background: none;
+    /* border: 1px solid #ddd; */
+    border-radius: 50%;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
 
-    .toolbar-toggle-btn:hover {
-      background-color: #f5f5f543;
-      
-      
-    }
+.toolbar-toggle-btn:hover {
+    background-color: #f5f5f543;
+}
 
-    .toggle-icon {
-      font-size: 1.2rem;
-      line-height: 1;
-    }
+.toggle-icon {
+    font-size: 1.2rem;
+    line-height: 1;
+}
 
-     @media (max-width: 768px) {
-      .sidebar-status,
-      .control-btn {
+@media (max-width: 768px) {
+
+    .sidebar-status,
+    .control-btn {
         display: none;
-      }
     }
+}
