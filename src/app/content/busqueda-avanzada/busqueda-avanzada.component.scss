@@ -1,28 +1,78 @@
-
-
-.card-ld-stats {
+// Contenedor principal
+.bg-gray {
     background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 0; /* Elimina margen para que los hijos estén pegados */
-    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
-    text-align: center; /* Opcional: centrar texto */
-}
-.card-charts {
-    background-color: #f8f9fa;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin: 0; /* Elimina margen para que los hijos estén pegados */
-    flex: 1 ; /* Cada tarjeta ocupa el mismo espacio */
-    text-align: center; /* Opcional: centrar texto */
 }
 
-fieldset {
-  all: revert; /* Reestablece todos los estilos al estilo por defecto del navegador */
-  border: 1px solid #ccc; /* Asegura que el borde sea visible */
-  padding: 1rem;
-  margin: 1rem 0;
+// Estilos para el Panel Lateral de Columnas
+.column-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 300px; // Un poco más ancho para evitar cortes
+    z-index: 1050; 
+    background-color: white;
+    
+    // ESTADO OCULTO (Por defecto)
+    transform: translateX(100%); // Se mueve 100% a la derecha (fuera de la vista)
+    visibility: hidden; // Se vuelve invisible para que no estorbe clicks
+    transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0.3s step-end; // Animación suave
+    
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1); 
+
+    // ESTADO VISIBLE
+    &.show {
+        transform: translateX(0); // Regresa a su posición original
+        visibility: visible; // Se hace visible inmediatamente
+        transition: transform 0.3s cubic-bezier(0.4, 0.0, 0.2, 1), visibility 0s step-start;
+    }
+
+    .overflow-auto {
+        // Scrollbar más estético
+        &::-webkit-scrollbar {
+            width: 8px;
+        }
+        &::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        &::-webkit-scrollbar-thumb {
+            background: #adb5bd;
+            border-radius: 4px;
+        }
+        &::-webkit-scrollbar-thumb:hover {
+            background: #6c757d;
+        }
+    }
 }
 
+// Corrección para los círculos recortados
+.form-switch {
+    padding-left: 2.5em; // Bootstrap default
+    // Aseguramos que el contenedor tenga espacio para el "switch"
+    margin-right: 5px; 
+}
+
+// Personalización de AG-Grid
+.ag-theme-alpine.custom-grid {
+    .ag-header {
+        background-color: #f8f9fa;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+    }
+    
+    .ag-cell {
+        display: flex;
+        align-items: center;
+    }
+
+    .action-icon {
+        cursor: pointer;
+        transition: transform 0.2s ease;
+        font-size: 1.1rem;
+        padding: 4px;
+
+        &:hover {
+            transform: scale(1.2);
+        }
+    }
+}

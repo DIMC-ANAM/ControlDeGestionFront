@@ -216,7 +216,7 @@
 
         <!-- Paginación -->
         <div class="pagination" *ngIf="filteredPersonal.length > 0">
-          <button (click)="prevPage()" [disabled]="currentPage === 0">&lt; Anterior</button>
+          <button (click)="prevPage()" [disabled]="currentPage === 0"><i class="fas fa-caret-left"></i></button>
 
           <ng-container *ngFor="let p of visiblePages">
             <button (click)="goToPage(p)" [class.active]="p === (currentPage + 1)">
@@ -224,7 +224,7 @@
             </button>
           </ng-container>
 
-          <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1">Siguiente &gt;</button>
+          <button (click)="nextPage()" [disabled]="currentPage === totalPages - 1"><i class="fas fa-caret-right"></i></button>
         </div>
 
       </div>
