@@ -67,6 +67,7 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
     /* session stuff */
     /* roles stuff */
     this.usuario = this.sessionS.getUsuario();
+    if (!this.usuario) return;
 	this.consultarTipoDocumento();
     this.consultarTema();
     this.consultarPrioridad();
@@ -109,10 +110,10 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra: this.usuario.idUsuario,
-      usuarioRegistra: this.usuario.nombreCompleto,
-      idUnidadAdministrativa: 1, /* RRHH o this.usuario.idDeterminante -- la del gestor */
-      unidadAdministrativa: 'Dirección de Recursos Humanos',
+      idUsuarioRegistra: [this.usuario.idUsuario, Validators.required],
+      usuarioRegistra: [this.usuario.nombreCompleto, Validators.required],
+      idUnidadAdministrativa: [1,Validators.required], /* RRHH o this.usuario.idDeterminante -- la del gestor */
+      unidadAdministrativa: ['Dirección de Recursos Humanos', Validators.required],
       observaciones: '',
 	  autoTurnar: 0,
     });
