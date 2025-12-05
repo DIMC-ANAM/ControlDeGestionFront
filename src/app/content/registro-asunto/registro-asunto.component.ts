@@ -63,19 +63,32 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
     private utils: UtilsService
   ) {}
 
-  ngOnInit(): void {
-    /* session stuff */
-    /* roles stuff */
-    this.usuario = this.sessionS.getUsuario();
-    if (!this.usuario) return;
-	this.consultarTipoDocumento();
-    this.consultarTema();
-    this.consultarPrioridad();
-    this.consultarMedioRecepcion();
+ngOnInit(): void {
+  // 1. Inicializas el form
+  this.initFormAsunto();
 
-    this.initFormAsunto();
-    this.validaCheckbox();
+  // 2. Obtienes usuario
+  const usuario = this.sessionS.getUsuario();
+  this.usuario = usuario;
+
+  // 3. Parchas valores dependientes del usuario
+  if (usuario) {
+    this.documentoForm.patchValue({
+      idUsuarioRegistra: usuario.idUsuario,
+      usuarioRegistra: usuario.nombreCompleto,
+    });
   }
+
+  // 4. Cargas catálogos
+  this.consultarTipoDocumento();
+  this.consultarTema();
+  this.consultarPrioridad();
+  this.consultarMedioRecepcion();
+
+  // 5. Inicializas checkbox y lógica visual
+  this.validaCheckbox();
+}
+
 
   /* inicialización */
 
@@ -106,14 +119,14 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
         [Validators.required, Validators.maxLength(1000)],
       ],
       idTema: ['', Validators.required],
-      fechaCumplimiento: [null, [, this.fechaMinimaValidator()]],
+      fechaCumplimiento: [null, [this.fechaMinimaValidator()]],
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra: [this.usuario.idUsuario, Validators.required],
-      usuarioRegistra: [this.usuario.nombreCompleto, Validators.required],
-      idUnidadAdministrativa: [1,Validators.required], /* RRHH o this.usuario.idDeterminante -- la del gestor */
-      unidadAdministrativa: ['Dirección de Recursos Humanos', Validators.required],
+      idUsuarioRegistra: [null, Validators.required],
+    usuarioRegistra: [null, Validators.required],
+    idUnidadAdministrativa: [1, Validators.required],
+    unidadAdministrativa: ['Recursos Humanos', Validators.required],
       observaciones: '',
 	  autoTurnar: 0,
     });
@@ -379,8 +392,6 @@ toggleFechasValidators(checked: boolean): void {
     );
   }
 
-  /* catalogos
-   */
   registrarAsunto() {
     this.construirPayload().then((payload) => {
       this.asuntoApi.registrarAsunto(payload).subscribe(
