@@ -67,25 +67,24 @@ ngOnInit(): void {
   // 1. Inicializas el form
   this.initFormAsunto();
 
-  // 2. Obtienes usuario
-  const usuario = this.sessionS.getUsuario();
-  this.usuario = usuario;
+  // 2. Obtienes usuario y parchea valores dependientes
+  setTimeout(() => {
+    this.usuario = this.sessionS.getUsuario();
+    if (this.usuario) {
+      this.documentoForm.patchValue({
+        idUsuarioRegistra: this.usuario.idUsuario,
+        usuarioRegistra: this.usuario.nombreCompleto,
+      });
+    }
+  }, 0);
 
-  // 3. Parchas valores dependientes del usuario
-  if (usuario) {
-    this.documentoForm.patchValue({
-      idUsuarioRegistra: usuario.idUsuario,
-      usuarioRegistra: usuario.nombreCompleto,
-    });
-  }
-
-  // 4. Cargas catálogos
+  // 3. Cargas catálogos
   this.consultarTipoDocumento();
   this.consultarTema();
   this.consultarPrioridad();
   this.consultarMedioRecepcion();
 
-  // 5. Inicializas checkbox y lógica visual
+  // 4. Inicializas checkbox y lógica visual
   this.validaCheckbox();
 }
 
