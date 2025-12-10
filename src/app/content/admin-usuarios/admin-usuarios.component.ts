@@ -37,6 +37,16 @@ filteredPersonal: any[] = []; // Lista filtrada
   usuarioSeleccionado:any = null;
   dependenciasList:any = null;
 
+  // logica de cambiar contraseña
+  showPassword = false;
+  passwordStrengthLabel = '';
+  passwordStrengthClass = '';
+  passwordStrengthTextClass = '';
+  passwordStrengthWidth = '0%';
+  isEditMode = false;
+  changePasswordEnabled = false;
+  originalPassword = '';
+
   userlogs:any = [];
   constructor(
     private fb: FormBuilder,
@@ -54,6 +64,65 @@ filteredPersonal: any[] = []; // Lista filtrada
     //Add 'implements OnInit' to the class.
     this.obtenerUsuarios();
 
+  }
+
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
+  toggleChangePassword(event: any) {
+    this.changePasswordEnabled = event.target.checked;
+    const passwordControl = this.usuarioForm.get('contrasena');
+
+    if (this.changePasswordEnabled) {
+      passwordControl?.enable();
+      passwordControl?.setValidators([Validators.required]);
+      passwordControl?.setValue(''); 
+    } else {
+      passwordControl?.disable();
+      passwordControl?.clearValidators();
+      passwordControl?.setValue(this.originalPassword); 
+      this.resetStrength();
+    }
+    passwordControl?.updateValueAndValidity();
+  }
+
+  checkPasswordStrength() {
+    const val = this.usuarioForm.get('contrasena')?.value;
+    if (!val) {
+        this.resetStrength();
+        return;
+    }
+    
+    // fortaleza de contraseña
+    let score = 0;
+    if (val.length >= 4) score++;
+    if (val.length >= 8) score++;
+    if (/[A-Za-z]/.test(val) && /[0-9]/.test(val)) score++;
+
+    if (score < 2) {
+        this.passwordStrengthLabel = 'Débil';
+        this.passwordStrengthClass = 'bg-danger';
+        this.passwordStrengthTextClass = 'text-danger';
+        this.passwordStrengthWidth = '33%';
+    } else if (score < 3) {
+        this.passwordStrengthLabel = 'Media';
+        this.passwordStrengthClass = 'bg-warning';
+        this.passwordStrengthTextClass = 'text-warning';
+        this.passwordStrengthWidth = '66%';
+    } else {
+        this.passwordStrengthLabel = 'Segura';
+        this.passwordStrengthClass = 'bg-success';
+        this.passwordStrengthTextClass = 'text-success';
+        this.passwordStrengthWidth = '100%';
+    }
+  }
+
+  resetStrength() {
+      this.passwordStrengthLabel = '';
+      this.passwordStrengthClass = '';
+      this.passwordStrengthWidth = '0%';
+      this.passwordStrengthTextClass = '';
   }
 
 
@@ -158,10 +227,13 @@ openCrearUsuarioModal(usuarioDS: any, tramite:number) {
   /* 1 registro: 2 editar */
   this.consultarUsuarioRol();
   this.consultarDependencia();
+  this.showPassword = false;
   
     let title = '';
     switch (tramite) {
       case 1:
+        this.isEditMode = false;
+        this.changePasswordEnabled = true;
         this.initForm();
         this.usuarioForm.get('idUsuario')?.clearValidators();
           this.usuarioForm.get('idUsuario')?.updateValueAndValidity();
@@ -171,6 +243,8 @@ openCrearUsuarioModal(usuarioDS: any, tramite:number) {
         title = '<i class="fas fa-user-plus me-2"></i> Crear nuevo usuario';
         break;
         case 2:
+          this.isEditMode = true;
+          this.changePasswordEnabled = false;
           this.initForm();
 
           this.usuarioForm.get('contrasena')?.disable();
@@ -183,6 +257,9 @@ openCrearUsuarioModal(usuarioDS: any, tramite:number) {
           this.usuarioForm.get('usuarioNombre')?.clearValidators();
           this.usuarioForm.get('contrasena')?.updateValueAndValidity();
           this.usuarioForm.get('usuarioNombre')?.updateValueAndValidity();
+          
+          this.originalPassword = usuarioDS.contrasena; 
+          
           this.usuarioForm.patchValue({
               ... usuarioDS,
               idDependencia: usuarioDS.idDeterminante, // <-- aquí haces el match,
@@ -239,6 +316,7 @@ openLogModal() {
   this.getUserlog();
 this.modalManager.openModal({
       title: '<i class="fas fa-clock-rotate-left me-2"></i>Actividad reciente',
+      
       template: this.logModal,
       showFooter: false,
       onAccept: () => {},
@@ -319,7 +397,13 @@ this.modalManager.openModal({
 
     }
     actualizarUsuario(){
-        let payload = this.usuarioForm.getRawValue();
+        let payload = this.usuarioForm.value; // Usamos .value para excluir campos deshabilitados (contraseña si no se cambió)
+        
+        // Si estamos en modo edición y no se habilitó el cambio de contraseña, aseguramos que no se envíe
+        if (this.isEditMode && !this.changePasswordEnabled) {
+            delete payload.contrasena;
+        }
+
         this.usuarioApi.actualizarUsuario(payload).subscribe(
           (data:any) => {
             if(data.status == 200){

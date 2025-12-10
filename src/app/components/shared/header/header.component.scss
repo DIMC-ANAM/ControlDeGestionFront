@@ -4,6 +4,9 @@
     align-items: center;
     border-bottom: 5px solid #b4b4b4;
     margin-bottom: 0px;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
 }
 
 .header-content {

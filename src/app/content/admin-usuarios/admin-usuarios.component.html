@@ -215,10 +215,6 @@
 						obligatorio.</p>
 				</div>
 
-			</div>
-
-			<div class="row mt-3">
-
 				<!-- Correo -->
 				<div class="col-md-4">
 					<label class="form-label frmlabel required" for="correo">Correo</label>
@@ -231,6 +227,10 @@
 					</div>
 					<p *ngIf="getValidationStatus('correo') == 'invalid'" class="invalid-field">Correo inválido.</p>
 				</div>
+
+			</div>
+
+			<div class="row mt-3">
 
 				<!-- UsuarioNombre -->
 				<div class="col-md-4">
@@ -249,16 +249,38 @@
 				<!-- Contraseña -->
 				<div class="col-md-4">
 					<label class="form-label frmlabel required" for="contrasena">Contraseña</label>
-					<div class="input-icon-wrapper">
-						<i
-							[ngClass]="getValidationStatus('contrasena') == 'valid' ? 'fas fa-check-circle icon valid-icon' : getValidationStatus('contrasena') == 'invalid' ? 'fas fa-times-circle icon invalid-icon': 'd-none'"></i>
-						<input   id="contrasena" type="password" class="form-control " formControlName="contrasena"
+					<div class="input-group">
+						<input id="contrasena" [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="contrasena"
 							[class.invalid]="getValidationStatus('contrasena') == 'invalid'"
-							[class.valid]="getValidationStatus('contrasena') == 'valid'"  />
+							[class.valid]="getValidationStatus('contrasena') == 'valid'"
+                            (input)="checkPasswordStrength()" />
+                        <button class="btn btn-outline-secondary" type="button" (click)="togglePasswordVisibility()">
+                            <i class="fas" [class.fa-eye]="!showPassword" [class.fa-eye-slash]="showPassword"></i>
+                        </button>
 					</div>
+                    
+                    <div class="form-check form-switch mt-2" *ngIf="isEditMode">
+                        <input class="form-check-input" type="checkbox" id="changePass" (change)="toggleChangePassword($event)">
+                        <label class="form-check-label small text-muted" for="changePass">Cambiar contraseña</label>
+                    </div>
+
 					<p *ngIf="getValidationStatus('contrasena') == 'invalid'" class="invalid-field">Campo obligatorio.
 					</p>
 				</div>
+
+                <!-- progress bar  -->
+                <div class="col-md-4 d-flex flex-column justify-content-center">
+                    <div class="mt-1" *ngIf="changePasswordEnabled && usuarioForm.get('contrasena')?.value">
+                        <label class="form-label small text-muted mb-1">Seguridad de la contraseña</label>
+                        <div class="progress" style="height: 8px; margin-right: 100px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 [ngClass]="passwordStrengthClass" 
+                                 [style.width]="passwordStrengthWidth"
+                                 aria-valuemin="0" aria-valuemax="100"></div>
+                        </div>
+                        <small [ngClass]="passwordStrengthTextClass" class="fw-bold" style="font-size: 0.75rem;">{{ passwordStrengthLabel }}</small>
+                    </div>
+                </div>
 
 			</div>
 
