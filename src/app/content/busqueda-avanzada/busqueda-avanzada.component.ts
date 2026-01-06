@@ -59,6 +59,12 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
   documentoVisor: any = null;
   documentosDisponibles: any[] = [];
   documentoActual: any = null;
+  // Agrupación de documentos por categoría
+  documentosAgrupados: any = {
+    documentos: [],
+    anexos: [],
+    respuestas: []
+  };
   currentAsuntoFolio: string = '';
 
   constructor(
@@ -309,13 +315,16 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
     this.documentoActual = null;
     this.documentVisorURL = null;
 
-    // 1. Listar documentos disponibles
-    this.asuntoService.listarDocumentos({ id: data.asuntoFolio }).subscribe({
+    // 1. Consultar expediente del asunto
+    this.asuntoService.consultarExpedienteAsunto({ idAsunto: data.idAsunto }).subscribe({
         next: (response: any) => {
-            if (response && response.length > 0) {
-                this.documentosDisponibles = response;
+            if (response.status === 200 && response.model) {
+                this.documentosAgrupados = response.model;
+                
                 // 2. Cargar el primer documento por defecto
-                this.cargarDocumentoEnVisor(this.documentosDisponibles[0]);
+                const preferred = (this.documentosAgrupados.documentos?.[0] || this.documentosAgrupados.anexos?.[0] || this.documentosAgrupados.respuestas?.[0]);
+                if (preferred) this.cargarDocumentoEnVisor(preferred);
+                
                 // 3. Abrir modal
                 this.modalManager.openModal({
                     title: 'Visor de Documentos',
@@ -333,7 +342,7 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
             }
         },
         error: (error) => {
-            this.utils.MuestrasToast(TipoToast.Error, 'Error al listar los documentos.');
+            this.utils.MuestrasToast(TipoToast.Error, 'Error al consultar el expediente.');
         }
     });
   }
@@ -342,13 +351,13 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
       this.documentoActual = doc;
       this.documentVisorURL = null;
       
-      this.asuntoService.verDocumento({ id: this.currentAsuntoFolio, relativePath: doc.relativePath }).subscribe({
+      this.asuntoService.verDocumento({ id: this.currentAsuntoFolio, relativePath: doc.ruta }).subscribe({
         next: (blob: Blob) => {
             if (blob.size > 0) {
                 const url = URL.createObjectURL(blob) + '#view=FitH';
                 this.documentVisorURL = this.sanitizer.bypassSecurityTrustResourceUrl(url);
                 this.documentoVisor = { 
-                    nombre: doc.name, 
+                    nombre: doc.nombre, 
                     size: blob.size, 
                     fechaRegistro: new Date(), 
                     type: blob.type 
@@ -361,6 +370,29 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
             this.utils.MuestrasToast(TipoToast.Error, 'Error al cargar el contenido del documento.');
         }
       });
+  }
+
+  // Helper para obtener llaves en orden
+  get documentGroupKeys(): string[] {
+    return ['documentos', 'anexos', 'respuestas'];
+  }
+
+  // Etiqueta legible para la llave
+  keyLabel(key: string): string {
+    switch (key) {
+      case 'documentos': return 'Documento(s) principal(es)';
+      case 'anexos': return 'Anexos';
+      case 'respuestas': return 'Respuestas / Turnados';
+      default: return 'Otros';
+    }
+  }
+
+  // Mostrar tamaño legible
+  humanFileSize(size: number): string {
+    if (!size && size !== 0) return '';
+    const i = size === 0 ? 0 : Math.floor(Math.log(size) / Math.log(1024));
+    const sizes = ['B','KB','MB','GB','TB'];
+    return (size / Math.pow(1024, i)).toFixed(i ? 1 : 0) + ' ' + sizes[i];
   }
 
   descargarOficio(data: any) {

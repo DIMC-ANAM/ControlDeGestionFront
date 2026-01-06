@@ -134,24 +134,32 @@
                 <small class="text-muted">{{ currentAsuntoFolio }}</small>
             </div>
             <div class="flex-grow-1 overflow-auto p-2">
-                <div class="list-group list-group-flush">
-                    <button type="button" 
-                            class="list-group-item list-group-item-action border-0 rounded mb-1 d-flex align-items-center"
-                            *ngFor="let doc of documentosDisponibles" 
-                            (click)="cargarDocumentoEnVisor(doc)"
-                            [class.active]="doc === documentoActual">
-                        <i class="fas fa-file-pdf me-2" *ngIf="doc.name.endsWith('.pdf')"></i>
-                        <i class="fas fa-file-image me-2" *ngIf="!doc.name.endsWith('.pdf')"></i>
-                        <div class="text-truncate" [title]="doc.name">{{ doc.name }}</div>
-                    </button>
-                </div>
+                <ng-container *ngFor="let key of documentGroupKeys">
+                    <div *ngIf="documentosAgrupados[key] && documentosAgrupados[key].length > 0" class="group-section mb-2">
+                        <div class="d-flex justify-content-between align-items-center px-2 py-1">
+                            <strong class="small text-muted">{{ keyLabel(key) }}</strong>
+                            <span class="badge bg-secondary small">{{ documentosAgrupados[key].length }}</span>
+                        </div>
+                        <div class="list-group list-group-flush">
+                            <button type="button" 
+                                    class="list-group-item list-group-item-action border-0 rounded mb-1 d-flex align-items-center"
+                                    *ngFor="let doc of documentosAgrupados[key]" 
+                                    (click)="cargarDocumentoEnVisor(doc)"
+                                    [class.active]="doc === documentoActual">
+                                <i class="fas me-2" [ngClass]="doc.nombre.endsWith('.pdf') ? 'fa-file-pdf' : (doc.nombre.endsWith('.jpg') || doc.nombre.endsWith('.png') ? 'fa-file-image' : 'fa-file')"></i>
+                                <div class="text-truncate" [title]="doc.nombre">{{ doc.nombre }}</div>
+                                <small class="text-muted ms-auto">{{ humanFileSize(doc.size) }}</small>
+                            </button>
+                        </div>
+                    </div>
+                </ng-container>
             </div>
         </div>
 
         <!-- Visor -->
         <div class="pdf-container flex-grow-1 position-relative">
             <div class="pdf-header p-2">
-                <p class="pdf-title"><i class="fas fa-file m-2"></i> {{documentoVisor?.nombre || 'Cargando...'}}</p>
+                <p class="pdf-title"><i class="fa-solid fa-file-alt m-2"></i> {{documentoVisor?.nombre || 'Cargando...'}}</p>
             </div>
 
             <!-- Aquí va el PDF embebido -->
