@@ -34,7 +34,10 @@ export class SessionService {
    */
   getUsuario(): any | null {
     const encrypted = localStorage.getItem(this.sessionKey);
-    if (!encrypted) return null;
+    if (!encrypted) {
+        this.logout();
+        return null;
+    }
 
     try {
       const bytes = CryptoJS.AES.decrypt(encrypted, this.secretKey);

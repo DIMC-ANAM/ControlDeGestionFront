@@ -1,146 +1,152 @@
-<div class="d-flex flex-column h-100 content-resistant">  
-  <div class="mx-4 my-2 border-bottom">
-    <div class="d-flex justify-content-between align-items-start mb-1">
-      <div>
-        <h1 class="fw-bold mb-1 text-muted">Asuntos registrados</h1>
-        <small class="m-2 fw-bold text-muted">{{asuntosFiltrados.length}} resultados</small>
-      </div>
-    </div>
-
-    <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
-      <div class="p-2 bg-light">
-		<!-- cantidades -->
-		<div class="d-flex flex-row justify-content-around mb-4">	
-			 <span  
-				(click)="filtroEstado = item.idStatusAsunto"  role="button"  *ngFor="let item of cantidades" 
-				class="badge rounded-3 px-3 py-2"
-				[ngClass]=" filtroEstado === item.idStatusAsunto  ? (item.idStatusAsunto === '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto))  : 'bg-dark-gray text-white'">
-			
-				<i class="fas" 	[ngClass]=" filtroEstado === item.idStatusAsunto ? (item.idStatusAsunto === '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)) : 'fa-folder'">
-				</i>
-				<span class="ms-1">
-					{{ item.statusAsunto }} {{ item.cantidad }}
-				</span>
-			</span>
-		 </div>
-        <div class="row pb-3">
-          <div class="col-md-12">
-            <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto" />
-          </div>
+<div class="d-flex flex-column h-100 content-resistant">
+    <div class="mx-4 my-2 border-bottom">
+        <div class="d-flex justify-content-between align-items-start mb-1">
+            <div>
+                <h1 class="fw-bold mb-1 text-muted">Asuntos registrados</h1>
+                <small class="m-2 fw-bold text-muted">{{asuntosFiltrados.length}} resultados</small>
+            </div>
         </div>
 
-        <div class="row g-3 p-1">
-          <!-- Checkbox: solo visible si filtroEstado == '2' -->
-<div
-  class="col-md-4 d-flex flex-row align-items-center justify-content-center"
-  *ngIf="filtroEstado == '2'"
->
-  <div>
-    <label for="puedeConcluir" class="form-label text-muted small">
-      Puede concluir
-    </label>
-  </div>
-  <div>
-    <input
-      class="mx-2 shadow-none"
-      [value]= true
-      type="checkbox"
-      [(ngModel)]="filtroConcluir"
-    />
-  </div>
-</div>
+        <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
+        <div class="p-2 bg-light">
+            <!-- cantidades -->
+            <div class="d-flex flex-row justify-content-around mb-4">
+                <span (click)="filtroEstado = item.idStatusAsunto;" role="button"
+                    *ngFor="let item of cantidades" class="badge rounded-3 px-3 py-2" [ngClass]=" filtroEstado === item.idStatusAsunto  ? 
+                (item.idStatusAsunto === '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto))  
+                : 'bg-dark-gray text-white'">
 
-<!-- Select Prioridad -->
-<div
-  [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'"
->
-  <select class="form-control" [(ngModel)]="filtroPrioridad">
-    <option value="">Todas las prioridades</option>
-    <option value="3">Alta</option>
-    <option value="2">Media</option>
-    <option value="1">Baja</option>
-  </select>
-</div>
-
-<!-- Select Tema -->
-<div
-  [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'"
->
-  <select class="form-control" [(ngModel)]="filtroTema">
-    <option value="">Todos los temas</option>
-    <option *ngFor="let t of temaDS" [value]="t.tema">
-      {{ t.tema }}
-    </option>
-  </select>
-</div>
-
-
-          <fieldset class="p-2 col-md-8 custom-fieldset">
-          <legend class="custom-legend">Fecha de registro</legend>
-          <div class="row d-flex justify-content-around align-items-center">
-            <div class="col-md-5 w-40 ">
-              <input type="date" class="form-control " [(ngModel)]="filtroFechaInicio" placeholder="Fecha de inicio" />
+                    <i class="fas" [ngClass]=" filtroEstado === item.idStatusAsunto ? 
+                    (item.idStatusAsunto === '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)) 
+                    : 'fa-folder'">
+                    </i>
+                    <span class="ms-1">
+                        {{ item.statusAsunto }} {{ item.cantidad }}
+                    </span>
+                </span>
             </div>
-            <div class="col-md-1 small"><i class="fas fa-long-arrow-right"></i></div>
-            <div class="col-md-5 w-40">
-              <input type="date" class="form-control" [(ngModel)]="filtroFechaFin" placeholder="Fecha de fin" />
+
+            <div class="row pb-3">
+                <div class="col-md-12">
+                    <input type="text" class="form-control" placeholder="Buscar..." [(ngModel)]="filtroTexto"
+                        (ngModelChange)="resetPage()" />
+                </div>
             </div>
-          </div>
-        </fieldset>
 
+            <div class="row g-3 p-1">
+                <!-- Checkbox: solo visible si filtroEstado == '2' -->
+                <div class="col-md-4 d-flex flex-row align-items-center justify-content-center"
+                    *ngIf="filtroEstado == '2'">
 
+                    <div>
+                        <label for="puedeConcluir" class="form-label text-muted small">
+                            Puede concluir
+                        </label>
+                    </div>
+                    <div>
+                        <input class="mx-2 shadow-none" [value]="true" type="checkbox" [(ngModel)]="filtroConcluir"
+                            (ngModelChange)="resetPage()" />
+                    </div>
+                </div>
 
-          <div class="col-md-4 d-flex justify-content-center align-items-center">
-          <button class="btn btn-outline-secondary btn-sm"
-                (click)="filtroTexto = ''; filtroEstado = ''; filtroPrioridad = ''; filtroTema = ''; filtroFechaInicio = null; filtroFechaFin = null; this.cambio = false;">
-                <i class="fas fa-filter me-2"></i> Limpiar Filtros
-              </button>
-          <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center  px-3 text-success" role="button"
-                (click)="consultarAsuntosUR(); consultarCantidadesStatus();">
-                <i class="fa-solid fa-rotate-right me-2"></i>
-              </div>
-          </div>
+                <!-- Select Prioridad -->
+                <div [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'">
+                    <select class="form-control" [(ngModel)]="filtroPrioridad" (ngModelChange)="resetPage()">
+                        <option value="">Todas las prioridades</option>
+                        <option value="3">Alta</option>
+                        <option value="2">Media</option>
+                        <option value="1">Baja</option>
+                    </select>
+                </div>
+
+                <!-- Select Tema -->
+                <div [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'">
+                    <select class="form-control" [(ngModel)]="filtroTema" (ngModelChange)="resetPage()">
+                        <option value="">Todos los temas</option>
+                        <option *ngFor="let t of temaDS" [value]="t.tema">
+                            {{ t.tema }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Fechas -->
+                <fieldset class="p-2 col-md-8 custom-fieldset">
+                    <legend class="custom-legend">Fecha de registro</legend>
+                    <div class="row d-flex justify-content-around align-items-center">
+                        <div class="col-md-5 w-40 ">
+                            <input type="date" class="form-control" [(ngModel)]="filtroFechaInicio"
+                                (ngModelChange)="resetPage()" placeholder="Fecha de inicio" />
+                        </div>
+                        <div class="col-md-1 small"><i class="fas fa-long-arrow-right"></i></div>
+                        <div class="col-md-5 w-40">
+                            <input type="date" class="form-control" [(ngModel)]="filtroFechaFin"
+                                (ngModelChange)="resetPage()" placeholder="Fecha de fin" />
+                        </div>
+                    </div>
+                </fieldset>
+
+                <div class="col-md-4 d-flex justify-content-center align-items-center">
+                    <button class="btn btn-outline-secondary btn-sm" (click)="
+                    filtroTexto = ''; 
+                    filtroEstado = ''; 
+                    filtroPrioridad = ''; 
+                    filtroTema = ''; 
+                    filtroFechaInicio = null; 
+                    filtroFechaFin = null; 
+                    this.cambio = false;
+                    resetPage()
+                ">
+                        <i class="fas fa-filter me-2"></i> Limpiar Filtros
+                    </button>
+
+                    <div [attr.data-tooltip]="'Recargar'" class="tooltip-wrapper center px-3 text-success" role="button"
+                        (click)="consultarAsuntosUR(); consultarCantidadesStatus(); resetPage()">
+                        <i class="fa-solid fa-rotate-right me-2"></i>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-	  	  <!-- Paginado -->
-		<div class="d-flex flex-row justify-content-end align-items-center pb-3">
 
-			<!-- Controles del paginado -->
-			<nav *ngIf="totalPages > 1" class="me-2" >
-			<ul class="pagination pagination-sm mb-2">
-				<!-- Botón anterior -->
-				<li class="page-item" [class.disabled]="currentPage === 1">
-				<button class="page-link" (click)="cambiarPagina(currentPage - 1)">
-					<i class="fas fa-caret-left"></i>
-				</button>
-				</li>
+        <!-- Paginado -->
+        <div class="d-flex flex-row justify-content-end align-items-center pb-3">
 
-				<!-- Números de página con abreviación -->
-				<li class="page-item" *ngFor="let page of paginasMostradas" [class.active]="page === currentPage">
-				<button class="page-link" (click)="cambiarPagina(page)" *ngIf="page !== '...'">{{ page }}</button>
-				<span class="page-link text-muted bg-transparent border-0" *ngIf="page === '...'">...</span>
-				</li>
+            <!-- Controles del paginado -->
+            <nav *ngIf="totalPages > 1" class="me-2">
+                <ul class="pagination pagination-sm mb-2">
+                    <!-- Botón anterior -->
+                    <li class="page-item" [class.disabled]="currentPage === 1">
+                        <button class="page-link" (click)="cambiarPagina(currentPage - 1)">
+                            <i class="fas fa-caret-left"></i>
+                        </button>
+                    </li>
 
-				<!-- Botón siguiente -->
-				<li class="page-item" [class.disabled]="currentPage === totalPages">
-				<button class="page-link" (click)="cambiarPagina(currentPage + 1)">
-					<i class="fas fa-caret-right"></i>
-				</button>
-				</li>
-			</ul>
-			</nav>
+                    <!-- Números de página con abreviación -->
+                    <li class="page-item" *ngFor="let page of paginasMostradas" [class.active]="page === currentPage">
+                        <button class="page-link" (click)="cambiarPagina(page)" *ngIf="page !== '...'">{{ page
+                            }}</button>
+                        <span class="page-link text-muted bg-transparent border-0" *ngIf="page === '...'">...</span>
+                    </li>
 
-			<!-- Contador de asuntos visibles -->
-			<div class="text-muted small text-center">
-			Mostrando
-		{{ asuntosFiltrados.length === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}
-		-
-		{{ Math.min(currentPage * pageSize, asuntosFiltrados.length) }}
-		de {{ asuntosFiltrados.length }} asuntos
-			</div>
+                    <!-- Botón siguiente -->
+                    <li class="page-item" [class.disabled]="currentPage === totalPages">
+                        <button class="page-link" (click)="cambiarPagina(currentPage + 1)">
+                            <i class="fas fa-caret-right"></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
 
-			<!-- Selector de cantidad por página -->
-		<!--     <div class="text-center mt-2">
+            <!-- Contador de asuntos visibles -->
+            <div class="text-muted small text-center">
+                Mostrando
+                {{ asuntosFiltrados.length === 0 ? 0 : (currentPage - 1) * pageSize + 1 }}
+                -
+                {{ Math.min(currentPage * pageSize, asuntosFiltrados.length) }}
+                de {{ asuntosFiltrados.length }} asuntos
+            </div>
+
+            <!-- Selector de cantidad por página -->
+            <!--     <div class="text-center mt-2">
 				<label for="pageSize" class="small me-2">Mostrar:</label>
 				<select id="pageSize"
 						[(ngModel)]="pageSize"
@@ -152,72 +158,71 @@
 				</select>
 				</div>
 		-->
-		</div>
-  </div>
-
-  <!-- Lista de tarjetas -->
-  <div class="mx-4 my-2 px-4 py-2 h-100 overflow-auto ">
-    <ng-container *ngIf="asuntosFiltrados.length != 0; else elseTemplate">
-      <div *ngFor="let asunto of asuntosPaginados" class="card card-asunto mb-3 cursor-pointer"
-    
-    [ngClass]="{'seleccionado': asuntoSeleccionadoItem?.idAsunto === asunto.idAsunto, 'card-animada': cambio}"
-    (click)="seleccionarAsunto(asunto.idAsunto)">
-    <div class="card-body">
-      <div class="d-flex justify-content-between align-items-start">
-        <div class="asunto-info">
-        <h6 class="card-title mb-1 fw-bold text-truncate">{{ asunto.noOficio }}</h6>
-
-        <p class="card-text text-muted mb-2 small text-ellipsis text-truncate">
-          {{ asunto.descripcionAsunto }}
-        </p>
-
-        <div class="d-flex align-items-center text-muted small">
-            <span class="tooltip-wrapper up end" [attr.data-tooltip]="'Unidad administrativa'"> <i class="fas fa-building-columns me-2 text-secondary"></i></span>
-          <span class="text-truncate">{{ asunto.unidadAdministrativa }}</span>
         </div>
-
-        <div class="d-flex align-items-center text-muted small">
-          <span class="tooltip-wrapper up center" [attr.data-tooltip]="'Tema'"><i class="fas fa-table-list me-2 text-secondary"></i></span>
-          <span class="text-truncate">{{ asunto.Tema }}</span>
-        </div>
-        <div class="d-flex align-items-center text-muted small">
-          <span class="tooltip-wrapper up end" [attr.data-tooltip]="'Tipo de documento'"><i class="fas fa-file-alt me-2 text-secondary"></i></span>
-          <span class="text-truncate">{{ asunto.tipoDocumento }}</span>
-        </div>
-
-        <div class="d-flex align-items-center text-muted small mt-1">
-          <span class="tooltip-wrapper up center" [attr.data-tooltip]="'Fecha de registro'"><i class="fas fa-calendar-alt me-2 text-secondary"></i></span>
-          <span>{{ asunto.fechaRegistro | fechaMexico }}</span>
-        </div>
-      </div>
-
-        <div class="text-end">
-          <span
-                          class="tooltip-wrapper down right text-uppercase me-2"
-                          [attr.data-tooltip]="'Prioridad ' + asunto.prioridad"
-                          >
-                          <i
-                              class="fas fa-star"
-                              [ngClass]="colors.getPrioridadColor(asunto.prioridad)"
-                          ></i>
-            </span>
-          <span class="badge rounded-3 px-3 py-2" [ngClass]="colors.getEstadoColor(asunto.idStatusAsunto)">
-            <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.idStatusAsunto)"></i>
-            <span class="ms-1 ">
-              {{ asunto.statusAsunto }}
-            </span>
-          </span>
-      </div>
     </div>
-  </div>
-  </div>
-    </ng-container>
-    <ng-template #elseTemplate>
-        <div class="d-flex align-items-center flex-column justify-content-center h-100">
-            <img src="img\filesnotFound.png" alt="" style="width: 28%; mix-blend-mode: diference;">
-            <p class="text-muted frmlabel pt-3 " style="transform: translateX(-6%);">No se encontraron asuntos</p>
-        </div>
-    </ng-template>
-  
-	</div>
+
+    <!-- Lista de tarjetas -->
+    <div class="mx-4 my-2 px-4 py-2 h-100 overflow-auto ">
+        <ng-container *ngIf="asuntosFiltrados.length != 0; else elseTemplate">
+            <div *ngFor="let asunto of asuntosPaginados" class="card card-asunto mb-3 cursor-pointer"
+                [ngClass]="{'seleccionado': asuntoSeleccionadoItem?.idAsunto === asunto.idAsunto, 'card-animada': cambio}"
+                (click)="seleccionarAsunto(asunto.idAsunto)">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div class="asunto-info">
+                            <h6 class="card-title mb-1 fw-bold text-truncate">{{ asunto.noOficio }}</h6>
+
+                            <p class="card-text text-muted mb-2 small text-ellipsis text-truncate">
+                                {{ asunto.descripcionAsunto }}
+                            </p>
+
+                            <div class="d-flex align-items-center text-muted small">
+                                <span class="tooltip-wrapper up end" [attr.data-tooltip]="'Unidad administrativa'"> <i
+                                        class="fas fa-building-columns me-2 text-secondary"></i></span>
+                                <span class="text-truncate">{{ asunto.unidadAdministrativa }}</span>
+                            </div>
+
+                            <div class="d-flex align-items-center text-muted small">
+                                <span class="tooltip-wrapper up center" [attr.data-tooltip]="'Tema'"><i
+                                        class="fas fa-table-list me-2 text-secondary"></i></span>
+                                <span class="text-truncate">{{ asunto.Tema }}</span>
+                            </div>
+                            <div class="d-flex align-items-center text-muted small">
+                                <span class="tooltip-wrapper up end" [attr.data-tooltip]="'Tipo de documento'"><i
+                                        class="fas fa-file-alt me-2 text-secondary"></i></span>
+                                <span class="text-truncate">{{ asunto.tipoDocumento }}</span>
+                            </div>
+
+                            <div class="d-flex align-items-center text-muted small mt-1">
+                                <span class="tooltip-wrapper up center" [attr.data-tooltip]="'Fecha de registro'"><i
+                                        class="fas fa-calendar-alt me-2 text-secondary"></i></span>
+                                <span>{{ asunto.fechaRegistro | fechaMexico }}</span>
+                            </div>
+                        </div>
+
+                        <div class="text-end">
+                            <span class="tooltip-wrapper down right text-uppercase me-2"
+                                [attr.data-tooltip]="'Prioridad ' + asunto.prioridad">
+                                <i class="fas fa-star" [ngClass]="colors.getPrioridadColor(asunto.prioridad)"></i>
+                            </span>
+                            <span class="badge rounded-3 px-3 py-2"
+                                [ngClass]="colors.getEstadoColor(asunto.idStatusAsunto)">
+                                <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.idStatusAsunto)"></i>
+                                <span class="ms-1 ">
+                                    {{ asunto.statusAsunto }}
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+        <ng-template #elseTemplate>
+            <div class="d-flex align-items-center flex-column justify-content-center h-100">
+                <img src="img\filesnotFound.png" alt="" style="width: 28%; mix-blend-mode: diference;">
+                <p class="text-muted frmlabel pt-3 " style="transform: translateX(-6%);">No se encontraron asuntos</p>
+            </div>
+        </ng-template>
+
+    </div>
 </div>

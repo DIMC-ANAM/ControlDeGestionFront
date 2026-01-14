@@ -13,9 +13,9 @@
                     <p class="card-text"></p>
                     <p class="card-text">Aquí podrás gestionar y monitorear la correspondencia digital de manera eficiente.</p>
                     <p class="card-text">Para empezar, haz clic en las opciones a continuación.</p>
-                    <a href="/registro-asunto" class="btn btn-primary mx-2">Comenzar</a>
-        
-                    <a href="/consultar-turnados" class="btn btn-primary mx-2">Ver asuntos turnados</a>                        
+                    <a *ngIf="[1,2].includes(usuario.idUsuarioRol)" href="/registro-asunto" class="btn btn-primary mx-2">Comenzar</a>
+                    <a  *ngIf="[1,2].includes(usuario.idUsuarioRol)" href="/consultar-asuntos" class="btn btn-primary mx-2">Ver asuntos registrados</a>                        
+                    <a  *ngIf="[1,3,4].includes(usuario.idUsuarioRol)" href="/consultar-turnados" class="btn btn-primary mx-2">Ver asuntos turnados</a>                        
                     
                 </div>
             </div>

@@ -63,18 +63,31 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
     private utils: UtilsService
   ) {}
 
-  ngOnInit(): void {
-    /* session stuff */
-    /* roles stuff */
-    this.usuario = this.sessionS.getUsuario();
-	this.consultarTipoDocumento();
-    this.consultarTema();
-    this.consultarPrioridad();
-    this.consultarMedioRecepcion();
+ngOnInit(): void {
+  // 1. Inicializas el form
+  this.initFormAsunto();
 
-    this.initFormAsunto();
-    this.validaCheckbox();
-  }
+  // 2. Obtienes usuario y parchea valores dependientes
+  setTimeout(() => {
+    this.usuario = this.sessionS.getUsuario();
+    if (this.usuario) {
+      this.documentoForm.patchValue({
+        idUsuarioRegistra: this.usuario.idUsuario,
+        usuarioRegistra: this.usuario.nombreCompleto,
+      });
+    }
+  }, 0);
+
+  // 3. Cargas catálogos
+  this.consultarTipoDocumento();
+  this.consultarTema();
+  this.consultarPrioridad();
+  this.consultarMedioRecepcion();
+
+  // 4. Inicializas checkbox y lógica visual
+  this.validaCheckbox();
+}
+
 
   /* inicialización */
 
@@ -105,14 +118,14 @@ today:any = this.offsetDate.toISOString().slice(0, 16);
         [Validators.required, Validators.maxLength(1000)],
       ],
       idTema: ['', Validators.required],
-      fechaCumplimiento: [null, [, this.fechaMinimaValidator()]],
+      fechaCumplimiento: [null, [this.fechaMinimaValidator()]],
       idMedio: ['', Validators.required],
       /* recepcion: ['', Validators.required], */
       idPrioridad: ['', Validators.required],
-      idUsuarioRegistra: this.usuario.idUsuario,
-      usuarioRegistra: this.usuario.nombreCompleto,
-      idUnidadAdministrativa: 1, /* RRHH o this.usuario.idDeterminante -- la del gestor */
-      unidadAdministrativa: 'Dirección de Recursos Humanos',
+      idUsuarioRegistra: [null, Validators.required],
+    usuarioRegistra: [null, Validators.required],
+    idUnidadAdministrativa: [1, Validators.required],
+    unidadAdministrativa: ['Recursos Humanos', Validators.required],
       observaciones: '',
 	  autoTurnar: 0,
     });
@@ -378,8 +391,6 @@ toggleFechasValidators(checked: boolean): void {
     );
   }
 
-  /* catalogos
-   */
   registrarAsunto() {
     this.construirPayload().then((payload) => {
       this.asuntoApi.registrarAsunto(payload).subscribe(
