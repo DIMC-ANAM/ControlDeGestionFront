@@ -34,10 +34,64 @@
         <span class="fw-semibold">Tiempo transcurrido: </span>
         <span class="fw-bolder">{{ turnadoSeleccionado.tiempoTranscurrido }}</span>
     </div>
-    <div class="text-muted small">
+    <div class="text-muted small" *ngIf="turnadoDS">
         <i class="fa-solid fa-tasks  text-deep-blue me-1"></i>
         <span class="fw-semibold">Instrucción: </span>
         <span class="fw-bolder">{{ turnadoDS.instruccion }}</span>
+    </div>
+
+    <!-- Sección Comisionados -->
+    <div *ngIf="comisionados && comisionados.length > 0 && turnadoDS && usuario.idUsuarioRol !== 4" class="acordeon-comisionados-container" style="position: relative;">
+      <div class="text-muted small d-flex align-items-center gap-2" role="button" (click)="toggleAcordeonComisionados(); $event.stopPropagation()">
+        <i class="fa-solid fa-users text-deep-blue"></i>
+        <span class="fw-semibold">Asignar Comisionado</span>
+        <i class="fas text-deep-blue" [ngClass]="mostrarAcordeonComisionados ? 'fa-chevron-up' : 'fa-chevron-down'"></i>
+      </div>
+      
+      <!-- Acordeón -->
+      <div class="mt-1" *ngIf="mostrarAcordeonComisionados" style="position: absolute; max-width: 400px; z-index: 1000; top: 100%;" (click)="$event.stopPropagation()">
+        <div class="card border shadow-sm">
+          <div class="card-body p-2">
+            <div class="list-group list-group-flush" style="max-height: 180px; overflow-y: auto;">
+              <!-- Opción: Sin asignar -->
+              <button 
+                type="button" 
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2"
+                [class.bg-light]="comisionadoSeleccionado === null"
+                [class.border-primary]="comisionadoSeleccionado === null"
+                (click)="seleccionarComisionado(null)">
+                <span class="small" [class.fw-semibold]="comisionadoSeleccionado === null">
+                  <i class="fas fa-user-xmark me-2 text-secondary"></i>
+                   Sin asignar
+                </span>
+                <i class="fas fa-check text-success" *ngIf="comisionadoSeleccionado === null"></i>
+              </button>
+
+              <button 
+                *ngFor="let comisionado of comisionados" 
+                type="button"   
+                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-2"
+                [class.bg-light]="comisionadoSeleccionado?.idUsuario === comisionado.idUsuario"
+                [class.border-primary]="comisionadoSeleccionado?.idUsuario === comisionado.idUsuario"
+                (click)="seleccionarComisionado(comisionado)">
+                <span class="small" [class.fw-semibold]="comisionadoSeleccionado?.idUsuario === comisionado.idUsuario">
+                  <i class="fas fa-user-circle me-2"></i>
+                  {{ comisionado.nombreCompleto }}
+                </span>
+                <i class="fas fa-check text-success" *ngIf="comisionadoSeleccionado?.idUsuario === comisionado.idUsuario"></i>
+              </button>
+            </div>
+            <div class="mt-2 text-end">
+              <button 
+                class="btn btn-sm btn-primary"
+                (click)="asignarComisionado()"> <!-- Quitamos el [disabled] para permitir asignar null -->
+                <i class="fas fa-check-circle me-1"></i>
+                Asignar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 </div>
 
@@ -49,6 +103,12 @@
            [ngClass]="colors.getEstadoTurnadoIcon(turnadoDS.idStatusTurnado)"></i>
         {{ turnadoDS.statusTurnado }}
       </span>
+      <!-- Leyenda de asignación -->
+      <div class="text-muted small mt-2" *ngIf="turnadoDS.nombreComisionado && usuario.idUsuarioRol !== 4">
+        <i class="fas fa-user-check text-success me-1"></i>
+        <span class="fw-semibold muted" >Asignado a:</span>
+        <div class="fw-bolder text-dark">{{ turnadoDS.nombreComisionado }}</div>
+      </div>
     </div>
   </div>
 

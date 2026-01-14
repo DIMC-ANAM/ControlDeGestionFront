@@ -144,7 +144,7 @@
       
 
     
-    <div *ngFor="let asunto of asuntosFiltrados" class="card card-asunto mb-3 cursor-pointer"
+    <div *ngFor="let asunto of asuntosPaginados" class="card card-asunto mb-3 cursor-pointer"
       [ngClass]="{'seleccionado': turnadoSeleccionadoItem?.idTurnado === asunto.idTurnado , 'card-animada': cambio}"
       (click)="seleccionarTurnado(asunto); verTurnado();">
       <div class="card-body">
@@ -190,7 +190,15 @@
         <i class="fas me-1"
            [ngClass]="colors.getEstadoTurnadoIcon(asunto.idStatusTurnado)"></i>
         {{ asunto.statusTurnado }}
+        
       </span>
+      <div class="text-muted small fst-italic mt-1" *ngIf="usuario.idUsuarioRol !== 4">
+        <ng-container *ngIf="asunto.nombreComisionado; else sinAsignar">
+          <span class="small">Asignado a:</span>
+          <div>{{ asunto.nombreComisionado }}</div>
+        </ng-container>
+        <ng-template #sinAsignar>Sin asignar</ng-template>
+      </div>
 
 
             <!-- <span class="badge" [ngClass]="colors.getPrioridadColor(asunto.prioridad)">

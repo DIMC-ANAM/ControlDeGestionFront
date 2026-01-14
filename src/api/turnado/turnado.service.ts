@@ -35,4 +35,16 @@ export class TurnadoService {
     return this.http.post(this.urlBase + 'verTurnado', data);
   }
   
+  obtenerComisionados(data:any) {
+    return this.http.post(this.urlBase + 'obtenerComisionados', data);
+  }
+  
+  asignarComisionado(data:any) {
+    return this.http.post(this.urlBase + 'asignarComisionado', data);
+  }
+  
+  consultarAsuntoComisionado(data:any) {
+    return this.http.post(this.urlBase + 'consultarAsuntoComisionado', data);
+  }
+  
 }
