@@ -10,20 +10,21 @@
         <!-- Chevron para colapsar filtros (pendiente implementar lógica) -->
         <div class="p-2 bg-light">
             <!-- cantidades -->
-            <div class="d-flex flex-row justify-content-around mb-4">
-                <span (click)="filtroEstado = item.idStatusAsunto;" role="button"
-                    *ngFor="let item of cantidades" class="badge rounded-3 px-3 py-2" [ngClass]=" filtroEstado === item.idStatusAsunto  ? 
-                (item.idStatusAsunto === '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto))  
-                : 'bg-dark-gray text-white'">
-
-                    <i class="fas" [ngClass]=" filtroEstado === item.idStatusAsunto ? 
-                    (item.idStatusAsunto === '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)) 
-                    : 'fa-folder'">
-                    </i>
-                    <span class="ms-1">
-                        {{ item.statusAsunto }} {{ item.cantidad }}
+            <div class="d-flex flex-wrap gap-2 justify-content-around mb-4 badge-row">
+                <ng-container *ngFor="let item of cantidades; let i = index">
+                    <span (click)="filtroEstado = item.idStatusAsunto;" role="button"
+                        class="badge badge-sm rounded-3 px-2 py-1 mb-1"
+                        [ngClass]=" filtroEstado === item.idStatusAsunto  ? 
+                        (item.idStatusAsunto === '' ? 'bg-gold text-white' : colors.getEstadoColor(item.idStatusAsunto))  
+                        : 'bg-dark-gray text-white'">
+                        <i class="fas" [ngClass]=" filtroEstado === item.idStatusAsunto ? 
+                        (item.idStatusAsunto === '' ? 'fa-folder-open' : colors.getEstadoIcon(item.idStatusAsunto)) 
+                        : 'fa-folder'"></i>
+                        <span class="ms-1">
+                            {{ item.statusAsunto }} {{ item.cantidad }}
+                        </span>
                     </span>
-                </span>
+                </ng-container>
             </div>
 
             <div class="row pb-3">
@@ -35,8 +36,8 @@
 
             <div class="row g-3 p-1">
                 <!-- Checkbox: solo visible si filtroEstado == '2' -->
-                <div class="col-md-4 d-flex flex-row align-items-center justify-content-center"
-                    *ngIf="filtroEstado == '2'">
+                <!-- <div class="col-md-4 d-flex flex-row align-items-center justify-content-center"
+                    *ngIf="filtroEstado == '5'">
 
                     <div>
                         <label for="puedeConcluir" class="form-label text-muted small">
@@ -47,7 +48,7 @@
                         <input class="mx-2 shadow-none" [value]="true" type="checkbox" [(ngModel)]="filtroConcluir"
                             (ngModelChange)="resetPage()" />
                     </div>
-                </div>
+                </div> -->
 
                 <!-- Select Prioridad -->
                 <div [ngClass]="filtroEstado == '2' ? 'col-md-4' : 'col-md-6'">
@@ -205,7 +206,7 @@
                                 [attr.data-tooltip]="'Prioridad ' + asunto.prioridad">
                                 <i class="fas fa-star" [ngClass]="colors.getPrioridadColor(asunto.prioridad)"></i>
                             </span>
-                            <span class="badge rounded-3 px-3 py-2"
+                            <span class="badge badge-sm rounded-3 px-2 py-1"
                                 [ngClass]="colors.getEstadoColor(asunto.idStatusAsunto)">
                                 <i class="fas" [ngClass]="colors.getEstadoIcon(asunto.idStatusAsunto)"></i>
                                 <span class="ms-1 ">

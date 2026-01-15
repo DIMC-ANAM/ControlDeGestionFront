@@ -137,7 +137,13 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
           return baseStyle;
         }
       },
+
+    { headerName: 'No. Oficio', field: 'asuntoNoOficio', width: 170, hide: false, lockVisible: true, tooltipField: 'asuntoNoOficio' },
+
             // columnas de fechas formateadas 
+      textCol({ headerName: 'Unidad Responsable', field: 'unidadArea', width: 220, hide: false, lockVisible: true, tooltipField: 'unidadResonsable' }),
+      textCol({ headerName: 'Tema', field: 'asuntoTema', width: 180, hide: false, lockVisible: true, tooltipField: 'asuntoTema' }),
+      
       { 
         headerName: 'Fecha Registro', 
         field: 'fechaRegistro', 
@@ -146,18 +152,6 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
         lockVisible: true,
         valueFormatter: (params) => this.dateFormatter(params, true),
         filterValueGetter: (params: any) => this.dateFormatter({ value: params.data.fechaRegistro } as any, true)
-      },
-      
-      textCol({ headerName: 'Unidad Responsable', field: 'unidadArea', width: 220, hide: false, lockVisible: true, tooltipField: 'unidadResonsable' }),
-      textCol({ headerName: 'Tema', field: 'asuntoTema', width: 180, hide: false, lockVisible: true, tooltipField: 'asuntoTema' }),
-      { 
-        headerName: 'Fecha Modificación', 
-        field: 'fechaModificacion', 
-        width: 180, 
-        hide: false, 
-        lockVisible: true, 
-        valueFormatter: (params) => this.dateFormatter(params, true),
-        filterValueGetter: (params: any) => this.dateFormatter({ value: params.data.fechaModificacion } as any, true)
       },
       { 
         headerName: 'Fecha Recepción', 
@@ -168,6 +162,16 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
         valueFormatter: (params) => this.dateFormatter(params, true),
         filterValueGetter: (params: any) => this.dateFormatter({ value: params.data.asuntoFechaRecepcion } as any, true)
       },
+      { 
+        headerName: 'Fecha Modificación', 
+        field: 'fechaModificacion', 
+        width: 180, 
+        hide: true, 
+         
+        valueFormatter: (params) => this.dateFormatter(params, true),
+        filterValueGetter: (params: any) => this.dateFormatter({ value: params.data.fechaModificacion } as any, true)
+      },
+
       { 
         headerName: 'Fecha Documento', 
         field: 'asuntoFechaDocumento', 
@@ -190,7 +194,6 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
       textCol({ headerName: 'Respuesta', field: 'respuesta', width: 250, hide: true, tooltipField: 'respuesta' }),
       textCol({ headerName: 'Motivo Rechazo', field: 'motivoRechazo', width: 250, hide: true, tooltipField: 'motivoRechazo' }),
       
-      textCol({ headerName: 'No. Oficio', field: 'asuntoNoOficio', width: 150, hide: true }),
       textCol({ headerName: 'Tipo Documento', field: 'asuntoTipoDocumento', width: 130, hide: true }),
       textCol({ headerName: 'Remitente', field: 'asuntoRemitente', width: 180, hide: true }),
       textCol({ headerName: 'Cargo Remitente', field: 'asuntoRemitenteCargo', width: 150, hide: true }),
@@ -264,6 +267,43 @@ export class BusquedaAvanzadaComponent implements OnInit, OnDestroy {
   clearFilter(): void {
     this.startDate = ''; this.endDate = ''; this.folio = '';
     this.currentPage = 1; this.buscarTurnados();
+  }
+
+  filtrarHoy(): void {
+    const hoy = new Date();
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, '0');
+    const day = String(hoy.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
+    this.startDate = fechaStr;
+    this.endDate = fechaStr;
+    this.applyFilter();
+  }
+
+  filtrarAyer(): void {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    const year = ayer.getFullYear();
+    const month = String(ayer.getMonth() + 1).padStart(2, '0');
+    const day = String(ayer.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
+    this.startDate = fechaStr;
+    this.endDate = fechaStr;
+    this.applyFilter();
+  }
+
+  formatearFecha(fecha: string): string {
+    if (!fecha) return '';
+    const date = new Date(fecha + 'T00:00:00');
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    
+    const diaSemana = dias[date.getDay()];
+    const dia = date.getDate();
+    const mes = meses[date.getMonth()];
+    const año = date.getFullYear();
+    
+    return `${diaSemana}, ${dia} de ${mes} de ${año}`;
   }
   
   buscarTurnados(): void {

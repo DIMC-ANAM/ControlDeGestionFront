@@ -449,11 +449,7 @@ export class DetalleAsuntosComponent {
         idInstruccion: instruccion?.idInstruccion,
       };
 
-      if (
-        unidad &&
-        instruccion &&
-        !this.turnados.some((t) => this.esTurnadoIgual(t, nuevoTurnado))
-      ) {
+      if (unidad && instruccion) {
         this.turnados.push({
           unidadResponsable: unidad.area,
           instruccion: instruccion.instruccion,
@@ -463,11 +459,6 @@ export class DetalleAsuntosComponent {
           idUsuarioAsigna: this.usuario.idUsuario,
         });
         this.turnadoForm.reset();
-      } else {
-        this.utils.MuestrasToast(
-          TipoToast.Warning,
-          'Este turnado ya ha sido agregado.'
-        );
       }
     } else {
       this.turnadoForm.markAllAsTouched();
@@ -881,6 +872,7 @@ export class DetalleAsuntosComponent {
 
     const payload = {
       idAsunto: this.asuntoSeleccionado.idAsunto,
+      folio: this.asuntoSeleccionado.folio,
       idUsuarioRegistra: this.usuario.idUsuario,
       anexos: anexosPayload,
     };

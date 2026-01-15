@@ -21,20 +21,37 @@
             <h6 class="text-primary fw-bold mb-3 border-bottom pb-2">
                 <i class="fas fa-filter me-2"></i>Filtros de Búsqueda
             </h6>
-            <form class="row gx-3 align-items-end">
+            <!-- Botones de filtro rápido -->
+            <div class="d-flex gap-2 mb-3">
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="filtrarHoy()" [disabled]="isLoading">
+                    <i class="fas fa-calendar-day me-1"></i> Hoy
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" (click)="filtrarAyer()" [disabled]="isLoading">
+                    <i class="fas fa-calendar-minus me-1"></i> Ayer
+                </button>
+            </div>
+            
+            <form class="row gx-3 align-items-start">
                 <div class="col-12 col-md-3 mb-3">
                     <label class="form-label small fw-bold text-secondary">Fecha Inicio</label>
                     <input type="date" class="form-control" [(ngModel)]="startDate" name="startDate">
+                    <small class="text-muted d-block" *ngIf="startDate">
+
+                        <i class="fas fa-info-circle me-1"></i>{{ formatearFecha(startDate) }}
+                    </small>
                 </div>
                 <div class="col-12 col-md-3 mb-3">
                     <label class="form-label small fw-bold text-secondary">Fecha Fin</label>
                     <input type="date" class="form-control" [(ngModel)]="endDate" name="endDate">
+                    <small class="text-muted d-block" *ngIf="endDate">
+                        <i class="fas fa-info-circle me-1"></i>{{ formatearFecha(endDate) }}
+                    </small>
                 </div>
                 <div class="col-12 col-md-4 mb-3">
-                    <label class="form-label small fw-bold text-secondary">Folio asunto</label>
+                    <label class="form-label small fw-bold text-secondary d-block" style="padding-top: 2px;">Folio asunto</label>
                     <input type="text" class="form-control" [(ngModel)]="folio" name="folio" placeholder="Ej. SCG-ANAM-0001" (keyup.enter)="applyFilter()">
                 </div>
-                <div class="col-12 col-md-2 mb-3 d-flex gap-2">
+                <div class="col-12 col-md-2 mb-3 d-flex gap-2" style="padding-top: 30px;">
                     <button type="button" class="btn btn-primary w-100" (click)="applyFilter()" [disabled]="isLoading">
                         <i class="fas fa-search me-1"></i> Buscar
                     </button>
@@ -81,7 +98,6 @@
                     [paginationPageSize]="paginationPageSize"
                     [paginationPageSizeSelector]="paginationPageSizeSelector"
                     [animateRows]="true"
-                    [enableRangeSelection]="true"
                     [enableBrowserTooltips]="true"
                     (gridReady)="onGridReady($event)"
                     (cellClicked)="onCellClicked($event)">
@@ -138,7 +154,6 @@
                     <div *ngIf="documentosAgrupados[key] && documentosAgrupados[key].length > 0" class="group-section mb-2">
                         <div class="d-flex justify-content-between align-items-center px-2 py-1">
                             <strong class="small text-muted">{{ keyLabel(key) }}</strong>
-                            <span class="badge bg-secondary small">{{ documentosAgrupados[key].length }}</span>
                         </div>
                         <div class="list-group list-group-flush">
                             <button type="button" 

@@ -63,12 +63,51 @@ export class ReportesComponent implements OnInit {
     this.cargarReporte();
   }
 
+  filtrarHoy(): void {
+    const hoy = new Date();
+    const year = hoy.getFullYear();
+    const month = String(hoy.getMonth() + 1).padStart(2, '0');
+    const day = String(hoy.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
+    this.startDate = fechaStr;
+    this.endDate = fechaStr;
+    this.cargarReporte();
+  }
+
+  filtrarAyer(): void {
+    const ayer = new Date();
+    ayer.setDate(ayer.getDate() - 1);
+    const year = ayer.getFullYear();
+    const month = String(ayer.getMonth() + 1).padStart(2, '0');
+    const day = String(ayer.getDate()).padStart(2, '0');
+    const fechaStr = `${year}-${month}-${day}`;
+    this.startDate = fechaStr;
+    this.endDate = fechaStr;
+    this.cargarReporte();
+  }
+
+  formatearFecha(fecha: string): string {
+    if (!fecha) return '';
+    const date = new Date(fecha + 'T00:00:00');
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    
+    const diaSemana = dias[date.getDay()];
+    const dia = date.getDate();
+    const mes = meses[date.getMonth()];
+    const año = date.getFullYear();
+    
+    return `${diaSemana}, ${dia} de ${mes} de ${año}`;
+  }
+
   cargarReporte(): void {
     this.cargando = true;
     const data = {
       fechaInicio: this.startDate || null,
       fechaFin: this.endDate || null
     };
+
+    console.log('📅 Fechas enviadas al backend:', data);
 
     this.catalogoService.verReporte(data).subscribe({
       next: (response: any) => {

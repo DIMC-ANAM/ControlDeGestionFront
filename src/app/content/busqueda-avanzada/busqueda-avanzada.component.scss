@@ -125,6 +125,11 @@
         .group-section .list-group-item.active {
             background-color: #e9f7ef;
             border-left: 4px solid #217346;
+            color: #212529; // Color negro para el texto
+            
+            i, div, small {
+                color: #212529; // Asegurar que todos los elementos internos sean legibles
+            }
         }
 
         .group-section .badge {
