@@ -60,4 +60,13 @@ export class AsuntoService {
   consultarHistorial(data:any) {
     return this.http.post(this.urlBase + 'consultarHistorial', data);
   }
+    verDocumento(data: any) {
+    return this.http.post(this.urlBase + 'verDocumento', data, { responseType: 'blob' });
+  }
+  descargarExpediente(data: any) {
+    return this.http.post(this.urlBase + 'descargarExpediente', data, { responseType: 'blob' });
+  }
+  listarDocumentos(data: any) {
+    return this.http.post(this.urlBase + 'listarDocumentos', data);
+  }
 }

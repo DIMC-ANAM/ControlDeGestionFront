@@ -3,7 +3,9 @@ import { Injectable } from '@angular/core';
 export enum EstadoAsunto {
   Registrado = 1,
   EnCurso = 2,
-  Concluido = 3
+  Concluido = 3,
+  Atendido = 4,
+  Rechazado = 5
 }
 
 export enum EstadoTurnado {
@@ -34,9 +36,18 @@ export class ColorsEnum {
       colorClass: 'bg-purple text-white'
     },
     ['asunto:Concluido']: {
-      icon: 'fas fa-check',
+      icon: 'fas fa-check-circle',
       colorClass: 'bg-success text-white'
     },
+    ['asunto:Rechazado']: {
+      icon: 'fas fa-times-circle',
+      colorClass: 'bg-success text-white'
+    },
+    ['asunto:Atendido']: {
+      icon: 'fas fa-check',
+      colorClass: 'bg-secondary text-white'
+    },
+    
 
     // EstadoTurnado
     ['turnado:Recibido']: {
@@ -53,7 +64,7 @@ export class ColorsEnum {
     },
     ['turnado:Rechazado']: {
       icon: 'fas fa-times',
-      colorClass: 'bg-secondary text-white'
+      colorClass: 'bg-danger text-white'
     }
   };
 

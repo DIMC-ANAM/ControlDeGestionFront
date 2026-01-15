@@ -118,11 +118,15 @@ export class ListaTurnadosComponent {
         idUnidadAdministrativa:
           this.usuario
             .idDeterminante /* this.usuario.idDependencia */ /* hay que cambiarlo  */,
+        idUsuario: this.usuario.idUsuario,
+        idUsuarioRol: this.usuario.idUsuarioRol
       })
       .subscribe(
         (data: any) => {
           if (data.status == 200) {
             this.turnados = data.model;
+            // Cargar comisionados solo de la página actual
+            this.cargarComisionadosPaginaActual();
           } else {
             this.utils.MuestrasToast(TipoToast.Error, data.message);
             this.turnados = [];
@@ -137,6 +141,40 @@ export class ListaTurnadosComponent {
           this.turnados = [];
         }
       );
+  }
+
+  cargarComisionadosPaginaActual() {
+    const asuntosPagina = this.asuntosPaginados;
+    let completedCount = 0;
+    const totalAsuntos = asuntosPagina.length;
+
+    if (totalAsuntos === 0) return;
+
+    asuntosPagina.forEach((turnado: any) => {
+      // Solo cargar si no tiene el nombre ya cargado
+      if (turnado.nombreComisionado === undefined) {
+        this.turnadoApi.consultarAsuntoComisionado({ idTurnado: turnado.idTurnado })
+          .subscribe(
+            (comisionadoData: any) => {
+              if (comisionadoData && comisionadoData.nombreCompleto) {
+                turnado.nombreComisionado = comisionadoData.nombreCompleto;
+              } 
+              else if (Array.isArray(comisionadoData) && comisionadoData.length > 0 && comisionadoData[0].nombreCompleto) {
+                turnado.nombreComisionado = comisionadoData[0].nombreCompleto;
+              } else {
+                turnado.nombreComisionado = null;
+              }
+              completedCount++;
+            },
+            (error) => {
+              turnado.nombreComisionado = null;
+              completedCount++;
+            }
+          );
+      } else {
+        completedCount++;
+      }
+    });
   }
 
   onSuccessconsultarTurnados(data: any) {}
@@ -238,6 +276,8 @@ export class ListaTurnadosComponent {
 	if (typeof page === 'string') return; // evita intentar navegar con '...'
 	if (page >= 1 && page <= this.totalPages) {
 		this.currentPage = page;
+		// Cargar comisionados de la nueva página
+		this.cargarComisionadosPaginaActual();
 	}
   }
 

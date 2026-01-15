@@ -69,6 +69,12 @@ export class DetalleTurnadosComponent {
   instruccionesDS: any[] = [];
 
   noRequiereDocumento: boolean = false;
+  
+  // Propiedades para comisionados
+  comisionados: any[] = [];
+  comisionadoSeleccionado: any = null;
+  mostrarAcordeonComisionados: boolean = false;
+  cargandoComisionados: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -80,7 +86,12 @@ export class DetalleTurnadosComponent {
     private catalogoApi: CatalogoService,
     private turnadoApi: TurnadoService,
 	private sessionS: SessionService
-  ) {}
+  ) {
+    // Listener para cerrar acordeón al hacer click fuera
+    if (typeof document !== 'undefined') {
+      document.addEventListener('click', this.cerrarAcordeonSiClickFuera.bind(this));
+    }
+  }
 
   ngOnInit(): void {
     //Called after the constructor, initializing input properties, and the first call to ngOnChanges.
@@ -94,6 +105,10 @@ export class DetalleTurnadosComponent {
         this.consultarDetalleTurnado(this.asuntoInput.idTurnado);
         this.consultarDetallesAsunto(this.asuntoInput.idAsunto);
         this.consultarExpedienteAsunto(this.asuntoInput.idAsunto);
+        this.consultarComisionados();
+        // Cerrar acordeón al cambiar de asunto
+        this.mostrarAcordeonComisionados = false;
+        this.comisionadoSeleccionado = null;
       } catch (error) {
         // Manejo de error si alguna falla
         console.error('Error en la cadena de consultas', error);
@@ -801,6 +816,83 @@ export class DetalleTurnadosComponent {
         return 'rechazado';
       default:
         return '';
+    }
+  }
+
+  /* Métodos para comisionados */
+  consultarComisionados() {
+    if (!this.usuario || !this.usuario.idUsuario) return;
+    
+    this.cargandoComisionados = true;
+    this.turnadoApi.obtenerComisionados({ idUsuarioResponsable: this.usuario.idUsuario })
+      .subscribe(
+        (data: any) => {
+          this.onSuccessObtenerComisionados(data);
+        },
+        (ex) => {
+          this.cargandoComisionados = false;
+          this.utils.MuestraErrorInterno(ex);
+        }
+      );
+  }
+
+  onSuccessObtenerComisionados(data: any) {
+    this.cargandoComisionados = false;
+    if (data.status == 200 && data.model && Array.isArray(data.model)) {
+      this.comisionados = data.model;
+    } else {
+      this.comisionados = [];
+      if (data.status != 200) {
+        this.utils.MuestrasToast(TipoToast.Warning, data.message);
+      }
+    }
+  }
+
+  toggleAcordeonComisionados() {
+    this.mostrarAcordeonComisionados = !this.mostrarAcordeonComisionados;
+  }
+
+  cerrarAcordeonSiClickFuera(event: MouseEvent) {
+    const target = event.target as HTMLElement;
+    const acordeonContainer = target.closest('.acordeon-comisionados-container');
+    
+    if (!acordeonContainer && this.mostrarAcordeonComisionados) {
+      this.mostrarAcordeonComisionados = false;
+    }
+  }
+
+  seleccionarComisionado(comisionado: any) {
+    this.comisionadoSeleccionado = comisionado;
+  }
+
+  asignarComisionado() {
+    // Si comisionadoSeleccionado es null, enviar 0 para desasignar
+    const idUsuarioComisionado = this.comisionadoSeleccionado ? this.comisionadoSeleccionado.idUsuario : 0;
+
+    this.turnadoApi.asignarComisionado({
+      idTurnado: this.turnadoDS.idTurnado,
+      idUsuarioResponsable: this.usuario.idUsuario,
+      idUsuarioComisionado: idUsuarioComisionado
+    }).subscribe(
+      (data: any) => {
+        this.onSuccessAsignarComisionado(data);
+      },
+      (ex) => {
+        this.utils.MuestraErrorInterno(ex);
+      }
+    );
+  }
+
+  onSuccessAsignarComisionado(data: any) {
+    if (data.status == 200) {
+      this.utils.MuestrasToast(TipoToast.Success, data.message);
+      this.consultarDetalleTurnado(this.turnadoDS.idTurnado);
+      this.notificarCambio();
+      this.mostrarAcordeonComisionados = false;
+      this.comisionadoSeleccionado = null;
+      this.comisionadoSeleccionado = null;
+    } else {
+      this.utils.MuestrasToast(TipoToast.Error, data.message);
     }
   }
 }
