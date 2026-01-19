@@ -397,12 +397,16 @@ this.modalManager.openModal({
 
     }
     actualizarUsuario(){
-        let payload = this.usuarioForm.value; // Usamos .value para excluir campos deshabilitados (contraseña si no se cambió)
+        let payload = { ...this.usuarioForm.getRawValue() }; 
         
-        // Si estamos en modo edición y no se habilitó el cambio de contraseña, aseguramos que no se envíe
         if (this.isEditMode && !this.changePasswordEnabled) {
-            delete payload.contrasena;
+            payload.contrasena = this.originalPassword;
+            payload.pass = this.originalPassword;
+        } else {
+            payload.pass = payload.contrasena;
         }
+
+        payload.idDeterminante = payload.idDependencia;
 
         this.usuarioApi.actualizarUsuario(payload).subscribe(
           (data:any) => {
